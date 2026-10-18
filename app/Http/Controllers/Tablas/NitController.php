@@ -372,6 +372,21 @@ class NitController extends Controller
 
     }
 
+    public function comboResponsabilidadesTributarias(Request $request)
+    {
+        $tipoDocumento = ResponsabilidadesTributarias::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+        );
+
+        if ($request->get("q")) {
+            $tipoDocumento->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $tipoDocumento->paginate(40);
+    }
+
     public function comboNit(Request $request)
     {
         // Eliminas la búsqueda de $ubicacion_maximoph y toda la lógica $text = DB::raw(...)

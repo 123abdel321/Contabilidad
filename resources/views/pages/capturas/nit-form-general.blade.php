@@ -115,6 +115,19 @@
                         </div>
                     </div>
 
+                    <!-- Responsabilidades (nuevo) -->
+                    <div class="form-group col-12 col-sm-6 col-md-6" id="div_id_responsabilidades_general">
+                        <label for="id_responsabilidades_general_nit">Responsabilidades</label>
+                        <select class="form-control form-control-sm"
+                                id="id_responsabilidades_general_nit"
+                                name="id_responsabilidades_general_nit[]"
+                                multiple="multiple">
+                        </select>
+                        <div class="invalid-feedback">
+                            El campo es requerido
+                        </div>
+                    </div>
+
                     <div class="form-group col-12 col-sm-6 col-md-6">
                         <label for="observaciones_general_nit" class="form-control-label">Observaciones</label>
                         <input type="text" class="form-control form-control-sm" name="observaciones_general_nit" id="observaciones_general_nit" >

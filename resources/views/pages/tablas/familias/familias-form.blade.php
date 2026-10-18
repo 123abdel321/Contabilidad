@@ -115,7 +115,7 @@
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="id_cuenta_compra_retencion">Retención</label>
+                                        <label for="id_cuenta_compra_retencion">Retención Declarante (Responsabilidad : 05)</label>
                                         <select name="id_cuenta_compra_retencion" id="id_cuenta_compra_retencion" class="form-control form-control-sm">
                                         </select>
                                     </div>

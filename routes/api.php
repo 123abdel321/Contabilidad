@@ -382,6 +382,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::delete('nit', 'delete');
             Route::get('nit/combo-nit', 'comboNit');
             Route::get('nit/combo-tipo-documento', 'comboTipoDocumento');
+            Route::get('nit/responsabilidades', 'comboResponsabilidadesTributarias');
             Route::get('nit/informacion', 'getNitInfo');
             Route::get('nit/{id}', 'getNit');
             Route::get('nit/empleado-activo', 'comboEmpleado');

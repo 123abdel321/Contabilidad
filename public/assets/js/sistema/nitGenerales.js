@@ -27,7 +27,7 @@ function abrirNitGeneral(opts = {}) {
     $("#saveNitGastoGeneral").hide();
 
     if (nitGeneralModo === 'create') {
-        $("#textNitGeneralTitle").text('Agregar cliente');
+        $("#textNitGeneralTitle").text('Agregar Cedula/Nit');
         if (nitGeneralCaptura == 'venta') $("#saveNitVentaGeneral").show().text('Guardar');
         else if (nitGeneralCaptura == 'gasto') $("#saveNitGastoGeneral").show().text('Guardar');
         setFormNitGeneralReadonly(false);
@@ -52,19 +52,19 @@ function cargarNitGeneral(idNit, modo, captura) {
         llenarFormNitGeneral(res.data);
 
         if (modo === 'view') {
-            $("#textNitGeneralTitle").text('Ver cliente');
+            $("#textNitGeneralTitle").text('Ver Cedula/Nit');
             $("#saveNitVentaGeneral").hide();
             $("#saveNitGastoGeneral").hide();
             setFormNitGeneralReadonly(true);
         } else {
-            $("#textNitGeneralTitle").text('Editar cliente');
+            $("#textNitGeneralTitle").text('Editar Cedula/Nit');
             if (captura == 'venta') $("#saveNitVentaGeneral").show().text('Actualizar');
             else if (captura == 'gasto') $("#saveNitGastoGeneral").show().text('Actualizar');
             setFormNitGeneralReadonly(false);
         }
         $("#nitGeneralFormModal").modal('show');
     }).fail(() => {
-        agregarToast('error', 'Error', 'No se pudo cargar el cliente');
+        agregarToast('error', 'Error', 'No se pudo cargar la cedula/nit');
     });
 }
 
@@ -115,6 +115,29 @@ function llenarFormNitGeneral(d) {
     } else {
         $('#retencion_general_nit').prop('checked', false);
     }
+
+    // Responsabilidades (array de ids)
+    var idsResp = [];
+    if (d.id_responsabilidades) {
+        // Puede venir como "1,5,7" o como array, según cómo lo serialice el backend
+        idsResp = Array.isArray(d.id_responsabilidades)
+            ? d.id_responsabilidades
+            : String(d.id_responsabilidades).split(',').filter(Boolean);
+    }
+
+    // Limpiar opciones previas y agregar las que vienen del server
+    var $selResp = $("#id_responsabilidades_general_nit");
+    $selResp.empty();
+    if (d.responsabilidades && d.responsabilidades.length) {
+        d.responsabilidades.forEach(function (r) {
+            $selResp.append(new Option(r.codigo + ' - ' + r.nombre, r.id, false, false));
+        });
+    } else if (idsResp.length) {
+        idsResp.forEach(function (id) {
+            $selResp.append(new Option(id, id, false, false));
+        });
+    }
+    $selResp.val(idsResp).trigger('change');
 }
 
 function setFormNitGeneralReadonly(readonly) {
@@ -143,7 +166,8 @@ function clearFormNitGeneral() {
     $("#email_general_nit").val('');
     $("#telefono_1_general_nit").val('');
     $("#observaciones_general_nit").val('');
-    
+    $("#id_responsabilidades_general_nit").val([]).trigger('change');
+
     $('#retencion_general_nit').prop('checked', false);
     $('#proveedor_general_nit').prop('checked', false);
     $('#sumar_aiu_general_nits').prop('checked', false);
@@ -186,6 +210,7 @@ function guardarNitGeneral() {
         telefono_1: $("#telefono_1_general_nit").val(),
         id_ciudad: $("#id_ciudad_general_nit").val(),
         observaciones: $("#observaciones_general_nit").val(),
+        id_responsabilidades: $("#id_responsabilidades_general_nit").val(),
         sumar_aiu: $("input[type='checkbox']#sumar_aiu_general_nits").is(':checked') ? '1' : '',
         proveedor: $("input[type='checkbox']#proveedor_general_nit").is(':checked') ? '1' : '',
         retencion: $("input[type='checkbox']#retencion_general_nit").is(':checked') ? '1' : '',
@@ -254,6 +279,41 @@ $(document).on('shown.bs.modal', '#nitGeneralFormModal', function () {
                 headers: headers,
                 dataType: 'json',
                 processResults: (data) => ({ results: data.data })
+            }
+        });
+    }
+    if (!$("#id_responsabilidades_general_nit").hasClass('select2-hidden-accessible')) {
+        $("#id_responsabilidades_general_nit").select2({
+            theme: 'bootstrap-5',
+            dropdownParent: $('#nitGeneralFormModal'),
+            delay: 250,
+            closeOnSelect: false,
+            placeholder: 'Seleccionar responsabilidades',
+            language: {
+                noResults: () => "No hay resultado",
+                searching: () => "Buscando..",
+                inputTooShort: () => "Por favor introduce 1 o más caracteres"
+            },
+            ajax: {
+                url: 'api/nit/responsabilidades',
+                headers: headers,
+                dataType: 'json',
+                data: (params) => ({
+                    q: params.term || '',
+                    page: params.page || 1
+                }),
+                processResults: (data, params) => {
+                    params.page = params.page || 1;
+                    return {
+                        results: (data.data || []).map(r => ({
+                            id: r.id,
+                            text: r.text
+                        })),
+                        pagination: {
+                            more: data.current_page < data.last_page
+                        }
+                    };
+                }
             }
         });
     }
