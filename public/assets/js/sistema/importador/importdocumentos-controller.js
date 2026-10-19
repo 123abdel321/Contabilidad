@@ -181,6 +181,48 @@ channelImportDocumentos.bind('notificaciones', function(data) {
                 });
             }
         }
+
+        if (data.stage === 'completed_with_errors') {
+            $('#uploadProgressDocumentos')
+                .removeClass('progress-bar-striped progress-bar-animated bg-primary')
+                .addClass('bg-danger');
+
+            // Renderizar errores
+            mostrarErroresImportacionDocumentos(data.errores || [], data.mensaje);
+
+            // Restaurar botones
+            $('#cargarPlantillaDocumentos').show();
+            $('#cargarPlantillaDocumentosLoading').hide();
+            $('#importarDocumentos').show();
+            $('#importarDocumentosLoading').hide();
+
+            // Recargar tabla para que las filas fallidas sigan visibles
+            if (import_documentos_table) {
+                import_documentos_table.ajax.reload();
+            }
+        }
+
+        if (data.stage === 'error') {
+            $('#uploadProgressDocumentos')
+                .removeClass('progress-bar-striped progress-bar-animated bg-primary')
+                .addClass('bg-danger');
+
+            // Restaurar botones para que el usuario pueda corregir y reintentar
+            $('#cargarPlantillaDocumentos').show();
+            $('#cargarPlantillaDocumentosLoading').hide();
+            $('#importarDocumentos').show();
+            $('#importarDocumentosLoading').hide();
+
+            // Recargar tabla para no perder las filas
+            if (import_documentos_table) {
+                import_documentos_table.ajax.reload();
+            }
+
+            // Ocultar la barra después de 8 segundos
+            setTimeout(() => {
+                $('#uploadStatusDocumentos').slideUp();
+            }, 8000);
+        }
     } 
     // Si es el evento final de importación (el antiguo 'carga' o el nuevo 'import')
     else if (data.name === 'carga' || data.name === 'import') {
@@ -209,3 +251,73 @@ channelImportDocumentos.bind('notificaciones', function(data) {
         $('#importarDocumentos').show();
     }
 });
+
+function mostrarErroresImportacionDocumentos(errores, mensajeGeneral) {
+    if (!errores || !errores.length) {
+        agregarToast('error', 'Carga con errores', mensajeGeneral || 'Se encontraron errores.', true);
+        return;
+    }
+
+    // Construir HTML de detalle
+    let html = `<div style="font-size: 13px; text-align:left;">
+                  <p style="margin-bottom: 10px;"><strong>${mensajeGeneral || ''}</strong></p>
+                  <p style="margin-bottom: 10px;">Documentos con errores: <b>${errores.length}</b></p>`;
+
+    errores.forEach((doc, idx) => {
+        const comp  = doc.comprobante || '';
+        const cons  = doc.consecutivo || '';
+        const fecha = doc.fecha || '';
+        html += `<div style="background:#fff; border-radius:6px; padding:8px 10px; margin-bottom:8px; border-left:4px solid #dc3545;">
+                    <div style="font-weight:bold; color:#b02a37;">
+                        Documento #${idx + 1} — ${comp} · Consecutivo ${cons} · ${fecha}
+                    </div>`;
+
+        const errs = doc.errores || {};
+        Object.keys(errs).forEach(grupo => {
+            const detalle = errs[grupo];
+            if (Array.isArray(detalle)) {
+                detalle.forEach(m => {
+                    html += `<div style="margin-left:8px; color:#555;">• <b>${grupo}</b>: ${m}</div>`;
+                });
+            } else if (typeof detalle === 'object' && detalle !== null) {
+                Object.keys(detalle).forEach(campo => {
+                    const msg = Array.isArray(detalle[campo]) ? detalle[campo].join(' ') : detalle[campo];
+                    html += `<div style="margin-left:8px; color:#555;">• <b>${grupo}</b> → <i>${campo}</i>: ${msg}</div>`;
+                });
+            } else if (detalle) {
+                html += `<div style="margin-left:8px; color:#555;">• <b>${grupo}</b>: ${detalle}</div>`;
+            }
+        });
+        html += `</div>`;
+    });
+    html += `</div>`;
+
+    // Si tienes SweetAlert, mostrar modal; si no, fallback al toast
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Errores en la importación',
+            html: html,
+            icon: 'error',
+            width: 700,
+            showCancelButton: false,
+            confirmButtonText: 'Entendido',
+            didOpen: () => {
+                const htmlContainer = document.querySelector('.swal2-html-container');
+                if (htmlContainer) {
+                    htmlContainer.style.maxHeight = '60vh';
+                    htmlContainer.style.overflowY = 'auto';
+                    htmlContainer.style.textAlign = 'left';
+                }
+            }
+        });
+    } else {
+        // Fallback: al menos avisar al usuario
+        console.error('Errores de importación:', errores);
+        agregarToast(
+            'error',
+            'Carga con errores',
+            `${errores.length} documento(s) con errores. Revisa la consola para el detalle.`,
+            true
+        );
+    }
+}

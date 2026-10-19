@@ -101,6 +101,7 @@ class ImportDocumentos implements
             try {
                 // Validar datos
                 $validationResult = $this->validateRow($row, $rowNumber);
+                
                 $row = $validationResult['row'];
 
                 if ($validationResult['fails']) {

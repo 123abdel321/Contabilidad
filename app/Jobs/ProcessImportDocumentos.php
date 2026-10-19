@@ -55,6 +55,8 @@ class ProcessImportDocumentos implements ShouldQueue
         copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $this->empresa->token_db);
 
+        $canal = "importador-documentos-" . $this->empresa->token_db . '_' . $this->id_usuario;
+
         try {
             // Contar total de registros a procesar
             $this->totalRecords = DocumentosImport::where(function ($query) {
@@ -63,9 +65,9 @@ class ProcessImportDocumentos implements ShouldQueue
                     ->orWhere('errores', '');
                 })
                 ->count();
-            
+
             // Enviar evento de inicio
-            event(new PrivateMessageEvent("importador-documentos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+            event(new PrivateMessageEvent($canal, [
                 'name' => 'progress',
                 'tipo' => 'info',
                 'mensaje' => 'Iniciando carga de documentos al sistema...',
@@ -98,7 +100,7 @@ class ProcessImportDocumentos implements ShouldQueue
                     $credito = 0;
                     $tokenFactura = $this->generateTokenDocumento();
                     $comprobante = Comprobantes::where('codigo', $documentoImportado[0]->codigo_comprobante)->first();
-                    
+
                     $facDocumento = FacDocumentos::create([
                         'id_comprobante' => $comprobante->id,
                         'fecha_manual' => $documentoImportado[0]->fecha_manual,
@@ -112,7 +114,7 @@ class ProcessImportDocumentos implements ShouldQueue
                     ]);
 
                     $primerIdNit = null;
-			        $documentoGeneral = new Documento(
+                    $documentoGeneral = new Documento(
                         $comprobante->id,
                         $facDocumento,
                         $documentoImportado[0]->fecha_manual,
@@ -121,12 +123,12 @@ class ProcessImportDocumentos implements ShouldQueue
 
                     foreach ($documentoImportado as $data) {
                         $debito+= $data->debito;
-				        $credito+= $data->credito;
+                        $credito+= $data->credito;
 
                         $cecos = CentroCostos::where('codigo', $data->codigo_cecos)->first();
                         $nit = Nits::where('numero_documento', $data->documento_nit)->first();
                         $cuenta = PlanCuentas::where('cuenta', $data->cuenta_contable)->first();
-                        
+
                         $doc = [
                             'id_cuenta' => $cuenta->id,
                             'id_nit' => $nit ? $nit->id : '',
@@ -169,21 +171,39 @@ class ProcessImportDocumentos implements ShouldQueue
                         }
 
                         $doc['created_by'] = $this->id_usuario;
-				        $doc['updated_by'] = $this->id_usuario;
+                        $doc['updated_by'] = $this->id_usuario;
                         $doc['consecutivo'] = $data->consecutivo;
 
                         $doc = new DocumentosGeneral($doc);
-				        $documentoGeneral->addRow($doc, $naturaleza);
+                        $documentoGeneral->addRow($doc, $naturaleza);
                     }
 
                     if (!$documentoGeneral->save()) {
+                        // ── Recolectar el error del documento ──
+                        $this->erroresDocumentos[] = [
+                            'comprobante' => $documentoImportado[0]->codigo_comprobante,
+                            'consecutivo' => $documentoImportado[0]->consecutivo,
+                            'fecha'       => $documentoImportado[0]->fecha_manual,
+                            'errores'     => $documentoGeneral->getErrors(),
+                        ];
 
+                        // ── Revertir todo lo insertado ──
                         DB::connection('sam')->rollback();
-                        return response()->json([
-                            'success'=>	false,
-                            'data' => [],
-                            'message'=> $documentoGeneral->getErrors()
-                        ], 200);
+
+                        // ── Avisar al frontend ──
+                        event(new PrivateMessageEvent($canal, [
+                            'name'      => 'progress',
+                            'tipo'      => 'error',
+                            'mensaje'   => 'La importación fue cancelada por errores de validación.',
+                            'titulo'    => 'Carga de documentos',
+                            'progress'  => 0,
+                            'processed' => 0,
+                            'total'     => $this->totalRecords,
+                            'stage'     => 'completed_with_errors',
+                            'errores'   => $this->erroresDocumentos,
+                        ]));
+
+                        return;
                     }
 
                     $facDocumento->debito = $debito;
@@ -196,18 +216,18 @@ class ProcessImportDocumentos implements ShouldQueue
                     $this->updateConsecutivo($comprobante->id, $documentoImportado[0]->consecutivo);
 
                     $this->processedRecords++;
-                        
-                    // Enviar evento de progreso cada 100 registros procesados
+
+                    // Enviar evento de progreso cada 34 registros procesados
                     if ($this->processedRecords % 34 === 0) {
-                        $progress = $this->totalRecords > 0 
-                            ? round(($this->processedRecords / $this->totalRecords) * 100) 
+                        $progress = $this->totalRecords > 0
+                            ? round(($this->processedRecords / $this->totalRecords) * 100)
                             : 0;
-                        
-                        event(new PrivateMessageEvent("importador-productos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+
+                        event(new PrivateMessageEvent($canal, [
                             'name' => 'progress',
                             'tipo' => 'info',
-                            'mensaje' => 'Cargando productos al sistema...',
-                            'titulo' => 'Carga de productos',
+                            'mensaje' => 'Cargando documentos al sistema...',
+                            'titulo' => 'Carga de documentos',
                             'progress' => $progress,
                             'processed' => $this->processedRecords,
                             'total' => $this->totalRecords,
@@ -228,7 +248,7 @@ class ProcessImportDocumentos implements ShouldQueue
             DB::connection('sam')->commit();
 
             // Enviar evento de completado exitoso
-            event(new PrivateMessageEvent("importador-documentos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+            event(new PrivateMessageEvent($canal, [
                 'name' => 'progress',
                 'tipo' => 'success',
                 'mensaje' => '¡Carga de documentos completada exitosamente!',
@@ -240,7 +260,7 @@ class ProcessImportDocumentos implements ShouldQueue
             ]));
 
             // Enviar evento final de importación
-            event(new PrivateMessageEvent("importador-documentos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+            event(new PrivateMessageEvent($canal, [
                 'name' => 'import',
                 'tipo' => 'exito',
                 'mensaje' => 'Importador de documentos finalizado totalmente!',
@@ -250,9 +270,9 @@ class ProcessImportDocumentos implements ShouldQueue
 
         } catch (\Exception $exception) {
             DB::connection('sam')->rollback();
-            
+
             // Enviar evento de error
-            event(new PrivateMessageEvent("importador-documentos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+            event(new PrivateMessageEvent($canal, [
                 'name' => 'progress',
                 'tipo' => 'error',
                 'mensaje' => 'Error durante la carga de documentos: ' . $exception->getMessage(),
@@ -262,9 +282,9 @@ class ProcessImportDocumentos implements ShouldQueue
                 'total' => $this->totalRecords,
                 'stage' => 'error'
             ]));
-            
+
             throw $exception;
-        }        
+        }
     }
     
     private function processDocumentos(DocumentosImport $import)

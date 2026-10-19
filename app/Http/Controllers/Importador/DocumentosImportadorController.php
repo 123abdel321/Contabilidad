@@ -160,7 +160,7 @@ class DocumentosImportadorController extends Controller
             return response()->json([
                 'success'=>	false,
                 'data' => $e->failures(),
-                'message'=> 'Error al actualizar precio de productos'
+                'message'=> 'Error al cargar documentos'
             ]);
         }
     }
