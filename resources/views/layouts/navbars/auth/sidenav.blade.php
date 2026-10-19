@@ -46,6 +46,23 @@
         border: solid 1px !important;
     }
 
+    /* Padre activo */
+    #sidenav-main .nav-link.nav-padre.active {
+        background: linear-gradient(90deg, rgba(13, 215, 246, 0.15) 0%, rgba(13, 215, 246, 0.05) 100%) !important;
+        border-radius: 8px;
+        color: #0ce0ff !important;
+        font-weight: 600;
+    }
+
+    #sidenav-main .nav-link.nav-padre.active .nav-link-text {
+        color: #0ce0ff !important;
+    }
+
+    #sidenav-main .nav-link.nav-padre.active .icon {
+        background: rgba(13, 215, 246, 0.25) !important;
+        box-shadow: 0 0 8px rgba(13, 215, 246, 0.4);
+    }
+
 </style>
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 side-nav-maximo-close" id="sidenav-main" style="z-index: 99 !important; border-radius: 0px 10px 10px 0px;">
     <div class="sidenav-header">
@@ -63,9 +80,21 @@
             Facturación
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownTiposMenu" style="margin-left: 40px;">
-            <li id="dropdown-item-facturacion"><a onclick="selectMenu('facturacion')" class="dropdown-item" style="color: black;">Facturación</a></li>
-            <li id="dropdown-item-contabilidad"><a onclick="selectMenu('contabilidad')" class="dropdown-item" style="color: black;">Contabilidad</a></li>
-            <li id="dropdown-item-nomina"><a onclick="selectMenu('nomina')" class="dropdown-item" style="color: black;">Nomina</a></li>
+            <li id="dropdown-item-facturacion">
+                <a onclick="selectMenu('facturacion')" class="dropdown-item" style="color: black;">
+                    <i class="fas fa-file-invoice-dollar me-2"></i>Facturación
+                </a>
+            </li>
+            <li id="dropdown-item-contabilidad">
+                <a onclick="selectMenu('contabilidad')" class="dropdown-item" style="color: black;">
+                    <i class="fas fa-calculator me-2"></i>Contabilidad
+                </a>
+            </li>
+            <li id="dropdown-item-nomina">
+                <a onclick="selectMenu('nomina')" class="dropdown-item" style="color: black;">
+                    <i class="fas fa-users me-2"></i>Nomina
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -83,7 +112,7 @@
                     <div id="nav_{{ $menu[0]->padre->id }}" data-bs-toggle="collapse" href="#collapse{{ $menu[0]->padre->id }}" class="nav-link collapsed nav-padre" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;"
                         onclick="closeAnotherItems('{{ $menu[0]->padre->id }}' )">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="{{ $menu[0]->padre->icon }} text-sm opacity-10" style="color: #0ce0ff !important;"></i>
+                            <i class="{{ $menu[0]->padre->icon }} text-sm" style="color: #0ce0ff !important; font-size: 0.9rem; opacity: 0.9;"></i>
                         </div>
                         <span class="nav-link-text ms-1">{{ $menu[0]->padre->nombre }}</span>
                     </div>
@@ -93,7 +122,11 @@
 
                             @foreach ($menu as $item)
                                 <li class="nav-item tipo_menu_{{ $item->tipo_menu }}">
-                                    <a class="nav-link button-side-nav" id="sidenav_{{ $item->url }}" onclick="openNewItem('{{ $item->url }}', '{{ $item->nombre }}', '{{ $item->icon }}', '{{ $menu[0]->padre->id }}')" style="margin-left: 20px;">
+                                    <a class="nav-link button-side-nav"
+                                    id="sidenav_{{ $item->url }}"
+                                    onclick="openNewItem('{{ $item->url }}', '{{ $item->nombre }}', '{{ $item->icon }}', '{{ $menu[0]->padre->id }}')"
+                                    style="margin-left: 20px; display: flex; align-items: center;">
+                                        <i class="{{ $item->icon }} text-sm me-2" style="color: #0ce0ff !important; font-size: 0.8rem;"></i>
                                         <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
                                     </a>
                                 </li>

@@ -264,32 +264,17 @@ function mostrarErroresImportacionDocumentos(errores, mensajeGeneral) {
                   <p style="margin-bottom: 10px;">Documentos con errores: <b>${errores.length}</b></p>`;
 
     errores.forEach((doc, idx) => {
-        const comp  = doc.comprobante || '';
-        const cons  = doc.consecutivo || '';
-        const fecha = doc.fecha || '';
         html += `<div style="background:#fff; border-radius:6px; padding:8px 10px; margin-bottom:8px; border-left:4px solid #dc3545;">
                     <div style="font-weight:bold; color:#b02a37;">
-                        Documento #${idx + 1} — ${comp} · Consecutivo ${cons} · ${fecha}
-                    </div>`;
-
-        const errs = doc.errores || {};
-        Object.keys(errs).forEach(grupo => {
-            const detalle = errs[grupo];
-            if (Array.isArray(detalle)) {
-                detalle.forEach(m => {
-                    html += `<div style="margin-left:8px; color:#555;">• <b>${grupo}</b>: ${m}</div>`;
-                });
-            } else if (typeof detalle === 'object' && detalle !== null) {
-                Object.keys(detalle).forEach(campo => {
-                    const msg = Array.isArray(detalle[campo]) ? detalle[campo].join(' ') : detalle[campo];
-                    html += `<div style="margin-left:8px; color:#555;">• <b>${grupo}</b> → <i>${campo}</i>: ${msg}</div>`;
-                });
-            } else if (detalle) {
-                html += `<div style="margin-left:8px; color:#555;">• <b>${grupo}</b>: ${detalle}</div>`;
-            }
-        });
-        html += `</div>`;
+                        Documento #${idx + 1} — ${doc.comprobante || ''} · cons. ${doc.consecutivo || ''} · ${doc.fecha || ''}
+                    </div>
+                    <div style="margin-left:8px; color:#555;">${doc.detalle || ''}</div>
+                </div>`;
     });
+
+    if (data.truncado) {
+        html += `<p style="color:#666; font-size:12px;"><em>Se muestran solo ${errores.length} de ${data.total_errores} documentos con error.</em></p>`;
+    }
     html += `</div>`;
 
     // Si tienes SweetAlert, mostrar modal; si no, fallback al toast

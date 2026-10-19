@@ -190,6 +190,31 @@ class ProcessImportDocumentos implements ShouldQueue
                         // ── Revertir todo lo insertado ──
                         DB::connection('sam')->rollback();
 
+                        // ── Recortar el payload para que no exceda el límite de Pusher (10 KB) ──
+                        $erroresParaEnviar = [];
+                        $totalOriginal     = count($this->erroresDocumentos);
+
+                        foreach (array_slice($this->erroresDocumentos, 0, 3) as $err) {   // máx 3 documentos
+                            $detalle = [];
+                            foreach ($err['errores'] as $grupo => $mensajes) {
+                                if (is_array($mensajes)) {
+                                    foreach ($mensajes as $campo => $msg) {
+                                        $msg = mb_substr(strip_tags((string) $msg), 0, 150);
+                                        $detalle[] = "{$grupo} → {$campo}: {$msg}";
+                                    }
+                                } else {
+                                    $detalle[] = "{$grupo}: " . mb_substr(strip_tags((string) $mensajes), 0, 150);
+                                }
+                            }
+
+                            $erroresParaEnviar[] = [
+                                'comprobante' => $err['comprobante'],
+                                'consecutivo' => $err['consecutivo'],
+                                'fecha'       => $err['fecha'],
+                                'detalle'     => implode(' | ', array_slice($detalle, 0, 5)),  // máx 5 mensajes por doc
+                            ];
+                        }
+
                         // ── Avisar al frontend ──
                         event(new PrivateMessageEvent($canal, [
                             'name'      => 'progress',
@@ -200,7 +225,9 @@ class ProcessImportDocumentos implements ShouldQueue
                             'processed' => 0,
                             'total'     => $this->totalRecords,
                             'stage'     => 'completed_with_errors',
-                            'errores'   => $this->erroresDocumentos,
+                            'errores'   => $erroresParaEnviar,     // 👈 versión recortada
+                            'truncado'  => $totalOriginal > 3,      // 👈 flag por si quieres avisar
+                            'total_errores' => $totalOriginal,
                         ]));
 
                         return;

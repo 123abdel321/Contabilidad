@@ -444,19 +444,57 @@ function includeJs(id){
     moduloCreado[id] = true;
 }
 
-function seleccionarView(id, nombre = 'Inicio', idPadre){
-
+function seleccionarView(id, nombre = 'Inicio', idPadre) {
     $(".dtfh-floatingparent").remove();
     $('.change-view').removeClass("active");
     $('.seleccionar-view').removeClass("active");
-    $('.nav-link nav-padre').removeClass("active");
+    $('.nav-link.nav-padre').removeClass("active");
     $('.button-side-nav').removeClass("active");
-    $('#containner-'+id).addClass("active");
-    $('#tab-'+id).addClass("active");
-    $('#sidenav_'+id).addClass("active");
-    // $('#nav_'+idPadre).addClass("active");
+
+    $('#containner-' + id).addClass("active");
+    $('#tab-' + id).addClass("active");
+
+    // ✅ Submenú activo
+    const $submenu = $('#sidenav_' + id);
+    $submenu.addClass("active");
+
+    // ✅ Padre activo (auto-detectado)
+    const idPadreFinal = idPadre || $submenu.closest('li.nav-item').find('.nav-padre').attr('id')?.replace('nav_', '');
+    
+    if (idPadreFinal) {
+        const $padre = $('#nav_' + idPadreFinal);
+        $padre.addClass("active").removeClass("collapsed");
+        $padre.attr('aria-expanded', 'true');
+
+        const $collapse = $('#collapse' + idPadreFinal);
+        if ($collapse.length) {
+            // Si usas Bootstrap 5 collapse
+            if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                const instance = bootstrap.Collapse.getOrCreateInstance($collapse[0], { toggle: false });
+                instance.show();
+            } else {
+                $collapse.addClass('show');
+            }
+        }
+    }
 
     $("#titulo-view").text(nombre);
+
+    // Auto-scroll al tab activo (lo que ya tenías)
+    var $tab = $('#lista_view_' + id);
+    if ($tab.length) {
+        var $nav = $('#footer-navigation');
+        var tabLeft = $tab.position().left;
+        var tabWidth = $tab.outerWidth();
+        var navScroll = $nav.scrollLeft();
+        var navWidth = $nav.width();
+
+        if (tabLeft < navScroll || (tabLeft + tabWidth) > (navScroll + navWidth)) {
+            $nav.animate({
+                scrollLeft: tabLeft - (navWidth / 2) + (tabWidth / 2)
+            }, 200);
+        }
+    }
 }
 
 function generateNewTabView(id){
@@ -974,16 +1012,20 @@ function numberWithCommas(x) {
 
 function selectMenu(menu) {
     var nombre = '';
+    var icono  = '';
     var tipoMenu = '';
 
     if (menu == 'facturacion') {
         nombre = 'Facturación';
+        icono  = 'fas fa-file-invoice-dollar';
         tipoMenu = 2;
     } else if (menu == 'contabilidad') {
         nombre = 'Contabilidad';
+        icono  = 'fas fa-calculator';
         tipoMenu = 1;
     } else if (menu == 'nomina') {
         nombre = 'Nomina';
+        icono  = 'fas fa-users';
         tipoMenu = 3;
     }
 
@@ -1007,7 +1049,9 @@ function selectMenu(menu) {
         }
     }
     localStorage.setItem("item_active_menu", menu);
-    $('#dropdownTiposMenu').text(nombre);
+
+    // 👇 Renderiza icono + texto en el botón
+    $('#dropdownTiposMenu').html(`<i class="${icono} me-1"></i>${nombre}`);
 }
 
 function showAllMenus() {
