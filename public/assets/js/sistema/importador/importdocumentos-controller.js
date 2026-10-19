@@ -188,7 +188,12 @@ channelImportDocumentos.bind('notificaciones', function(data) {
                 .addClass('bg-danger');
 
             // Renderizar errores
-            mostrarErroresImportacionDocumentos(data.errores || [], data.mensaje);
+            mostrarErroresImportacionDocumentos(
+                data.errores || [],
+                data.mensaje,
+                data.truncado || false,
+                data.total_errores || 0
+            );
 
             // Restaurar botones
             $('#cargarPlantillaDocumentos').show();
@@ -252,16 +257,15 @@ channelImportDocumentos.bind('notificaciones', function(data) {
     }
 });
 
-function mostrarErroresImportacionDocumentos(errores, mensajeGeneral) {
+function mostrarErroresImportacionDocumentos(errores, mensajeGeneral, truncado, totalErrores) {
     if (!errores || !errores.length) {
         agregarToast('error', 'Carga con errores', mensajeGeneral || 'Se encontraron errores.', true);
         return;
     }
 
-    // Construir HTML de detalle
     let html = `<div style="font-size: 13px; text-align:left;">
                   <p style="margin-bottom: 10px;"><strong>${mensajeGeneral || ''}</strong></p>
-                  <p style="margin-bottom: 10px;">Documentos con errores: <b>${errores.length}</b></p>`;
+                  <p style="margin-bottom: 10px;">Documentos con errores: <b>${totalErrores || errores.length}</b></p>`;
 
     errores.forEach((doc, idx) => {
         html += `<div style="background:#fff; border-radius:6px; padding:8px 10px; margin-bottom:8px; border-left:4px solid #dc3545;">
@@ -272,12 +276,11 @@ function mostrarErroresImportacionDocumentos(errores, mensajeGeneral) {
                 </div>`;
     });
 
-    if (data.truncado) {
-        html += `<p style="color:#666; font-size:12px;"><em>Se muestran solo ${errores.length} de ${data.total_errores} documentos con error.</em></p>`;
+    if (truncado) {
+        html += `<p style="color:#666; font-size:12px;"><em>Se muestran solo ${errores.length} de ${totalErrores} documentos con error.</em></p>`;
     }
     html += `</div>`;
 
-    // Si tienes SweetAlert, mostrar modal; si no, fallback al toast
     if (typeof Swal !== 'undefined') {
         Swal.fire({
             title: 'Errores en la importación',
@@ -296,12 +299,11 @@ function mostrarErroresImportacionDocumentos(errores, mensajeGeneral) {
             }
         });
     } else {
-        // Fallback: al menos avisar al usuario
         console.error('Errores de importación:', errores);
         agregarToast(
             'error',
             'Carga con errores',
-            `${errores.length} documento(s) con errores. Revisa la consola para el detalle.`,
+            `${totalErrores || errores.length} documento(s) con errores. Revisa la consola para el detalle.`,
             true
         );
     }
