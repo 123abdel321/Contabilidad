@@ -197,21 +197,14 @@ class ProcessImportDocumentos implements ShouldQueue
                         $totalOriginal     = count($this->erroresDocumentos);
 
                         foreach (array_slice($this->erroresDocumentos, 0, 3) as $err) {
-                            // Convertir los errores (puede haber HTML del descuadre) a texto legible
                             $detalle = [];
                             foreach ($err['errores'] as $grupo => $mensajes) {
                                 if (is_array($mensajes)) {
                                     foreach ($mensajes as $campo => $msg) {
-                                        // Si el mensaje tiene HTML (tabla del descuadre), limpiamos
-                                        $msg = strip_tags((string) $msg);
-                                        $msg = preg_replace('/\s+/', ' ', $msg);       // colapsar espacios
-                                        $msg = trim(mb_substr($msg, 0, 300));
-                                        $detalle[] = $msg;
+                                        $detalle[] = $this->htmlATextoPlano((string) $msg);   // 👈
                                     }
                                 } else {
-                                    $msg = strip_tags((string) $mensajes);
-                                    $msg = preg_replace('/\s+/', ' ', $msg);
-                                    $detalle[] = trim(mb_substr($msg, 0, 300));
+                                    $detalle[] = $this->htmlATextoPlano((string) $mensajes); // 👈
                                 }
                             }
 
@@ -221,7 +214,7 @@ class ProcessImportDocumentos implements ShouldQueue
                                 'comprobante'          => $err['comprobante'],
                                 'consecutivo'          => $err['consecutivo'],
                                 'fecha'                => $err['fecha'],
-                                'detalle'              => implode(' • ', array_slice($detalle, 0, 3)),  // máx 3 mensajes
+                                'detalle'              => implode(' • ', array_slice($detalle, 0, 3)),
                             ];
                         }
 
@@ -370,5 +363,27 @@ class ProcessImportDocumentos implements ShouldQueue
         }
 
         return $randomString;
+    }
+
+    private function htmlATextoPlano(string $html): string
+    {
+        // 1) Convertir tags "de bloque" en saltos de línea / separadores
+        $html = preg_replace('/<\/?(div|p|tr|li|h[1-6])[^>]*>/i', ' | ', $html);
+        $html = preg_replace('/<\/?(td|th)[^>]*>/i', ' - ', $html);
+        $html = preg_replace('/<br\s*\/?>/i', ' | ', $html);
+
+        // 2) Ahora sí, quitar cualquier tag restante
+        $texto = strip_tags($html);
+
+        // 3) Decodificar entidades (&nbsp;, &aacute;, etc.)
+        $texto = html_entity_decode($texto, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // 4) Colapsar separadores repetidos y espacios
+        $texto = preg_replace('/\s*\|\s*(\|\s*)+/', ' | ', $texto);   // múltiples " | "
+        $texto = preg_replace('/\s*-\s*(-\s*)+/', ' - ', $texto);     // múltiples " - "
+        $texto = preg_replace('/\s+/', ' ', $texto);
+        $texto = trim($texto, " |-\t\n\r\0\x0B");
+
+        return $texto;
     }
 }
