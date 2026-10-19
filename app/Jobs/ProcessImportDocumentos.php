@@ -179,54 +179,64 @@ class ProcessImportDocumentos implements ShouldQueue
                     }
 
                     if (!$documentoGeneral->save()) {
+
                         // ── Recolectar el error del documento ──
                         $this->erroresDocumentos[] = [
-                            'comprobante' => $documentoImportado[0]->codigo_comprobante,
-                            'consecutivo' => $documentoImportado[0]->consecutivo,
-                            'fecha'       => $documentoImportado[0]->fecha_manual,
-                            'errores'     => $documentoGeneral->getErrors(),
+                            'comprobante'          => $documentoImportado[0]->codigo_comprobante,
+                            'consecutivo'          => $documentoImportado[0]->consecutivo,
+                            'fecha'                => $documentoImportado[0]->fecha_manual,
+                            'nit'                  => $documentoImportado[0]->documento_nit,
+                            'documento_referencia' => $documentoImportado[0]->documento_referencia,
+                            'errores'              => $documentoGeneral->getErrors(),
                         ];
 
-                        // ── Revertir todo lo insertado ──
                         DB::connection('sam')->rollback();
 
-                        // ── Recortar el payload para que no exceda el límite de Pusher (10 KB) ──
+                        // ── Recortar el payload para no exceder el límite de Pusher (10 KB) ──
                         $erroresParaEnviar = [];
                         $totalOriginal     = count($this->erroresDocumentos);
 
-                        foreach (array_slice($this->erroresDocumentos, 0, 3) as $err) {   // máx 3 documentos
+                        foreach (array_slice($this->erroresDocumentos, 0, 3) as $err) {
+                            // Convertir los errores (puede haber HTML del descuadre) a texto legible
                             $detalle = [];
                             foreach ($err['errores'] as $grupo => $mensajes) {
                                 if (is_array($mensajes)) {
                                     foreach ($mensajes as $campo => $msg) {
-                                        $msg = mb_substr(strip_tags((string) $msg), 0, 150);
-                                        $detalle[] = "{$grupo} → {$campo}: {$msg}";
+                                        // Si el mensaje tiene HTML (tabla del descuadre), limpiamos
+                                        $msg = strip_tags((string) $msg);
+                                        $msg = preg_replace('/\s+/', ' ', $msg);       // colapsar espacios
+                                        $msg = trim(mb_substr($msg, 0, 300));
+                                        $detalle[] = $msg;
                                     }
                                 } else {
-                                    $detalle[] = "{$grupo}: " . mb_substr(strip_tags((string) $mensajes), 0, 150);
+                                    $msg = strip_tags((string) $mensajes);
+                                    $msg = preg_replace('/\s+/', ' ', $msg);
+                                    $detalle[] = trim(mb_substr($msg, 0, 300));
                                 }
                             }
 
                             $erroresParaEnviar[] = [
-                                'comprobante' => $err['comprobante'],
-                                'consecutivo' => $err['consecutivo'],
-                                'fecha'       => $err['fecha'],
-                                'detalle'     => implode(' | ', array_slice($detalle, 0, 5)),  // máx 5 mensajes por doc
+                                'nit'                  => $err['nit'],
+                                'documento_referencia' => $err['documento_referencia'],
+                                'comprobante'          => $err['comprobante'],
+                                'consecutivo'          => $err['consecutivo'],
+                                'fecha'                => $err['fecha'],
+                                'detalle'              => implode(' • ', array_slice($detalle, 0, 3)),  // máx 3 mensajes
                             ];
                         }
 
                         // ── Avisar al frontend ──
                         event(new PrivateMessageEvent($canal, [
-                            'name'      => 'progress',
-                            'tipo'      => 'error',
-                            'mensaje'   => 'La importación fue cancelada por errores de validación.',
-                            'titulo'    => 'Carga de documentos',
-                            'progress'  => 0,
-                            'processed' => 0,
-                            'total'     => $this->totalRecords,
-                            'stage'     => 'completed_with_errors',
-                            'errores'   => $erroresParaEnviar,     // 👈 versión recortada
-                            'truncado'  => $totalOriginal > 3,      // 👈 flag por si quieres avisar
+                            'name'          => 'progress',
+                            'tipo'          => 'error',
+                            'mensaje'       => 'La importación fue cancelada por errores de validación.',
+                            'titulo'        => 'Carga de documentos',
+                            'progress'      => 0,
+                            'processed'     => 0,
+                            'total'         => $this->totalRecords,
+                            'stage'         => 'completed_with_errors',
+                            'errores'       => $erroresParaEnviar,
+                            'truncado'      => $totalOriginal > 3,
                             'total_errores' => $totalOriginal,
                         ]));
 

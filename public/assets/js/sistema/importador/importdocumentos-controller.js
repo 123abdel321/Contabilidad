@@ -264,20 +264,49 @@ function mostrarErroresImportacionDocumentos(errores, mensajeGeneral, truncado, 
     }
 
     let html = `<div style="font-size: 13px; text-align:left;">
-                  <p style="margin-bottom: 10px;"><strong>${mensajeGeneral || ''}</strong></p>
-                  <p style="margin-bottom: 10px;">Documentos con errores: <b>${totalErrores || errores.length}</b></p>`;
+                  <p style="margin-bottom: 12px; padding: 8px 10px; background:#fff3cd; border-left:4px solid #ffc107; border-radius:4px;">
+                    <strong>${mensajeGeneral || ''}</strong>
+                  </p>
+                  <p style="margin-bottom: 12px;">
+                    Documentos con errores: <b>${totalErrores || errores.length}</b>
+                  </p>`;
 
     errores.forEach((doc, idx) => {
-        html += `<div style="background:#fff; border-radius:6px; padding:8px 10px; margin-bottom:8px; border-left:4px solid #dc3545;">
-                    <div style="font-weight:bold; color:#b02a37;">
-                        Documento #${idx + 1} — ${doc.comprobante || ''} · cons. ${doc.consecutivo || ''} · ${doc.fecha || ''}
+        html += `<div style="background:#fff; border-radius:6px; padding:10px 12px; margin-bottom:10px; border-left:4px solid #dc3545; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+
+                    <div style="font-weight:bold; color:#b02a37; margin-bottom:6px; font-size:13px;">
+                        Documento #${idx + 1}
                     </div>
-                    <div style="margin-left:8px; color:#555;">${doc.detalle || ''}</div>
+
+                    <table style="width:100%; font-size:12px; border-collapse:collapse; margin-bottom:8px;">
+                        <tr>
+                            <td style="padding:2px 6px; color:#888; width:130px;">NIT:</td>
+                            <td style="padding:2px 6px; font-weight:bold;">${doc.nit || '—'}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2px 6px; color:#888;">Documento ref.:</td>
+                            <td style="padding:2px 6px;">${doc.documento_referencia || '—'}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2px 6px; color:#888;">Comprobante:</td>
+                            <td style="padding:2px 6px;">${doc.comprobante || '—'} <span style="color:#888;">(cons. ${doc.consecutivo || '—'})</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:2px 6px; color:#888;">Fecha:</td>
+                            <td style="padding:2px 6px;">${doc.fecha || '—'}</td>
+                        </tr>
+                    </table>
+
+                    <div style="background:#f8d7da; border-radius:4px; padding:8px 10px; font-size:12px; color:#721c24;">
+                        <b>Error:</b> ${doc.detalle || ''}
+                    </div>
                 </div>`;
     });
 
     if (truncado) {
-        html += `<p style="color:#666; font-size:12px;"><em>Se muestran solo ${errores.length} de ${totalErrores} documentos con error.</em></p>`;
+        html += `<p style="color:#666; font-size:12px; text-align:center; margin-top:12px;">
+                    <em>Se muestran solo ${errores.length} de ${totalErrores} documentos con error.</em>
+                 </p>`;
     }
     html += `</div>`;
 
@@ -286,15 +315,16 @@ function mostrarErroresImportacionDocumentos(errores, mensajeGeneral, truncado, 
             title: 'Errores en la importación',
             html: html,
             icon: 'error',
-            width: 700,
+            width: 750,
             showCancelButton: false,
             confirmButtonText: 'Entendido',
             didOpen: () => {
                 const htmlContainer = document.querySelector('.swal2-html-container');
                 if (htmlContainer) {
-                    htmlContainer.style.maxHeight = '60vh';
+                    htmlContainer.style.maxHeight = '65vh';
                     htmlContainer.style.overflowY = 'auto';
                     htmlContainer.style.textAlign = 'left';
+                    htmlContainer.style.padding = '10px 15px';
                 }
             }
         });
@@ -303,7 +333,7 @@ function mostrarErroresImportacionDocumentos(errores, mensajeGeneral, truncado, 
         agregarToast(
             'error',
             'Carga con errores',
-            `${totalErrores || errores.length} documento(s) con errores. Revisa la consola para el detalle.`,
+            `${totalErrores || errores.length} documento(s) con errores. Revisa la consola.`,
             true
         );
     }
