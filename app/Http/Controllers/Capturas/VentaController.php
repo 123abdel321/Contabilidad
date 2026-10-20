@@ -1051,7 +1051,14 @@ class VentaController extends Controller
 
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
-            $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->saveStorage();
+            $claveUrl = $this->generarClavePDF(
+                $empresa->id,
+                $venta->comprobante->id,
+                $venta->consecutivo,
+                $venta->fecha_manual
+            );
+
+            $pdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
             $email = $request->get('email') ?? $venta->cliente->email;
             
             $this->sendEmailFactura(
