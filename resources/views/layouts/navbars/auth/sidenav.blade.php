@@ -125,8 +125,8 @@
                                     <a class="nav-link button-side-nav"
                                     id="sidenav_{{ $item->url }}"
                                     onclick="openNewItem('{{ $item->url }}', '{{ $item->nombre }}', '{{ $item->icon }}', '{{ $menu[0]->padre->id }}')"
-                                    style="margin-left: 20px; display: flex; align-items: center;">
-                                        <i class="{{ $item->icon }} text-sm me-2" style="color: #0ce0ff !important; font-size: 0.8rem;"></i>
+                                    style="margin-left: 10px; display: flex; align-items: center;">
+                                        <i class="{{ $item->icon }} text-sm me-2" style="color: #0ce0ff !important; font-size: 0.8rem; margin-right: 0px !important;"></i>
                                         <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
                                     </a>
                                 </li>
