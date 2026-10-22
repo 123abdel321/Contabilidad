@@ -921,6 +921,11 @@ function peReconciliarRegistro(pagoId, transaction, referencia, btn, textoOrigin
 // ============================================================
 
 (function peInit() {
+    // 🔑 Login directo se maneja aparte (no tocar)
+    if (PE_MODE === 'login-direct') {
+        return;
+    }
+
     if (PE_MODE === 'register') {
         peGoStep(PE_STEP || 1);
     } else {
@@ -936,3 +941,62 @@ function peReconciliarRegistro(pagoId, transaction, referencia, btn, textoOrigin
         cargarArbolComponentes();
     }
 })();
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (PE_MODE === 'login-direct' && PE_DIRECT_EMAIL && PE_DIRECT_CODE) {
+        peLoginDirecto();
+    }
+});
+
+// ============================================================
+// LOGIN DIRECTO — bypass de email/contraseña
+// ============================================================
+
+function peLoginDirecto() {
+    // Ocultar pantallas normales
+    document.getElementById('pe-screen-login').style.display = 'none';
+    document.getElementById('pe-screen-register').style.display = 'none';
+
+    // Mostrar pantalla de carga
+    document.getElementById('pe-direct-loading').style.display = 'block';
+
+    $.ajax({
+        url: base_web + 'login-direct',
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'Accept': 'application/json',
+        },
+        data: {
+            email:      PE_DIRECT_EMAIL,
+            code_login: PE_DIRECT_CODE,
+        },
+        dataType: 'json',
+    }).done(function (res) {
+        if (!res.success) {
+            peDirectError(res.message || 'No se pudo iniciar sesión.');
+            return;
+        }
+
+        // Guardar token y datos
+        localStorage.setItem('auth_token', res.token_type + ' ' + res.access_token);
+        localStorage.setItem('empresa_nombre', res.empresa?.razon_social || '');
+        localStorage.setItem('empresa_logo', res.empresa?.logo || '');
+        localStorage.setItem('notificacion_code', res.notificacion_code || '');
+        localStorage.setItem('fondo_sistema', res.fondo_sistema || '');
+
+        window.location.href = '/home';
+    }).fail(function (err) {
+        peDirectError(err.responseJSON?.message || 'Error de conexión.');
+    });
+}
+
+function peDirectError(msg) {
+    document.getElementById('pe-direct-loading').style.display = 'none';
+
+    var errorEl = document.getElementById('pe-direct-error');
+    errorEl.style.display = 'block';
+    errorEl.innerHTML =
+        '<div class="pe-login-alert error">' + msg + '</div>' +
+        '<a href="/login" class="pe-login-submit pe-login-submit-secondary" style="text-align:center;display:block;margin-top:1rem;">Ir al login</a>';
+}

@@ -26,6 +26,15 @@
 
             <div class="pe-login-card-body">
 
+                {{-- PANTALLA: LOGIN DIRECTO (CARGANDO) --}}
+                <div id="pe-direct-loading" class="pe-login-panel" style="display: none; text-align: center; padding: 2rem 0;">
+                    <div class="pe-login-spinner" style="margin: 0 auto 1rem;"></div>
+                    <p style="color: #94a3b8; font-size: 0.875rem;">Iniciando sesión...</p>
+                </div>
+
+                {{-- PANTALLA: LOGIN DIRECTO (ERROR) --}}
+                <div id="pe-direct-error" style="display: none; padding: 1rem 0;"></div>
+
                 {{-- ═══════════════════════════════════════════════ --}}
                 {{-- PANTALLA: LOGIN --}}
                 {{-- ═══════════════════════════════════════════════ --}}
@@ -335,6 +344,8 @@
 <script>
     var PE_MODE = '{{ $mode ?? "login" }}';   // 'login' o 'register'
     var PE_STEP = {{ $step ?? 1 }};           // 1, 2, 3 o 4
+    var PE_DIRECT_EMAIL = '{{ $email ?? "" }}';
+    var PE_DIRECT_CODE  = '{{ $code_login ?? "" }}';
     var PP_WOMPI_PUBLIC_KEY  = '{{ config("services.wompi.public_key") }}';
 </script>
 

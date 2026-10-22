@@ -178,8 +178,9 @@ class LoginController extends Controller
     public function loginDirectoGet(Request $request)
     {
         return view('auth.login', [
-            'email' => $request->get('email'),
-            'about' => $request->get('code_login')
+            'mode'       => 'login-direct',
+            'email'      => $request->get('email'),
+            'code_login' => $request->get('code_login'),
         ]);
     }
 
@@ -240,7 +241,7 @@ class LoginController extends Controller
                 $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
                 $user->id_empresa = $empresaSelect->id;
                 $user->has_empresa = $empresaSelect->token_db;
-                $user->about = '';
+                // $user->about = '';
                 $user->save();
 
                 $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', $user->id)
