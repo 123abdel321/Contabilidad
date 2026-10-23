@@ -13,7 +13,7 @@ function ventasInit() {
 function cargarTablasVentas() {
     var newLenguaje = lenguajeDatatable;
     newLenguaje.sInfo = "Ventas del _START_ al _END_ de un total de _TOTAL_ ";
-    
+
     ventas_table = $('#VentasInformeTable').DataTable({
         pageLength: 20,
         dom: 'Brtip',
@@ -21,126 +21,142 @@ function cargarTablasVentas() {
         responsive: false,
         processing: true,
         serverSide: true,
-        fixedHeader: true,
+        fixedHeader: false,          // ⬅ sin scrollY no aporta, sí agrega wrapper
         deferLoading: 0,
         initialLoad: false,
         ordering: false,
         language: lenguajeDatatable,
-        sScrollX: "100%",
-        fixedColumns : {
+        scrollX: "100%",             // ⬅ sintaxis moderna (equivale a sScrollX)
+        autoWidth: false,
+        fixedColumns: {
             left: 0,
-            right : 1,
+            right: 1,
         },
-        'rowCallback': function(row, data, index){
-            if (data.detalle == '') {
-                $('td', row).css('background-color', 'rgb(51, 132, 158)');
-                $('td', row).css('font-weight', 'bold');
-                $('td', row).css('color', 'white');
-                return;
+
+        // ⬇️ rowCallback corregido (boolean estricto + celdas vacías)
+        rowCallback: function (row, data) {
+            if (data.detalle === true) {
+                $(row).addClass('venta-detalle');
+            } else {
+                $(row).addClass('venta-factura');
             }
+
+            // Marcar celdas sin contenido para que no aporten altura
+            $('td', row).each(function () {
+                var $td = $(this);
+                var hasContent = $td.text().trim() !== ''
+                    || $td.find('.btn, .button-user, i, span').length > 0;
+                if (!hasContent) {
+                    $td.addClass('td-empty');
+                }
+            });
         },
-        ajax:  {
+
+        ajax: {
             type: "GET",
             headers: headers,
             url: base_url + 'ventas',
-            data: function ( d ) {
-                d.id_cliente = $('#id_cliente_ventas').val();
-                d.fecha_desde = $('#fecha_manual_ventas').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
-                d.fecha_hasta = $('#fecha_manual_ventas').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
-                d.factura = $('#factura_ventas').val();
-                d.id_resolucion = $('#id_resolucion_ventas').val();
-                d.id_bodega = $('#id_bodega_ventas').val();
-                d.id_producto = $('#id_producto_ventas').val();
-                d.id_usuario = $('#id_usuario_ventas').val();
-                d.id_forma_pago = $('#id_forma_pago_ventas').val();
-                d.detallar_venta = $("input[type='radio']#detallar_venta1").is(':checked') ? 'si' : 'no';
+            data: function (d) {
+                d.id_cliente      = $('#id_cliente_ventas').val();
+                d.fecha_desde     = $('#fecha_manual_ventas').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+                d.fecha_hasta     = $('#fecha_manual_ventas').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
+                d.factura         = $('#factura_ventas').val();
+                d.id_resolucion   = $('#id_resolucion_ventas').val();
+                d.id_bodega       = $('#id_bodega_ventas').val();
+                d.id_producto     = $('#id_producto_ventas').val();
+                d.id_usuario      = $('#id_usuario_ventas').val();
+                d.id_forma_pago   = $('#id_forma_pago_ventas').val();
+                d.detallar_venta  = $('#detallar_venta1').is(':checked') ? 'si' : 'no';
             }
         },
+
         columns: [
-            {"data": "documento_referencia"},
+            {"data": "documento_referencia", className: 'nowrap'},
             {"data": "nombre_completo"},
-            {"data": "nombre_bodega"},
-            {"data": "fecha_manual"},
+            {"data": "nombre_bodega", className: 'nowrap'},
+            {"data": "fecha_manual", className: 'nowrap'},
             {"data": "descripcion"},
-            {"data": "cantidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data": "costo", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data": "valor", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data": "subtotal", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "cantidad",  render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "costo",     render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "valor",     render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "subtotal",  render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "iva_porcentaje", className: 'dt-body-right'},
             {"data": "total_iva", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "descuento_porcentaje", className: 'dt-body-right'},
-            {"data": "total_descuento", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "total_descuento",  render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "total_rete_fuente", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data": "total_factura", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data": "nombre_vendedor"},
-            {"data": function (row, type, set){
-                if (row.detalle) {
-                    return row.valor - row.costo;
-                }
-            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data": function (row, type, set){
-                if (row.valor) {
-                    if (!parseInt(row.costo)) {
-                        return 100;
-                    }
-                    return ((row.valor - row.costo) / row.costo) * 100;
-                }
-            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data": function (row, type, set){
-                if (row.valor) {
-                    if (!parseInt(row.costo)) {
-                        return 100;
-                    }
-                    return ((row.valor - row.costo) / row.valor) * 100;
-                }
-            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data": function (row, type, set){  
-                var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
-                if(!row.created_by && !row.fecha_creacion) return '';
-                if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
-                return html;
-            }},
-            {"data": function (row, type, set){
-                var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(!row.updated_by && !row.fecha_edicion) return '';
-                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
-                return html;
-            }},
-            {
-                "data": function (row, type, set){
-                    var html = '';
-                    if (row.id) {
-                        html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info imprimir-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px;">PDF &nbsp;<i class="fas fa-print"></i></span>';
-                        if (eliminarVentas && !row.fe_codigo_identificador) {
-                            html+= '<span id="eliminarventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger eliminar-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px;">ELIMINAR &nbsp;<i class="fa-solid fa-trash-can"></i></span>';
-                            html+= '<span id="eliminarventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>ELIMINANDO &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
-                        }
-                    }
-                    
-                    if (row.resolucion && !row.fe_codigo_identificador){
-                        html+= '<span id="enviarfeventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-fe-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px;">Enviar FE &nbsp;<i class="fas fa-share"></i></span>';
-                        html+= '<span id="enviarfeventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
-                    } else if (row.factura && row.factura.resolucion && !row.fe_codigo_identificador) {
-                        html+= '<span id="enviarnceventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-nce-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Enviar NCE &nbsp;<i class="fas fa-share"></i></span>';
-                        html+= '<span id="enviarnceventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
-                    }
+            {"data": "total_factura",     render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "nombre_vendedor", className: 'nowrap'},
 
-                    if (row.resolucion && row.fe_codigo_identificador) {
-                        html+= '<span id="reenviaremail_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success reenviar-email-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px;">REENVIAR &nbsp;<i class="fas fa-envelope"></i></span>&nbsp;';
-                        html+= '<span id="reenviaremailloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>&nbsp;';
-                    } else if (row.id && enviarEmailVentas){
-                        html+= '<span id="enviaremail_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success enviar-email-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">ENVIAR &nbsp;<i class="fas fa-envelope"></i></span>&nbsp;';
-                        html+= '<span id="enviaremailloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>&nbsp;';
-                    }
-                    return html;
+            // Utilidad valor (solo filas detalle)
+            {"data": function (row) {
+                if (row.detalle === true) return row.valor - row.costo;
+                return '';
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+
+            // Util. Costo %
+            {"data": function (row) {
+                if (row.detalle !== true) return '';
+                if (!parseInt(row.costo)) return 100;
+                return ((row.valor - row.costo) / row.costo) * 100;
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+
+            // Util. Venta %
+            {"data": function (row) {
+                if (row.detalle !== true) return '';
+                if (!parseInt(row.costo)) return 100;
+                return ((row.valor - row.costo) / row.valor) * 100;
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+
+            // Creación registro
+            {"data": function (row) {
+                if (!row.fecha_creacion) return '';
+                if (!row.created_by) {
+                    return '<div class="button-user"><i class="fas fa-user-times icon-user-none"></i>&nbsp;' + row.fecha_creacion + '</div>';
                 }
-            }
-    
+                return '<div class="button-user" onclick="showUser(' + row.created_by + ',\`' + row.fecha_creacion + '\`,0)"><i class="fas fa-user icon-user"></i>&nbsp;' + row.fecha_creacion + '</div>';
+            }, className: 'cell-date'},
+
+            // Última actualización
+            {"data": function (row) {
+                if (!row.fecha_edicion) return '';
+                if (!row.updated_by) {
+                    return '<div class="button-user"><i class="fas fa-user-times icon-user-none"></i>&nbsp;' + row.fecha_edicion + '</div>';
+                }
+                return '<div class="button-user" onclick="showUser(' + row.updated_by + ',\`' + row.fecha_edicion + '\`,0)"><i class="fas fa-user icon-user"></i>&nbsp;' + row.fecha_edicion + '</div>';
+            }, className: 'cell-date'},
+
+            // Acciones
+            {"data": function (row) {
+                var html = '';
+                if (row.id) {
+                    html += '<span id="imprimirventa_' + row.id + '" class="btn badge bg-gradient-info imprimir-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;">PDF &nbsp;<i class="fas fa-print"></i></span>';
+                    if (eliminarVentas && !row.fe_codigo_identificador) {
+                        html += '<span id="eliminarventa_' + row.id + '" class="btn badge bg-gradient-danger eliminar-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;">ELIMINAR &nbsp;<i class="fa-solid fa-trash-can"></i></span>';
+                        html += '<span id="eliminarventaloading_' + row.id + '" class="btn badge bg-gradient-danger" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>ELIMINANDO &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                    }
+                }
+                if (row.resolucion && !row.fe_codigo_identificador) {
+                    html += '<span id="enviarfeventa_' + row.id + '" class="btn badge bg-gradient-primary enviar-fe-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;">Enviar FE &nbsp;<i class="fas fa-share"></i></span>';
+                    html += '<span id="enviarfeventaloading_' + row.id + '" class="btn badge bg-gradient-primary" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                } else if (row.factura && row.factura.resolucion && !row.fe_codigo_identificador) {
+                    html += '<span id="enviarnceventa_' + row.id + '" class="btn badge bg-gradient-primary enviar-nce-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;">Enviar NCE &nbsp;<i class="fas fa-share"></i></span>';
+                    html += '<span id="enviarnceventaloading_' + row.id + '" class="btn badge bg-gradient-primary" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                }
+                if (row.resolucion && row.fe_codigo_identificador) {
+                    html += '<span id="reenviaremail_' + row.id + '" class="btn badge bg-gradient-success reenviar-email-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;">REENVIAR &nbsp;<i class="fas fa-envelope"></i></span>';
+                    html += '<span id="reenviaremailloading_' + row.id + '" class="btn badge bg-gradient-success" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                } else if (row.id && enviarEmailVentas) {
+                    html += '<span id="enviaremail_' + row.id + '" class="btn badge bg-gradient-success enviar-email-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;">ENVIAR &nbsp;<i class="fas fa-envelope"></i></span>';
+                    html += '<span id="enviaremailloading_' + row.id + '" class="btn badge bg-gradient-success" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                }
+                return html;
+            }, className: 'cell-actions'}
         ]
     });
 
     if (ventas_table) {
-        ventas_table.on('click', '.enviar-email-venta', function() {
+        ventas_table.on('click', '.enviar-email-venta', function () {
             var id = this.id.split('_')[1];
             var data = getDataById(id, ventas_table);
 
@@ -148,60 +164,41 @@ function cargarTablasVentas() {
                 title: "Enviar factura al email : ",
                 input: "text",
                 inputValue: data.email_cliente ? data.email_cliente : '',
-                inputAttributes: {
-                    autocapitalize: "off",
-                },
+                inputAttributes: { autocapitalize: "off" },
                 showCancelButton: true,
                 confirmButtonText: "Enviar",
                 showLoaderOnConfirm: true,
                 preConfirm: async (email) => {
-                    $("#enviaremail_"+id).hide();
-                    $("#enviaremailloading_"+id).show();
+                    $("#enviaremail_" + id).hide();
+                    $("#enviaremailloading_" + id).show();
                     $.ajax({
                         url: base_url + 'ventas-email',
                         method: 'POST',
-                        data: JSON.stringify({
-                            id_venta: id,
-                            email: email
-                        }),
+                        data: JSON.stringify({ id_venta: id, email: email }),
                         headers: headers,
                         dataType: 'json',
-                    }).done((res) => {
-                        $("#enviaremail_"+id).show();
-                        $("#enviaremailloading_"+id).hide();
-
+                    }).done(() => {
+                        $("#enviaremail_" + id).show();
+                        $("#enviaremailloading_" + id).hide();
                         agregarToast('exito', 'Envio de email exito', 'el email se ha enviado exitosamente!');
-
                     }).fail((err) => {
-                        $("#enviaremail_"+id).show();
-                        $("#enviaremailloading_"+id).hide();
-                        
+                        $("#enviaremail_" + id).show();
+                        $("#enviaremailloading_" + id).hide();
                         const mensajes = err.responseJSON.message;
-                        let errorsMsg = '';
-                        let countError = 0;
-
+                        let errorsMsg = '', countError = 0;
                         if (typeof mensajes === 'string') {
                             agregarToast('error', 'Envio de email errado', mensajes);
                             return;
                         }
-
-                        mensajes.forEach(mensaje => {
-                            countError++;
-                            errorsMsg+='<b>'+countError+'-</b> '+mensaje+'<br/>';
-                        });
-
+                        mensajes.forEach(m => { countError++; errorsMsg += '<b>' + countError + '-</b> ' + m + '<br/>'; });
                         agregarToast('error', 'Envio de email errado', errorsMsg);
                     });
                 },
                 allowOutsideClick: () => !Swal.isLoading()
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log('result: ',result);
-                }
             });
         });
     }
-    
+
     ventas_table.ajax.reload(function (res) {
         showTotalsVentas(res);
     });

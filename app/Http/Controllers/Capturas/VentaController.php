@@ -563,129 +563,56 @@ class VentaController extends Controller
 
     public function generate(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        $draw       = $request->get('draw');
+        $start      = (int) $request->get("start", 0);
+        $rowperpage = (int) $request->get("length", 20);
+        $rowperpage = $rowperpage > 0 ? min($rowperpage, 500) : 20;
+        $detallar   = $request->get('detallar_venta') === 'si';
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        $baseQuery = $this->buildVentasQuery($request);
 
-        $searchValue = $search_arr['value']; // Search value
+        $totalRecords = (clone $baseQuery)->count();
 
-		$ventas = FacVentas::orderBy('id', 'DESC')
-            ->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')])
-            ->with(
-                'resolucion',
-                'bodega',
-                'cliente',
-                'comprobante',
-                'detalles.producto',
-                'vendedor.nit',
-                'pagos',
-                'factura'
-            )
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'created_by',
-                'updated_by'
-            );
-        
-        if ($request->get('id_cliente')) {
-            $ventas->where('id_cliente', $request->get('id_cliente'));
+        $with = [
+            'bodega:id,codigo,nombre',
+            'cliente:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,email',
+            'vendedor.nit:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido',
+            'resolucion:id,tipo_resolucion,nombre,prefijo,consecutivo_desde,consecutivo_hasta',
+            'factura:id,id_resolucion,fe_codigo_identificador',
+        ];
+
+        if ($detallar) {
+            $with['detalles'] = function ($q) {
+                $q->select(
+                    'id', 'id_venta', 'id_producto', 'cantidad', 'costo',
+                    'subtotal', 'iva_porcentaje', 'iva_valor',
+                    'descuento_porcentaje', 'descuento_valor', 'total'
+                )->with('producto:id,codigo,nombre,precio_inicial');
+            };
         }
 
-        if ($request->get('factura')) {
-            $ventas->where('documento_referencia', 'LIKE', '%'.$request->get('factura').'%');
-        }
-
-        if ($request->get('id_resolucion')) {
-            $ventas->where('id_resolucion', $request->get('id_resolucion'));
-        }
-
-        if ($request->get('id_bodega')) {
-            $ventas->where('id_bodega', $request->get('id_bodega'));
-        }
-
-        if ($request->get('id_producto')) {
-            $ventas->whereHas('detalles', function ($query) use($request) {
-                $query->where('id_producto', '=', $request->get('id_producto'));
-            });
-        }
-
-        if ($request->get('id_forma_pago')) {
-            $ventas->whereHas('pagos', function ($query) use($request) {
-                $query->where('id_forma_pago', '=', $request->get('id_forma_pago'));
-            });
-        }
-
-        if ($request->get('id_usuario')) {
-            $ventas->where('created_by', $request->get('id_usuario'));
-        }
-
-        $informeTotals = $ventas->get();
-        
-        $dataVentas = $ventas->skip($start)
+        $dataVentas = (clone $baseQuery)
+            ->with($with)
+            ->orderBy('id', 'DESC')
+            ->skip($start)
             ->take($rowperpage)
             ->get();
 
-        $facturas = FacVentas::query()
-            ->select('*') 
-            // Subquery para cantidad total
-            ->selectSub(function($query) {
-                $query->selectRaw('SUM(cantidad)')
-                    ->from('fac_venta_detalles')
-                    ->whereColumn('id_venta', 'fac_ventas.id');
-            }, 'total_cantidad')
-            // Subquery para costo total
-            ->selectSub(function($query) {
-                $query->selectRaw('SUM(fvd.cantidad * p.precio_inicial)')
-                    ->from('fac_venta_detalles as fvd')
-                    ->join('fac_productos as p', 'fvd.id_producto', '=', 'p.id')
-                    ->whereColumn('fvd.id_venta', 'fac_ventas.id');
-            }, 'total_costo_cantidad')
-            ->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')])
-            ->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL)
-            ->get();
+        [$totalesGeneral, $totalesNotas] = $this->getTotalesVentas($request);
 
-        $totalDataVentaGeneral[] = [
-            'total_productos_cantidad' => (float) $facturas->sum('total_cantidad'),
-            'total_costo'              => (float) $facturas->sum('total_costo_cantidad'),
-            'total_venta'              => (float) $facturas->sum('total_factura'),
-        ];
+        $this->ventaData = [];
+        $this->generarVentaDetallesOptimizado($dataVentas, $detallar);
 
-        $totalDataVenta = $this->queryTotalesVentaCosto($request)->select(
-            DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
-            DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
-            DB::raw("SUM(FVD.costo * FVD.cantidad) AS total_venta")
-        )->get();
-
-        $totalDataNotas = $this->queryTotalesVentaCosto($request, true)->select(
-            DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
-            DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
-            DB::raw("SUM(FVD.total) AS total_venta"),
-            "FVNC.*"
-        )->get();
-
-        if ($request->get('detallar_venta') == 'si') {
-            $this->generarVentaDetalles($dataVentas);
-        } else {
-            $this->generarVentaDetalles($dataVentas, false);
-        }
-        
         return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'totalesVenta' => $totalDataVentaGeneral,
-            'totalesNotas' => $totalDataNotas,
-            'iTotalRecords' => $informeTotals->count(),
-            'iTotalDisplayRecords' => $informeTotals->count(),
-            'data' => $this->ventaData,
-            'perPage' => $rowperpage,
-            'message'=> 'Ventas cargados con exito!'
+            'success'              => true,
+            'draw'                 => $draw,
+            'totalesVenta'         => [$totalesGeneral],
+            'totalesNotas'         => [$totalesNotas],
+            'iTotalRecords'        => $totalRecords,
+            'iTotalDisplayRecords' => $totalRecords,
+            'data'                 => $this->ventaData,
+            'perPage'              => $rowperpage,
+            'message'              => 'Ventas cargadas con éxito!',
         ]);
     }
 
@@ -1204,7 +1131,7 @@ class VentaController extends Controller
                 "rete_fuente_porcentaje" => "",
                 "total_rete_fuente" => $value->total_rete_fuente,
                 "total_factura" => $value->total_factura,
-                "anulado" => $value->anulado,
+                "anulado" => null,
                 "fecha_creacion" => $value->fecha_creacion,
                 "fecha_edicion" => $value->fecha_edicion,
                 "created_by" => $value->created_by,
@@ -1507,6 +1434,178 @@ class VentaController extends Controller
             ->when($request->get('id_bodega') ? true : false, function ($query) use ($request) {
                 $query->where('FV.id_bodega', $request->get('id_bodega'));
             });
+    }
+
+    private function buildVentasQuery(Request $request)
+    {
+        return FacVentas::query()
+            ->select([
+                'id', 'id_cliente', 'id_bodega', 'id_resolucion', 'id_vendedor',
+                'id_factura', 'documento_referencia', 'fecha_manual',
+                'subtotal', 'total_iva', 'total_descuento', 'total_rete_fuente',
+                'total_factura', 'fe_codigo_identificador',
+                'created_by', 'updated_by', 'created_at', 'updated_at',
+            ])
+            ->addSelect([
+                'total_productos_cantidad' => FacVentaDetalles::query()
+                    ->selectRaw('COALESCE(SUM(cantidad), 0)')
+                    ->whereColumn('fac_venta_detalles.id_venta', 'fac_ventas.id'),
+            ])
+            ->where('fecha_manual', '>=', $request->get('fecha_desde'))
+            ->where('fecha_manual', '<=', $request->get('fecha_hasta'))
+            ->when($request->filled('id_cliente'),    fn ($q) => $q->where('id_cliente', $request->get('id_cliente')))
+            ->when($request->filled('factura'),       fn ($q) => $q->where('documento_referencia', 'LIKE', '%' . $request->get('factura') . '%'))
+            ->when($request->filled('id_resolucion'), fn ($q) => $q->where('id_resolucion', $request->get('id_resolucion')))
+            ->when($request->filled('id_bodega'),     fn ($q) => $q->where('id_bodega', $request->get('id_bodega')))
+            ->when($request->filled('id_usuario'),    fn ($q) => $q->where('created_by', $request->get('id_usuario')))
+            ->when($request->filled('id_producto'),   fn ($q) => $q->whereHas('detalles',
+                fn ($d) => $d->where('id_producto', $request->get('id_producto'))))
+            ->when($request->filled('id_forma_pago'), fn ($q) => $q->whereHas('pagos',
+                fn ($p) => $p->where('id_forma_pago', $request->get('id_forma_pago'))));
+    }
+
+    private function getTotalesVentas(Request $request): array
+    {
+        $apply = function ($q) use ($request) {
+            return $q
+                ->when($request->filled('id_cliente'),    fn ($q) => $q->where('FV.id_cliente', $request->get('id_cliente')))
+                ->when($request->filled('id_resolucion'), fn ($q) => $q->where('FV.id_resolucion', $request->get('id_resolucion')))
+                ->when($request->filled('id_bodega'),     fn ($q) => $q->where('FV.id_bodega', $request->get('id_bodega')))
+                ->when($request->filled('factura'),       fn ($q) => $q->where('FV.documento_referencia', 'LIKE', '%' . $request->get('factura') . '%'))
+                ->when($request->filled('id_usuario'),    fn ($q) => $q->where('FV.created_by', $request->get('id_usuario')))
+                ->when($request->filled('id_producto'),   fn ($q) => $q->whereIn('FV.id', function ($sub) use ($request) {
+                    $sub->select('id_venta')->from('fac_venta_detalles')
+                        ->where('id_producto', $request->get('id_producto'));
+                }))
+                ->when($request->filled('id_forma_pago'), fn ($q) => $q->whereIn('FV.id', function ($sub) use ($request) {
+                    $sub->select('id_venta')->from('fac_venta_pagos')
+                        ->where('id_forma_pago', $request->get('id_forma_pago'));
+                }))
+                ->where('FV.fecha_manual', '>=', $request->get('fecha_desde'))
+                ->where('FV.fecha_manual', '<=', $request->get('fecha_hasta'));
+        };
+
+        $general = $apply(DB::connection('sam')->table('fac_ventas as FV'))
+            ->whereNull('FV.id_factura')
+            ->where('FV.codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL)
+            ->selectRaw('
+                COALESCE(SUM(FV.total_factura), 0)     AS total_venta,
+                COALESCE(SUM(FV.total_rete_fuente), 0) AS total_rete
+            ')->first();
+
+        $detalle = $apply(DB::connection('sam')->table('fac_ventas as FV'))
+            ->join('fac_venta_detalles as FVD', 'FV.id', '=', 'FVD.id_venta')
+            ->leftJoin('fac_productos as FP', 'FVD.id_producto', '=', 'FP.id')
+            ->whereNull('FV.id_factura')
+            ->where('FV.codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL)
+            ->selectRaw('
+                COALESCE(SUM(FVD.cantidad), 0)                     AS total_productos_cantidad,
+                COALESCE(SUM(FP.precio_inicial * FVD.cantidad), 0) AS total_costo
+            ')->first();
+
+        $totalesGeneral = [
+            'total_productos_cantidad' => (float) $detalle->total_productos_cantidad,
+            'total_costo'              => (float) $detalle->total_costo,
+            'total_venta'              => (float) $general->total_venta,
+        ];
+
+        $notas = $apply(DB::connection('sam')->table('fac_ventas as FV'))
+            ->join('fac_venta_detalles as FVD', 'FV.id', '=', 'FVD.id_venta')
+            ->leftJoin('fac_productos as FP', 'FVD.id_producto', '=', 'FP.id')
+            ->whereNotNull('FV.id_factura')
+            ->selectRaw('
+                COALESCE(SUM(FVD.cantidad), 0)                     AS total_productos_cantidad,
+                COALESCE(SUM(FP.precio_inicial * FVD.cantidad), 0) AS total_costo,
+                COALESCE(SUM(FVD.total), 0)                        AS total_venta
+            ')->first();
+
+        $totalesNotas = [
+            'total_productos_cantidad' => (float) $notas->total_productos_cantidad,
+            'total_costo'              => (float) $notas->total_costo,
+            'total_venta'              => (float) $notas->total_venta,
+        ];
+
+        return [$totalesGeneral, $totalesNotas];
+    }
+
+    private function generarVentaDetallesOptimizado($dataVentas, bool $detallar): void
+    {
+        foreach ($dataVentas as $value) {
+            $cantidadTotal = $detallar
+                ? $value->detalles->sum('cantidad')
+                : ($value->total_productos_cantidad ?? 0);
+
+            $resolucionFe = ($value->resolucion
+                && $value->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA)
+                ? $value->resolucion
+                : null;
+
+            $this->ventaData[] = [
+                'id'                      => $value->id,
+                'descripcion'             => '',
+                'cantidad'                => $cantidadTotal,
+                'costo'                   => '',
+                'valor'                   => '',
+                'nombre_bodega'           => $value->bodega ? "{$value->bodega->codigo} - {$value->bodega->nombre}" : '',
+                'nombre_completo'         => $value->cliente?->nombre_completo ?? $value->id_cliente,
+                'email_cliente'           => $value->cliente?->email,
+                'documento_referencia'    => $value->documento_referencia,
+                'fecha_manual'            => $value->fecha_manual,
+                'subtotal'                => $value->subtotal,
+                'iva_porcentaje'          => '',
+                'nombre_vendedor'         => $value->vendedor?->nit?->nombre_completo ?? '',
+                'total_iva'               => $value->total_iva,
+                'descuento_porcentaje'    => '',
+                'total_descuento'         => $value->total_descuento,
+                'rete_fuente_porcentaje'  => '',
+                'total_rete_fuente'       => $value->total_rete_fuente,
+                'total_factura'           => $value->total_factura,
+                'anulado'                 => null,
+                'fecha_creacion'          => $value->created_at?->format('Y-m-d H:i:s'),
+                'fecha_edicion'           => $value->updated_at?->format('Y-m-d H:i:s'),
+                'created_by'              => $value->created_by,
+                'updated_by'              => $value->updated_by,
+                'detalle'                 => false,
+                'resolucion'              => $resolucionFe,
+                'factura'                 => $value->factura ?? null,
+                'fe_codigo_identificador' => $value->fe_codigo_identificador,
+            ];
+
+            if ($detallar) {
+                foreach ($value->detalles as $d) {
+                    $this->ventaData[] = [
+                        'id'                      => '',
+                        'descripcion'             => $d->producto
+                            ? "{$d->producto->codigo} - {$d->producto->nombre}"
+                            : 'SIN PRODUCTO RELACIONADO',
+                        'cantidad'                => $d->cantidad,
+                        'valor'                   => $d->costo,
+                        'costo'                   => $d->producto?->precio_inicial ?? '0',
+                        'subtotal'                => $d->subtotal,
+                        'nombre_bodega'           => '',
+                        'nombre_completo'         => '',
+                        'documento_referencia'    => '',
+                        'fecha_manual'            => '',
+                        'iva_porcentaje'          => $d->iva_porcentaje,
+                        'nombre_vendedor'         => '',
+                        'total_iva'               => $d->iva_valor,
+                        'descuento_porcentaje'    => $d->descuento_porcentaje,
+                        'total_descuento'         => $d->descuento_valor,
+                        'rete_fuente_porcentaje'  => '',
+                        'total_rete_fuente'       => '',
+                        'total_factura'           => $d->total,
+                        'anulado'                 => '',
+                        'fecha_creacion'          => '',
+                        'fecha_edicion'           => '',
+                        'created_by'              => '',
+                        'updated_by'              => '',
+                        'detalle'                 => true,
+                        'resolucion'              => null,
+                        'fe_codigo_identificador' => null,
+                    ];
+                }
+            }
+        }
     }
 
 }

@@ -6,6 +6,18 @@
     .column-number {
         text-align: -webkit-right;
     }
+
+    #VentasInformeTable tbody tr.venta-factura td {
+        background-color: rgb(51, 132, 158) !important;
+        color: #fff !important;
+        font-weight: 600;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    #VentasInformeTable tbody tr.venta-detalle td {
+        background-color: #f8f9fa;
+    }
 </style>
 
 <div class="container-fluid py-2">
