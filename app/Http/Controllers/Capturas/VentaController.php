@@ -1442,6 +1442,7 @@ class VentaController extends Controller
             ->select([
                 'id', 'id_cliente', 'id_bodega', 'id_resolucion', 'id_vendedor',
                 'id_factura', 'documento_referencia', 'fecha_manual',
+                'consecutivo',                                  // ⬅ AGREGAR ESTA LÍNEA
                 'subtotal', 'total_iva', 'total_descuento', 'total_rete_fuente',
                 'total_factura', 'fe_codigo_identificador',
                 'created_by', 'updated_by', 'created_at', 'updated_at',
