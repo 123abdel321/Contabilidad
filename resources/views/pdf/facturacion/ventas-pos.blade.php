@@ -107,7 +107,7 @@
                     </th></tr>
                 @else
                     <tr><th class="font-12">
-                        FACTURA VENTA P.O.S: {{ $factura->documento_referencia }}
+                        FACTURA VENTA {{ $factura->documento_referencia }}
                     </th></tr>
                     
                     @if ($factura->resolucion)
