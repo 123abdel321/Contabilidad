@@ -24,6 +24,6 @@ class FacCompraPagos extends Model
 
     public function forma_pago()
 	{
-		return $this->belongsTo('App\Models\Sistema\FacFormasPago', 'id_forma_pago');
+		return $this->belongsTo(FacFormasPago::class, 'id_forma_pago');
 	}
 }

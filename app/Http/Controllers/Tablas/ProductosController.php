@@ -646,6 +646,7 @@ class ProductosController extends Controller
     {
         $recordarUltimoPrecio = VariablesEntorno::where('nombre', 'recordar_ultimo_precio_venta')->first();
         $recordarUltimoPrecio = $recordarUltimoPrecio ? $recordarUltimoPrecio->valor : null;
+        $tipoProducto = $request->get('tipo_producto', null);
         $idCliente = $request->get('id_cliente', null);
         $idBodega = $request->get('id_bodega', null);
         
@@ -694,6 +695,16 @@ class ProductosController extends Controller
                     LIMIT 1
                 ) as fecha_ultima_venta_cliente')
             ]);
+        }
+
+        if ($tipoProducto) {
+            // Normalizar: si viene string "3", convertirlo a array
+            $tipos = is_array($tipoProducto) ? $tipoProducto : explode(',', $tipoProducto);
+            $tipos = array_filter(array_map('intval', $tipos), fn($t) => $t !== null);
+            
+            if (!empty($tipos)) {
+                $producto->whereIn('tipo_producto', $tipos); // ← nombre de columna a confirmar
+            }
         }
 
         // ------------------------

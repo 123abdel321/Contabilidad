@@ -32,4 +32,19 @@ class FacCompraDetalles extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function producto()
+    {
+        return $this->belongsTo(FacProductos::class, 'id_producto', 'id');
+    }
+
+    public function cuenta_iva()
+	{
+		return $this->belongsTo(PlanCuentas::class, 'id_cuenta_compra_iva', 'id');
+	}
+
+    public function cuenta_retencion()
+	{
+		return $this->belongsTo(PlanCuentas::class, 'id_cuenta_compra_retencion', 'id');
+	}
 }

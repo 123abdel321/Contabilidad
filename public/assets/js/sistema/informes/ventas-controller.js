@@ -21,12 +21,12 @@ function cargarTablasVentas() {
         responsive: false,
         processing: true,
         serverSide: true,
-        fixedHeader: false,          // ⬅ sin scrollY no aporta, sí agrega wrapper
+        fixedHeader: false,
         deferLoading: 0,
         initialLoad: false,
         ordering: false,
         language: lenguajeDatatable,
-        scrollX: "100%",             // ⬅ sintaxis moderna (equivale a sScrollX)
+        scrollX: "100%",
         autoWidth: false,
         fixedColumns: {
             left: 0,
@@ -722,6 +722,3 @@ function showTotalsVentas(res) {
     var countE = new CountUp('total_porcentaje_ventas', 0, porcentaje_utilidad ? parseFloat(porcentaje_utilidad).toFixed(2) : 100);
         countE.start();
 }
-
-
-

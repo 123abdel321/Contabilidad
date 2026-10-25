@@ -23,9 +23,10 @@
                     </div>
 
                     <div class="form-group col-6 col-sm-6 col-md-3 col-lg-2">
-                        <label for="id_comprobante_compra">Comprobante<span style="color:red">*</span></label>
-                        <select name="id_comprobante_compra" id="id_comprobante_compra" class="form-control form-control-sm" style="width:100%;font-size:13px;" required></select>
-                        <div class="invalid-feedback">El comprobante es requerido</div>
+                        <label for="id_comprobante_compra" id="label_comprobante_resolucion_compra">Comprobante<span style="color:red">*</span></label>
+                        <select name="id_comprobante_compra" id="id_comprobante_compra" class="form-control form-control-sm" style="width:100%;font-size:13px;"></select>
+                        <select name="id_resolucion_compra" id="id_resolucion_compra" class="form-control form-control-sm" style="width:100%;font-size:13px;display:none;" disabled></select>
+                        <div class="invalid-feedback">Este campo es requerido</div>
                     </div>
 
                     <div class="form-group col-6 col-sm-4 col-md-3 col-lg-2">
@@ -52,7 +53,12 @@
                     <!-- BOTON GENERAR -->
                     <span id="iniciarCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
                         <i class="fas fa-folder-open" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">INICIAR COMPRA</b>
+                        <b id="textiniciarCapturaCompra" style="vertical-align: text-top;">INICIAR COMPRA</b>
+                    </span>
+                    <!-- BOTON TOGGLE COMPRA / DOCUMENTO SOPORTE -->
+                    <span id="toggleDocumentoSoporteCompra" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;" title="Cambiar a Documento Soporte">
+                        <i class="fas fa-exchange-alt" style="font-size: 17px;"></i>&nbsp;
+                        <b id="toggleDocumentoSoporteCompraTexto" style="vertical-align: text-top;">DOC. SOPORTE</b>
                     </span>
                     <span id="iniciarCapturaCompraLoading" class="badge bg-gradient-info btn-bg-gold" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
@@ -70,12 +76,12 @@
                     <!-- GRABAR COMPRA -->
                     <span id="crearCapturaCompraDisabled" href="javascript:void(0)" class="badge bg-gradient-dark" style="min-width: 40px; display:none; float: right; cursor: no-drop; margin-top: 5px;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">GRABAR COMPRA</b>
+                        <b id="textoCrearCapturaCompraDisabled" style="vertical-align: text-top;">GRABAR COMPRA</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <span id="crearCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none; float: right;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">GRABAR COMPRA</b>
+                        <b id="textocrearCapturaCompra" style="vertical-align: text-top;">GRABAR COMPRA</b>
                     </span>
                     <span id="crearCapturaCompraLoading" class="badge bg-gradient-success btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 16px; float: right;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>

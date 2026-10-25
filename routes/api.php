@@ -534,6 +534,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(CompraController::class)->group(function () {
             Route::get('compras', 'generate');
             Route::post('compras', 'create');
+            Route::post('compras-fe', 'facturacionElectronica');
+            Route::delete('compras', 'delete');
         });
         //CAPTURA VENTA
         Route::controller(VentaController::class)->group(function () {

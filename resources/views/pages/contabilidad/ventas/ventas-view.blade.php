@@ -1,11 +1,7 @@
 
 <style>
-    .error {
-        color: red;
-    }
-    .column-number {
-        text-align: -webkit-right;
-    }
+    .error { color: red; }
+    .column-number { text-align: -webkit-right; }
 
     #VentasInformeTable tbody tr.venta-factura td {
         background-color: rgb(51, 132, 158) !important;

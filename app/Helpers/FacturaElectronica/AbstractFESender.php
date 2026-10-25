@@ -11,6 +11,7 @@ abstract class AbstractFESender
 	protected $factura;
 	protected $pagos;
 	protected $cliente;
+	protected $proveedor;
 	protected $detalles;
 	protected $softwareProviderId;
 	protected $url;
@@ -26,6 +27,7 @@ abstract class AbstractFESender
 		$this->factura = $factura;
 		$this->pagos = $factura->pagos;
 		$this->cliente = $factura->cliente;
+		$this->proveedor = $factura->proveedor;
 		$this->iva_inluido = $iva_inlucido;
 		$this->detalles = $factura->detalles;
 	}
@@ -69,7 +71,6 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		// dd($params, json_encode($params));
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -236,6 +237,170 @@ abstract class AbstractFESender
 		return array_merge($params, $this->getExtraParams());
 	}
 
+	public function taxTotals($taxs = [1, 5, 6])
+	{
+		$dataTaxTotals = [
+			"iva" => [],
+			"reteIva" => [],
+			"reteFuente" => [],
+		];
+		
+		// AGREGAR DETALLE DE LOS ITEMS
+		foreach ($this->detalles as $detalle) {
+			foreach ($taxs as $tax) {
+				switch ($tax) {
+					case 1: //IVA
+						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) {
+							$dataTaxTotals['iva'][] = $dIva[0];
+						}
+						break;
+					case 5: // RETE IVA
+						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && floatval($dRete[0]["tax_amount"]) != 0) {
+							$dataTaxTotals['reteIva'][] = $dRete[0];
+						}
+						break;
+					case 6: // RETE FUENTE
+						if (!empty($dFuente = $this->taxTotalsDetalle($detalle, [6])) && floatval($dFuente[0]["tax_amount"]) != 0) {
+							$dataTaxTotals['reteFuente'][] = $dFuente[0];
+						}
+						break;
+				}
+			}
+		}
+
+		$taxTotals = [];
+		
+		// Procesar IVA (tax_id = 1) - Separar por porcentaje en objetos individuales
+		if (!empty($dataTaxTotals['iva'])) {
+			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['iva']);
+			// Para múltiples porcentajes, crear un objeto por cada porcentaje
+			foreach ($agrupados as $percent => $grupo) {
+				$taxTotals[] = [
+					'tax_id' => 1,
+					'tax_amount' => round($grupo['tax_amount'], 2),
+					'percent' => floatval($percent),
+					'taxable_amount' => round($grupo['taxable_amount'], 2)
+				];
+			}
+		}
+		
+		// Procesar RETE IVA (tax_id = 5) - Misma lógica
+		if (!empty($dataTaxTotals['reteIva'])) {
+			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['reteIva']);
+			foreach ($agrupados as $percent => $grupo) {
+				$taxTotals[] = [
+					'tax_id' => 5,
+					'tax_amount' => round($grupo['tax_amount'], 2),
+					'percent' => floatval($percent),
+					'taxable_amount' => round($grupo['taxable_amount'], 2)
+				];
+			}
+		}
+		
+		// Procesar RETE FUENTE (tax_id = 6) - Misma lógica
+		if (!empty($dataTaxTotals['reteFuente'])) {
+			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['reteFuente']);
+			foreach ($agrupados as $percent => $grupo) {
+				$taxTotals[] = [
+					'tax_id' => 6,
+					'tax_amount' => round($grupo['tax_amount'], 2),
+					'percent' => floatval($percent),
+					'taxable_amount' => round($grupo['taxable_amount'], 2)
+				];
+			}
+		}
+		
+		return $taxTotals;
+	}
+
+	/**
+	 * Consulta el estado de un ZIP en la DIAN.
+	 *
+	 * @param string $zipKey  Clave ZIP devuelta al momento del envío
+	 * @return array [
+	 *   'success' => bool,
+	 *   'is_valid' => bool,
+	 *   'cufe' => string|null,
+	 *   'status_code' => int|null,     // código DIAN (0 = válido, 99 = rechazado, etc.)
+	 *   'status_description' => string|null,
+	 *   'raw' => object|null,          // respuesta completa por si necesitas más
+	 *   'error' => string|null,        // si hubo excepción o error HTTP
+	 * ]
+	 */
+	public function consultarZip(string $zipKey): array
+	{
+		$bearerToken = VariablesEntorno::where('nombre', 'token_key_fe')->first();
+		$bearerToken = $bearerToken ? $bearerToken->valor : '';
+
+		// El endpoint de estado no depende del sender, es fijo en la API de FE
+		$baseUrl = rtrim($this->url, '/');
+		$url     = "{$baseUrl}/status/zip/{$zipKey}";
+
+		try {
+			$response = Http::withHeaders([
+				'Content-Type'     => 'application/json',
+				'X-Requested-With' => 'XMLHttpRequest',
+				'Authorization'    => 'Bearer ' . $bearerToken,
+			])->post($url);
+
+			$data = (object) $response->json();
+
+			info('[FE consultarZip] ' . $url, ['response' => $data]);
+
+			if (!$response->successful()) {
+				return [
+					'success'            => false,
+					'is_valid'           => false,
+					'cufe'               => null,
+					'status_code'        => $response->status(),
+					'status_description' => null,
+					'raw'                => $data,
+					'error'              => "HTTP {$response->status()} al consultar ZIP {$zipKey}",
+				];
+			}
+
+			$dianResponse = $data->ResponseDian['Envelope']['Body']['GetStatusZipResponse']['GetStatusZipResult']['DianResponse'] ?? null;
+
+			if (!$dianResponse) {
+				return [
+					'success'            => false,
+					'is_valid'           => false,
+					'cufe'               => null,
+					'status_code'        => null,
+					'status_description' => null,
+					'raw'                => $data,
+					'error'              => 'La respuesta no contiene DianResponse (ZIP aún en proceso o formato inesperado)',
+				];
+			}
+
+			$isValid           = ($dianResponse['IsValid'] ?? 'false') === 'true';
+			$statusCode        = $dianResponse['StatusCode'] ?? null;
+			$statusDescription = $dianResponse['StatusDescription'] ?? null;
+			$cufe              = $dianResponse['XmlDocumentKey'] ?? null;
+
+			return [
+				'success'            => true,
+				'is_valid'           => $isValid,
+				'cufe'               => $cufe,
+				'status_code'        => $statusCode,
+				'status_description' => $statusDescription,
+				'raw'                => $data,
+				'error'              => null,
+			];
+
+		} catch (\Throwable $e) {
+			return [
+				'success'            => false,
+				'is_valid'           => false,
+				'cufe'               => null,
+				'status_code'        => null,
+				'status_description' => null,
+				'raw'                => null,
+				'error'              => $e->getMessage(),
+			];
+		}
+	}
+
 	protected function paymentForm()
 	{
 		$paymentForm = [];
@@ -311,82 +476,6 @@ abstract class AbstractFESender
 			];
 		}
 		return $invoiceLines;
-	}
-
-	public function taxTotals($taxs = [1, 5, 6])
-	{
-		$dataTaxTotals = [
-			"iva" => [],
-			"reteIva" => [],
-			"reteFuente" => [],
-		];
-		
-		// AGREGAR DETALLE DE LOS ITEMS
-		foreach ($this->detalles as $detalle) {
-			foreach ($taxs as $tax) {
-				switch ($tax) {
-					case 1: //IVA
-						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) {
-							$dataTaxTotals['iva'][] = $dIva[0];
-						}
-						break;
-					case 5: // RETE IVA
-						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && floatval($dRete[0]["tax_amount"]) != 0) {
-							$dataTaxTotals['reteIva'][] = $dRete[0];
-						}
-						break;
-					case 6: // RETE FUENTE
-						if (!empty($dFuente = $this->taxTotalsDetalle($detalle, [6])) && floatval($dFuente[0]["tax_amount"]) != 0) {
-							$dataTaxTotals['reteFuente'][] = $dFuente[0];
-						}
-						break;
-				}
-			}
-		}
-
-		$taxTotals = [];
-		
-		// Procesar IVA (tax_id = 1) - Separar por porcentaje en objetos individuales
-		if (!empty($dataTaxTotals['iva'])) {
-			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['iva']);
-			// Para múltiples porcentajes, crear un objeto por cada porcentaje
-			foreach ($agrupados as $percent => $grupo) {
-				$taxTotals[] = [
-					'tax_id' => 1,
-					'tax_amount' => round($grupo['tax_amount'], 2),
-					'percent' => floatval($percent),
-					'taxable_amount' => round($grupo['taxable_amount'], 2)
-				];
-			}
-		}
-		
-		// Procesar RETE IVA (tax_id = 5) - Misma lógica
-		if (!empty($dataTaxTotals['reteIva'])) {
-			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['reteIva']);
-			foreach ($agrupados as $percent => $grupo) {
-				$taxTotals[] = [
-					'tax_id' => 5,
-					'tax_amount' => round($grupo['tax_amount'], 2),
-					'percent' => floatval($percent),
-					'taxable_amount' => round($grupo['taxable_amount'], 2)
-				];
-			}
-		}
-		
-		// Procesar RETE FUENTE (tax_id = 6) - Misma lógica
-		if (!empty($dataTaxTotals['reteFuente'])) {
-			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['reteFuente']);
-			foreach ($agrupados as $percent => $grupo) {
-				$taxTotals[] = [
-					'tax_id' => 6,
-					'tax_amount' => round($grupo['tax_amount'], 2),
-					'percent' => floatval($percent),
-					'taxable_amount' => round($grupo['taxable_amount'], 2)
-				];
-			}
-		}
-		
-		return $taxTotals;
 	}
 	/**
 	 * @param object $detalle

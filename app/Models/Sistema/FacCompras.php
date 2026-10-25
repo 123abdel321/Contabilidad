@@ -4,6 +4,7 @@ namespace App\Models\Sistema;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Scopes\DocumentoSoporteScope;
 
 class FacCompras extends Model
 {
@@ -15,6 +16,7 @@ class FacCompras extends Model
 
     protected $fillable = [
         'id_proveedor',
+        'id_resolucion',
         'id_comprobante',
         'id_bodega',
         'id_centro_costos',
@@ -31,7 +33,7 @@ class FacCompras extends Model
         'created_by',
         'updated_by',
     ];
-
+    
     public function documentos()
     {
         return $this->morphMany('App\Models\Sistema\DocumentosGeneral', 'relation');
@@ -67,5 +69,14 @@ class FacCompras extends Model
 		return $this->hasMany(FacCompraPagos::class, 'id_compra');
 	}
 
+    public function resolucion()
+	{
+		return $this->belongsTo(FacResoluciones::class, 'id_resolucion');
+	}
+
+    public function usuario()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
 
 }

@@ -764,36 +764,24 @@ class VentaController extends Controller
             DB::connection('sam')->beginTransaction();
             
             if ($venta->fe_zip_key) {
+                $consulta = (new VentaElectronicaSender($venta))
+                    ->consultarZip($venta->fe_zip_key);
 
-                $url = "http://localhost:6666/api/ubl2.1/status/zip/{$venta->fe_zip_key}";
-
-                $bearerToken = VariablesEntorno::where('nombre', 'token_key_fe')->first();
-			    $bearerToken = $bearerToken ? $bearerToken->valor	: '';
-
-                $response = Http::withHeaders([
-                    'Content-Type' => 'application/json',
-                    'X-Requested-With' => 'XMLHttpRequest',
-                    'Authorization' => 'Bearer ' . $bearerToken
-                ])->post($url);
-
-                $data = (object) $response->json();
-
-                info(json_encode($data));
-
-                $dianResponse = $data->ResponseDian['Envelope']['Body']['GetStatusZipResponse']['GetStatusZipResult']['DianResponse'];
-                $isValid = $dianResponse['IsValid'];
-
-                if ($isValid == 'true') {
-                    $venta = $this->SetFeFields($venta, $dianResponse['XmlDocumentKey'], $empresa->nit);
-		            $venta->save();
+                if ($consulta['success'] && $consulta['is_valid']) {
+                    $venta = $this->SetFeFields($venta, $consulta['cufe'], $empresa->nit);
+                    $venta->save();
 
                     DB::connection('sam')->commit();
 
                     return response()->json([
-                        'success'=>	true,
-                        'data' => [],
-                        'message'=> 'Factura electrónica enviada!'
+                        'success' => true,
+                        'data'    => [],
+                        'message' => 'Factura electrónica enviada!',
                     ], 200);
+                }
+
+                if (!$consulta['success']) {
+                    \Log::warning('[ventas-fe] consultarZip falló', $consulta);
                 }
             }
 

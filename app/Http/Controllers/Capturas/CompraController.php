@@ -4,14 +4,19 @@ namespace App\Http\Controllers\Capturas;
 
 use DB;
 use DateTimeImmutable;
-use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\Printers\ComprasPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+//HELPERS
+use App\Helpers\Documento;
+use App\Helpers\Printers\ComprasPdf;
+use App\Helpers\FacturaElectronica\DocumentoSoporteSender;
+use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
+//TRAITS
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
+use App\Http\Controllers\Traits\BegFacturacionElectronica;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
@@ -22,6 +27,7 @@ use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacCompraPagos;
+use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\UsuarioPermisos;
@@ -34,6 +40,7 @@ class CompraController extends Controller
 {
     use BegConsecutiveTrait;
     use BegDocumentHelpersTrait;
+    use BegFacturacionElectronica;
 
     protected $tipoRetencion = 'cuenta_compra_retencion';
     protected $nit = null;
@@ -104,28 +111,25 @@ class CompraController extends Controller
 
     public function create (Request $request)
     {
+        $modo = $request->input('modo', 'compra');
+
         $rules = [
             'id_proveedor' => 'required|exists:sam.nits,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
-            'id_comprobante' => 'required|exists:sam.comprobantes,id',
             'fecha_manual' => 'required|date',
-            'documento_referencia' => 'required |string',
+            'documento_referencia' => 'required|string',
             'productos' => 'array|required',
             'productos.*.id_producto' => [
                 'required',
                 'exists:sam.fac_productos,id',
                 function ($attribute, $value, $fail) {
-
-					$producto = FacProductos::whereId($value)
-                        ->with('familia')
-                        ->first();
-                    
+                    $producto = FacProductos::whereId($value)->with('familia')->first();
                     if (!$producto->id_familia) {
-                        $fail("El producto (".$producto->codigo." - ".$producto->nombre.") no tiene familia configurada");
+                        $fail("El producto (" . $producto->codigo . " - " . $producto->nombre . ") no tiene familia configurada");
                     } else if (!$producto->familia->id_cuenta_compra) {
-                        $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta compra configurada");
+                        $fail("La familia (" . $producto->familia->codigo . " - " . $producto->familia->nombre . ") no tiene cuenta compra configurada");
                     }
-				}
+                }
             ],
             'productos.*.cantidad' => 'required|numeric|gt:0',
             'productos.*.costo' => 'required|min:0',
@@ -139,6 +143,17 @@ class CompraController extends Controller
             'pagos.*.valor' => 'required|numeric|min:1',
         ];
 
+        // Reglas condicionales según el modo
+        if ($modo === 'documento_soporte') {
+            $rules['modo'] = 'required|in:compra,documento_soporte';
+            $rules['id_resolucion'] = 'required|exists:sam.fac_resoluciones,id';
+            $rules['id_comprobante'] = 'nullable';
+        } else {
+            $rules['modo'] = 'nullable|in:compra,documento_soporte';
+            $rules['id_comprobante'] = 'required|exists:sam.comprobantes,id';
+            $rules['id_resolucion'] = 'nullable';
+        }
+
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -148,21 +163,64 @@ class CompraController extends Controller
                 "message"=>$validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        
-        $comprobanteCompras = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
-        if(!$comprobanteCompras) {
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=> ['Comprobante compras' => ['El Comprobante de compras es incorrecto!']]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        if ($modo === 'documento_soporte') {
+            $this->resolucion = FacResoluciones::whereId($request->get('id_resolucion'))
+                ->with('comprobante')
+                ->first();
         }
+        
+        $resolucionCompras = null;
+        $comprobanteCompras = null;
 
-        $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
-        $request->request->add([
-            'consecutivo' => $consecutivo
-        ]);
+        if ($modo === 'documento_soporte') {
+
+            $resolucionCompras = FacResoluciones::whereId($request->get('id_resolucion'))
+                ->with('comprobante')
+                ->first();
+
+            if (!$resolucionCompras->isValid) {
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => ["Resolución" => ["La resolución {$resolucionCompras->nombre_completo} está agotada"]]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            if (!$resolucionCompras->comprobante) {
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => ["Comprobante" => ["La resolución {$resolucionCompras->nombre_completo} no tiene un comprobante asociado o está agotada."]]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $comprobanteCompras = $resolucionCompras->comprobante;
+
+            $consecutivo = $this->getNextConsecutive($comprobanteCompras->id, $request->get('fecha_manual'));
+            $request->request->add([
+                'consecutivo' => $consecutivo,
+                'id_comprobante' => $comprobanteCompras->id,
+                'id_resolucion' => $resolucionCompras->id
+            ]);
+
+        } else {
+            $comprobanteCompras = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
+            if(!$comprobanteCompras) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> ['Comprobante compras' => ['El Comprobante de compras es incorrecto!']]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+            $request->request->add([
+                'consecutivo' => $consecutivo,
+                'id_resolucion' => null
+            ]);
+        }
 
         $existeDocumento = DocumentosGeneral::where('documento_referencia', $request->get('documento_referencia'))
             ->where('id_comprobante', $request->get('id_comprobante'));
@@ -446,91 +504,60 @@ class CompraController extends Controller
 
     public function generate(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        $draw       = $request->get('draw');
+        $start      = (int) $request->get("start", 0);
+        $rowperpage = (int) $request->get("length", 20);
+        $rowperpage = $rowperpage > 0 ? min($rowperpage, 500) : 20;
+        $detallar   = $request->get('detallar_compra') === 'si';
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        // 1) Query base
+        $baseQuery = $this->buildComprasQuery($request);
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+        // 2) Conteo real sin hidratar modelos
+        $totalRecords = (clone $baseQuery)->count();
 
-		$compras = FacCompras::skip($start)
-            ->with(
-                'bodega',
-                'proveedor',
-                'comprobante',
-                'detalles'
-            )
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'created_by',
-                'updated_by'
-            )
+        // 3) Relaciones necesarias por página
+        $with = [
+            'bodega:id,codigo,nombre',
+            'proveedor:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,email',
+            'comprobante:id,nombre',
+            'usuario:id,username',
+        ];
+
+        if ($detallar) {
+            $with['detalles'] = function ($q) {
+                $q->select(
+                    'id', 'id_compra', 'id_producto', 'cantidad', 'costo',
+                    'subtotal', 'iva_porcentaje', 'iva_valor',
+                    'descuento_porcentaje', 'descuento_valor', 'total',
+                    'descripcion'
+                )->with('producto:id,codigo,nombre,precio_inicial');
+            };
+        }
+
+        $dataCompras = (clone $baseQuery)
+            ->with($with)
             ->orderBy('id', 'DESC')
-            ->take($rowperpage);
+            ->skip($start)
+            ->take($rowperpage)
+            ->get();
 
-        // if($columnName){
-        //     $compras->orderBy($columnName,$columnSortOrder);
-        // }
+        // 4) Totales (4 KPIs)
+        $totalesGeneral = $this->getTotalesCompras($request);
 
-        if ($request->get('id_proveedor')) {
-            $compras->where('id_proveedor', $request->get('id_proveedor'));
-        }
+        // 5) Construir filas
+        $this->compraData = [];
+        $this->generarCompraDetallesOptimizado($dataCompras, $detallar);
 
-        if ($request->get('fecha_desde')) {
-            $compras->where('fecha_manual', '>=', $request->get('fecha_desde'));
-        }
-
-        if ($request->get('fecha_hasta')) {
-            $compras->where('fecha_manual', '<=', $request->get('fecha_hasta'));
-        }
-
-        if ($request->get('factura')) {
-            $compras->where('documento_referencia', 'LIKE', '%'.$request->get('factura').'%');
-        }
-
-        if ($request->get('id_comprobante')) {
-            $compras->where('id_comprobante', $request->get('id_comprobante'));
-        }
-
-        if ($request->get('id_bodega')) {
-            $compras->where('id_bodega', $request->get('id_bodega'));
-        }
-
-        if ($request->get('id_producto')) {
-            $compras->whereHas('detalles', function ($query) use($request) {
-                return $query->where('id_producto', '=', $request->get('id_producto'));
-            });
-        }
-
-        if ($request->get('id_usuario')) {
-            $compras->where('created_by', $request->get('id_usuario'));
-        }
-
-        $dataCompras = $compras->get();
-
-        if ($request->get('detallar_compra') == 'si') {
-            $this->generarCompraDetalles($dataCompras);
-        } else {
-            $this->generarCompraDetalles($dataCompras, false);
-        } 
-        
         return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $compras->count(),
-            'iTotalDisplayRecords' => $compras->count(),
-            'data' => $this->compraData,
-            'perPage' => $rowperpage,
-            'message'=> 'Compras cargados con exito!'
+            'success'              => true,
+            'draw'                 => $draw,
+            'totalesCompra'        => [ $totalesGeneral ],
+            'iTotalRecords'        => $totalRecords,
+            'iTotalDisplayRecords' => $totalRecords,
+            'data'                 => $this->compraData,
+            'perPage'              => $rowperpage,
+            'message'              => 'Compras cargadas con éxito!',
         ]);
     }
 
@@ -600,59 +627,81 @@ class CompraController extends Controller
         return [];
     }
 
-    private function generarCompraDetalles($dataCompras, $detallar = true)
+    private function generarCompraDetallesOptimizado($dataCompras, bool $detallar): void
     {
         foreach ($dataCompras as $value) {
-            
+            $cantidadTotal = $detallar
+                ? $value->detalles->sum('cantidad')
+                : ($value->total_productos_cantidad ?? 0);
+
+            // Documento soporte: se emite cuando existe resolución asociada o código DIAN DOCUMENTO_SOPORTE
+            $esDocumentoSoporte = (
+                !empty($value->id_resolucion)
+                || $value->codigo_tipo_documento_dian == CodigoDocumentoDianTypes::DOCUMENTO_SOPORTE
+            );
+
             $this->compraData[] = [
-                "id" => $value->id,
-                "descripcion" => "",
-                "cantidad" => $value->detalles()->sum('cantidad'),
-                "costo" => "",
-                "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
-                "nombre_completo" => $value->id_proveedor ? $value->proveedor->nombre_completo : "",
-                "documento_referencia" => $value->documento_referencia,
-                "fecha_manual" => $value->fecha_manual,
-                "subtotal" => $value->subtotal,
-                "iva_porcentaje" => "",
-                "total_iva" => $value->total_iva,
-                "descuento_porcentaje" => "",
-                "total_descuento" => $value->total_descuento,
-                "rete_fuente_porcentaje" => "",
-                "total_rete_fuente" => $value->total_rete_fuente,
-                "total_factura" => $value->total_factura,
-                "anulado" => $value->anulado,
-                "fecha_creacion" => $value->fecha_creacion,
-                "fecha_edicion" => $value->fecha_edicion,
-                "created_by" => $value->created_by,
-                "updated_by" => $value->updated_by,
-                "detalle" => $detallar ? false : true
+                'id'                      => $value->id,
+                'descripcion'             => '',
+                'cantidad'                => $cantidadTotal,
+                'costo'                   => '',
+                'nombre_bodega'           => $value->bodega ? "{$value->bodega->codigo} - {$value->bodega->nombre}" : '',
+                'nombre_completo'         => $value->proveedor?->nombre_completo ?? '',
+                'nombre_usuario'          => $value->usuario?->username ?? '',
+                'documento_referencia'    => $value->documento_referencia,
+                'fecha_manual'            => $value->fecha_manual,
+                'subtotal'                => $value->subtotal,
+                'iva_porcentaje'          => '',
+                'total_iva'               => $value->total_iva,
+                'descuento_porcentaje'    => '',
+                'total_descuento'         => $value->total_descuento,
+                'rete_fuente_porcentaje'  => '',
+                'total_rete_fuente'       => $value->total_rete_fuente,
+                'total_factura'           => $value->total_factura,
+                'anulado'                 => null, // ⚠️ S2: no existe en fac_compras
+                'fecha_creacion'          => $value->created_at?->format('Y-m-d H:i:s'),
+                'fecha_edicion'           => $value->updated_at?->format('Y-m-d H:i:s'),
+                'created_by'              => $value->created_by,
+                'updated_by'              => $value->updated_by,
+                'detalle'                 => false,
+                'es_documento_soporte'    => $esDocumentoSoporte,
+                'fe_codigo_identificador' => $value->fe_codigo_identificador,
+                'fe_zip_key'              => $value->fe_zip_key,
             ];
+
             if ($detallar) {
-                foreach ($value->detalles as $ventaDetalle) {
+                foreach ($value->detalles as $d) {
                     $this->compraData[] = [
-                        "id" => "",
-                        "descripcion" => $ventaDetalle->descripcion,
-                        "cantidad" => $ventaDetalle->cantidad,
-                        "costo" => $ventaDetalle->costo,
-                        "subtotal" => $ventaDetalle->subtotal,
-                        "nombre_bodega" => "",
-                        "nombre_completo" => "",
-                        "documento_referencia" => "",
-                        "fecha_manual" => "",
-                        "iva_porcentaje" => $ventaDetalle->iva_porcentaje,
-                        "total_iva" => $ventaDetalle->iva_valor,
-                        "descuento_porcentaje" => $ventaDetalle->descuento_porcentaje,
-                        "total_descuento" => $ventaDetalle->descuento_valor,
-                        "rete_fuente_porcentaje" => "",
-                        "total_rete_fuente" => "",
-                        "total_factura" => $ventaDetalle->total,
-                        "anulado" => "",
-                        "fecha_creacion" => "",
-                        "fecha_edicion" => "",
-                        "created_by" => "",
-                        "updated_by" => "",
-                        "detalle" => true
+                        'id'                      => '',
+                        'descripcion'             => $d->descripcion
+                            ?: ($d->producto
+                                ? "{$d->producto->codigo} - {$d->producto->nombre}"
+                                : 'SIN PRODUCTO RELACIONADO'),
+                        'cantidad'                => $d->cantidad,
+                        'valor'                   => $d->costo,   // se conserva por compat
+                        'costo'                   => $d->costo,
+                        'subtotal'                => $d->subtotal,
+                        'nombre_bodega'           => '',
+                        'nombre_completo'         => '',
+                        'nombre_usuario'          => '',
+                        'documento_referencia'    => '',
+                        'fecha_manual'            => '',
+                        'iva_porcentaje'          => $d->iva_porcentaje,
+                        'total_iva'               => $d->iva_valor,
+                        'descuento_porcentaje'    => $d->descuento_porcentaje,
+                        'total_descuento'         => $d->descuento_valor,
+                        'rete_fuente_porcentaje'  => '',
+                        'total_rete_fuente'       => '',
+                        'total_factura'           => $d->total,
+                        'anulado'                 => '',
+                        'fecha_creacion'          => '',
+                        'fecha_edicion'           => '',
+                        'created_by'              => '',
+                        'updated_by'              => '',
+                        'detalle'                 => true,
+                        'es_documento_soporte'    => false,
+                        'fe_codigo_identificador' => null,
+                        'fe_zip_key'              => null,
                     ];
                 }
             }
@@ -703,6 +752,7 @@ class CompraController extends Controller
         $compra = FacCompras::create([
             'id_proveedor' => $request->get('id_proveedor'),
             'id_comprobante' => $request->get('id_comprobante'),
+            'id_resolucion' => $request->get('id_resolucion'),
             'id_bodega' => $request->get('id_bodega'),
             'id_centro_costos' => $this->bodega->id_centro_costos,
             'fecha_manual' => $request->get('fecha_manual'),
@@ -713,6 +763,7 @@ class CompraController extends Controller
             'total_descuento' => $this->totalesFactura['total_descuento'],
             'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
             'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
+            'codigo_tipo_documento_dian' => $request->get('id_resolucion') ? CodigoDocumentoDianTypes::DOCUMENTO_SOPORTE : null,
             'total_factura' => $this->totalesFactura['total_factura'],
             'observacion' => '',
             'created_by' => request()->user()->id,
@@ -847,6 +898,187 @@ class CompraController extends Controller
                 'cuenta'
             )
             ->first();
+    }
+
+    private function buildComprasQuery(Request $request)
+    {
+        return FacCompras::query()
+            ->select([
+                'id', 'id_proveedor', 'id_bodega', 'id_comprobante', 'id_resolucion',
+                'documento_referencia', 'fecha_manual', 'consecutivo',
+                'subtotal', 'total_iva', 'total_descuento', 'total_rete_fuente',
+                'total_factura',
+                'codigo_tipo_documento_dian',
+                'fe_codigo_identificador', 'fe_zip_key', 'fe_xml_file',
+                'created_by', 'updated_by', 'created_at', 'updated_at',
+            ])
+            ->addSelect([
+                'total_productos_cantidad' => FacCompraDetalles::query()
+                    ->selectRaw('COALESCE(SUM(cantidad), 0)')
+                    ->whereColumn('fac_compra_detalles.id_compra', 'fac_compras.id'),
+            ])
+            ->where('fecha_manual', '>=', $request->get('fecha_desde'))
+            ->where('fecha_manual', '<=', $request->get('fecha_hasta'))
+            ->when($request->filled('id_proveedor'), fn ($q) => $q->where('id_proveedor', $request->get('id_proveedor')))
+            ->when($request->filled('factura'),      fn ($q) => $q->where('documento_referencia', 'LIKE', '%' . $request->get('factura') . '%'))
+            ->when($request->filled('consecutivo'),  fn ($q) => $q->where('consecutivo', $request->get('consecutivo')))
+            ->when($request->filled('id_comprobante'),fn ($q) => $q->where('id_comprobante', $request->get('id_comprobante')))
+            ->when($request->filled('id_bodega'),    fn ($q) => $q->where('id_bodega', $request->get('id_bodega')))
+            ->when($request->filled('id_usuario'),   fn ($q) => $q->where('created_by', $request->get('id_usuario')))
+            ->when($request->filled('id_producto'),  fn ($q) => $q->whereHas('detalles',
+                fn ($d) => $d->where('id_producto', $request->get('id_producto'))))
+            ->when($request->filled('id_forma_pago'), fn ($q) => $q->whereHas('pagos',
+                fn ($p) => $p->where('id_forma_pago', $request->get('id_forma_pago'))));
+    }
+
+    private function getTotalesCompras(Request $request): array
+    {
+        $apply = function ($q) use ($request) {
+            return $q
+                ->when($request->filled('id_proveedor'),  fn ($q) => $q->where('FC.id_proveedor', $request->get('id_proveedor')))
+                ->when($request->filled('id_comprobante'),fn ($q) => $q->where('FC.id_comprobante', $request->get('id_comprobante')))
+                ->when($request->filled('id_bodega'),     fn ($q) => $q->where('FC.id_bodega', $request->get('id_bodega')))
+                ->when($request->filled('factura'),       fn ($q) => $q->where('FC.documento_referencia', 'LIKE', '%' . $request->get('factura') . '%'))
+                ->when($request->filled('consecutivo'),   fn ($q) => $q->where('FC.consecutivo', $request->get('consecutivo')))
+                ->when($request->filled('id_usuario'),    fn ($q) => $q->where('FC.created_by', $request->get('id_usuario')))
+                ->when($request->filled('id_producto'),   fn ($q) => $q->whereIn('FC.id', function ($sub) use ($request) {
+                    $sub->select('id_compra')->from('fac_compra_detalles')
+                        ->where('id_producto', $request->get('id_producto'));
+                }))
+                ->when($request->filled('id_forma_pago'), fn ($q) => $q->whereIn('FC.id', function ($sub) use ($request) {
+                    $sub->select('id_compra')->from('fac_compra_pagos')
+                        ->where('id_forma_pago', $request->get('id_forma_pago'));
+                }))
+                ->where('FC.fecha_manual', '>=', $request->get('fecha_desde'))
+                ->where('FC.fecha_manual', '<=', $request->get('fecha_hasta'));
+        };
+
+        // Totales de cabecera (total_factura)
+        $general = $apply(DB::connection('sam')->table('fac_compras as FC'))
+            ->selectRaw('COALESCE(SUM(FC.total_factura), 0) AS total_venta')
+            ->first();
+
+        // Totales de detalle (cantidad + costo + iva)
+        $detalle = $apply(DB::connection('sam')->table('fac_compras as FC'))
+            ->join('fac_compra_detalles as FCD', 'FC.id', '=', 'FCD.id_compra')
+            ->selectRaw('
+                COALESCE(SUM(FCD.cantidad), 0)     AS total_productos_cantidad,
+                COALESCE(SUM(FCD.subtotal), 0)     AS total_costo,
+                COALESCE(SUM(FCD.iva_valor), 0)    AS total_iva
+            ')->first();
+
+        return [
+            'total_productos_cantidad' => (float) $detalle->total_productos_cantidad,
+            'total_costo'              => (float) $detalle->total_costo,
+            'total_iva'                => (float) $detalle->total_iva,
+            'total_venta'              => (float) $general->total_venta,
+        ];
+    }
+
+    public function facturacionElectronica(Request $request)
+    {
+        $rules = [
+            'id_compra' => 'required|exists:sam.fac_compras,id',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'data'    => [],
+                'message' => $validator->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $compra  = FacCompras::with(['proveedor', 'detalles', 'pagos', 'resolucion'])->find($request->id_compra);
+        $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+
+        if (!$compra) {
+            return response()->json([
+                'success' => false,
+                'data'    => [],
+                'message' => ['compra' => ['La compra no existe.']],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (!$compra->id_resolucion) {
+            return response()->json([
+                'success' => false,
+                'data'    => [],
+                'message' => ['documento_soporte' => ['Esta compra no fue creada como documento soporte.']],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Si ya fue emitido, sólo permitir consultar estado si hay zip_key (reenvío = volver a enviar)
+        $esReenvio = (bool) $request->boolean('reenviar');
+
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            // 1) Si existe zip_key pendiente, consultar estado primero
+            if ($compra->fe_zip_key) {
+                $consulta = (new DocumentoSoporteSender($compra))
+                    ->consultarZip($compra->fe_zip_key);
+
+                if ($consulta['success'] && $consulta['is_valid']) {
+                    $compra->fe_codigo_identificador = $consulta['cufe'];
+                    $compra->fe_zip_key = null;
+                    $compra->save();
+
+                    DB::connection('sam')->commit();
+
+                    return response()->json([
+                        'success' => true,
+                        'data'    => [],
+                        'message' => 'Documento soporte validado correctamente.',
+                    ], 200);
+                }
+
+                // Si no está válido, sigue al paso de envío (o devuelve el error si prefieres)
+                if (!$consulta['success']) {
+                    \Log::warning('[compras-fe] consultarZip falló', $consulta);
+                }
+            }
+
+            // 2) Enviar (o reenviar)
+            $sender = (new DocumentoSoporteSender($compra))->send();
+
+            if (($sender['status'] ?? 0) >= 400) {
+                if (!empty($sender['zip_key'])) {
+                    $compra->fe_zip_key = $sender['zip_key'];
+                    $compra->save();
+                }
+                DB::connection('sam')->commit();
+                return response()->json([
+                    'success' => false,
+                    'data'    => [],
+                    'message' => $sender['error_message'] ?? 'Error al enviar documento soporte.',
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            if (($sender['status'] ?? 0) === 200) {
+                $compra->fe_codigo_identificador = $sender['cufe'] ?? null;
+                $compra->fe_zip_key              = $sender['zip_key'] ?? null;
+                $compra->fe_xml_file             = $sender['xml_url'] ?? null;
+                $compra->save();
+            }
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success' => true,
+                'data'    => [],
+                'message' => 'Documento soporte enviado correctamente.',
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                'success' => false,
+                'data'    => [],
+                'message' => $e->getMessage(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
 }
