@@ -11,12 +11,11 @@ use Illuminate\Support\Facades\Log;
 
 // PRINTERS
 use App\Helpers\Printers\VentasPdf;
-
+use App\Helpers\Eco\SendEcoWhatsApp;
 // TRAITS
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 use App\Http\Controllers\Traits\BegFacturacionElectronica;
-
 // MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\Nits;
@@ -463,8 +462,17 @@ class VentaServices
                 }
             }
 
-            // ── Factura whatsapp ── 
-            
+            // ── Factura WhatsApp ──
+            if ($this->nit->notificacion_whatsapp) {
+                try {
+                    $this->enviarWhatsappFactura($venta, $empresa, $contexto);
+                } catch (\Throwable $e) {
+                    Log::warning('Venta creada, pero falló el envío de WhatsApp', [
+                        'venta_id' => $venta->id,
+                        'error'    => $e->getMessage(),
+                    ]);
+                }
+            }
 
             return $venta;
 
@@ -1056,5 +1064,111 @@ class VentaServices
         }
 
         return $totalesAcumulados;
+    }
+
+    /**
+     * Envía la factura al cliente por WhatsApp (ECO).
+     * Solo se llama si el NIT tiene notificacion_whatsapp = true.
+     */
+    protected function enviarWhatsappFactura(FacVentas $venta, Empresa $empresa, array $contexto): void
+    {
+        // ── Teléfono del cliente ──
+        $telefono = $this->nit->telefono_1 ?? null;
+
+        if (!$telefono) {
+            Log::info('WhatsApp factura omitido: NIT sin teléfono', [
+                'venta_id' => $venta->id,
+                'nit_id'   => $this->nit->id,
+            ]);
+            return;
+        }
+
+        $telefono = preg_replace('/\D/', '', (string) $telefono);
+
+        if (strlen($telefono) < 10) {
+            Log::info('WhatsApp factura omitido: teléfono inválido', [
+                'venta_id' => $venta->id,
+                'telefono' => $telefono,
+            ]);
+            return;
+        }
+
+        if (strlen($telefono) === 10) {
+            $telefono = '57' . $telefono;
+        }
+
+        // ── Token ECO ──
+        $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
+        $ecoToken = $ecoToken?->valor ?? null;
+
+        if (!$ecoToken) {
+            Log::info('WhatsApp factura omitido: token ECO no configurado', [
+                'venta_id' => $venta->id,
+            ]);
+            return;
+        }
+
+        // ── Datos para la plantilla ──
+        $nombreCliente   = $this->nit->nombre_completo ?: 'Cliente';
+        $tipoDocumento   = 'Factura';
+        $numeroDocumento = $venta->documento_referencia ?: $venta->consecutivo;
+        $valorDocumento  = number_format((float) $venta->total_factura, 2, ',', '.');
+        $fechaDocumento  = $venta->fecha_manual
+            ? Carbon::parse($venta->fecha_manual)->format('Y-m-d')
+            : Carbon::now()->format('Y-m-d');
+        $estadoDocumento = '';
+        $nombreEmpresa   = $empresa->razon_social ?: 'PORTAFOLIO ERP SAS';
+
+        // ── Clave del PDF ──
+        $claveUrl = $this->generarClavePDF(
+            $empresa->id,
+            $this->resolucion->comprobante->id,
+            $venta->consecutivo,
+            $venta->fecha_manual
+        );
+
+        $linkFactura = 'documentos-generales-pdf?code=' . $claveUrl;
+
+        // ── Parámetros ──
+        $whatsappData = [
+            "1" => $nombreCliente,
+            "2" => $tipoDocumento,
+            "3" => $numeroDocumento,
+            "4" => $valorDocumento,
+            "5" => $fechaDocumento,
+            "6" => $estadoDocumento,
+            "7" => $nombreEmpresa,
+            "8" => $linkFactura,
+        ];
+
+        // ── Enviar ──
+        $sender = new SendEcoWhatsApp(
+            $telefono,
+            $whatsappData,
+            [
+                'id_nit'           => $this->nit->id,
+                'nombre_completo'  => $nombreCliente,
+                'numero_documento' => $this->nit->numero_documento,
+            ],
+            'general_documento_portafolioerp',
+            'general_documento_portafolioerp'
+        );
+
+        $sender->setToken($ecoToken);
+        $response = $sender->send();
+
+        Log::info('WhatsApp factura enviada', [
+            'venta_id' => $venta->id,
+            'telefono' => $telefono,
+            'link'     => $linkFactura,
+            'response' => $response,
+        ]);
+
+        if (!$response || !isset($response->status) || $response->status >= 400) {
+            Log::warning('WhatsApp factura falló en ECO', [
+                'venta_id' => $venta->id,
+                'response' => $response,
+            ]);
+        }
     }
 }
