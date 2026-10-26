@@ -138,21 +138,16 @@ function cargarTablasNotasCredito() {
     });
 
     nota_credito_table_facturas = $('#facturaDevolucionTable').DataTable({
-        pageLength: 15,
-        dom: 'Brtip',
-        paging: true,
+        dom: '',
+        pageLength: 200,
         responsive: false,
-        processing: false,
-        serverSide: true,
-        fixedHeader: true,
+        processing: true,
+        serverSide: false,
         deferLoading: 0,
         initialLoad: false,
+        autoWidth: true,
         language: lenguajeDatatable,
-        sScrollX: "100%",
-        fixedColumns : {
-            left: 0,
-            right : 1,
-        },
+        ordering: false,
         ajax:  {
             type: "GET",
             url: base_url + 'facturas',
