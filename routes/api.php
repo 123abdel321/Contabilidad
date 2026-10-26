@@ -255,6 +255,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('documentos-generales-delete', 'delete');
             Route::post('documentos-generales-excel', 'exportExcel');
             Route::post('documentos-generales-pdf', 'exportPdf');
+            Route::post('documentos-generales-whatsapp', 'sendWhatsapp');
         });
         //VENTAS GENERALES
         Route::controller(VentasGeneralesController::class)->group(function () {

@@ -4,17 +4,23 @@ namespace App\Http\Controllers\Informes;
 
 use DB;
 use Carbon\Carbon;
-use App\Helpers\Extracto;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Bus;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Exports\DocumentoGeneralExport;
-use App\Helpers\Printers\RecibosPdfMultiple;
+use Illuminate\Support\Facades\Validator;
+//JOBS
 use App\Jobs\ProcessInformeDocumentosGenerales;
 use App\Jobs\ProcessGenerateRecibosMultiplePdf;
+//HELPERS
+use App\Helpers\Extracto;
+use App\Helpers\Eco\SendEcoWhatsApp;
+use App\Helpers\Printers\RecibosPdfMultiple;
 //MODELS
+use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\FacBodegas;
@@ -22,6 +28,7 @@ use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Informes\InfDocumentosGenerales;
 use App\Models\Sistema\FacProductosBodegasMovimiento;
@@ -766,6 +773,232 @@ class DocumentosGeneralesController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function sendWhatsapp(Request $request)
+    {
+        $rules = [
+            'id_comprobante' => 'required|integer',
+            'consecutivo'    => 'required|string',
+            'fecha_manual'   => 'required|string',
+            'telefono'       => 'required|string',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages ?? []);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        try {
+            $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+
+            if (!$empresa) {
+                throw new \Exception('Empresa no encontrada.');
+            }
+
+            // Token ECO
+            $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
+            $ecoToken = $ecoToken?->valor ?? null;
+
+            if (!$ecoToken) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se ha configurado el token de ECO en las variables de entorno.',
+                ], 422);
+            }
+
+            $id_comprobante = $request->get('id_comprobante');
+            $consecutivo    = $request->get('consecutivo');
+            $fecha_manual   = $request->get('fecha_manual');
+
+            // Buscar el documento
+            $comprobante = Comprobantes::where('id', $id_comprobante)->first();
+
+            if (!$comprobante) {
+                throw new \Exception("El comprobante {$id_comprobante} no existe.");
+            }
+
+            $documento = DocumentosGeneral::where('id_comprobante', $id_comprobante)
+                ->where('fecha_manual', 'LIKE', $fecha_manual . '%')
+                ->where('consecutivo', $consecutivo)
+                ->first();
+
+            if (!$documento) {
+                throw new \Exception('El documento no tiene cabezas para imprimir.');
+            }
+
+            // ─── Datos del cliente ───
+            $cliente = null;
+            $nombreCliente = 'Cliente';
+
+            if ($documento->id_nit) {
+                $cliente = Nits::where('id', $documento->id_nit)->first();
+                if ($cliente) {
+                    $nombreCliente = $cliente->nombre_completo;
+                }
+            }
+
+            // ─── Valores del documento ───
+            // El valor del documento es el mayor entre debito y credito
+            $valorDocumento = number_format(
+                (float) max($documento->debito, $documento->credito),
+                2, ',', '.'
+            );
+
+            // ─── Tipo de documento legible según el comprobante ───
+            $tipoDocumento = $this->obtenerTipoDocumentoLegible($comprobante);
+
+            // ─── Estado ───
+            $estadoDocumento = $documento->anulado == 1 ? 'Anulado' : 'Pagada';
+
+            // ─── Fecha ───
+            $fechaDocumento = $documento->fecha_manual
+                ? Carbon::parse($documento->fecha_manual)->format('Y-m-d')
+                : Carbon::now()->format('Y-m-d');
+
+            // ─── Número del documento ───
+            $numeroDocumento = $documento->consecutivo ?: $documento->documento_referencia;
+
+            // ─── Nombre de la empresa ───
+            $nombreEmpresa = $empresa->razon_social ?: 'PORTAFOLIO ERP SAS';
+
+            // ─── Clave del PDF ───
+            $claveUrl = $this->generarClavePDF(
+                $empresa->id,
+                $id_comprobante,
+                $consecutivo,
+                $fecha_manual
+            );
+
+            // ─── Link del PDF ───
+            $linkPdf = 'documentos-generales-pdf?code=' . $claveUrl;
+
+            // ─── Parámetros de la plantilla ───
+            $whatsappData = [
+                "1" => $nombreCliente,
+                "2" => $tipoDocumento,
+                "3" => $numeroDocumento,
+                "4" => $valorDocumento,
+                "5" => $fechaDocumento,
+                "6" => $estadoDocumento,
+                "7" => $nombreEmpresa,
+                "8" => $linkPdf,
+            ];
+
+            // ─── Teléfono ───
+            $telefono = preg_replace('/\D/', '', (string) $request->get('telefono'));
+
+            if (strlen($telefono) < 10) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El número debe tener al menos 10 dígitos.',
+                ], 422);
+            }
+
+            if (strlen($telefono) === 10) {
+                $telefono = '57' . $telefono;
+            }
+
+            // ─── Enviar WhatsApp ───
+            $sender = new SendEcoWhatsApp(
+                $telefono,
+                $whatsappData,
+                [
+                    'id_nit'           => $cliente->id ?? null,
+                    'nombre_completo'  => $nombreCliente,
+                    'numero_documento' => $cliente->numero_documento ?? null,
+                ],
+                'general_documento_portafolioerp',
+                'general_documento_portafolioerp'
+            );
+
+            $sender->setToken($ecoToken);
+            $response = $sender->send();
+
+            \Log::info('WhatsApp documento general enviado', [
+                'id_comprobante' => $id_comprobante,
+                'consecutivo'    => $consecutivo,
+                'telefono'       => $telefono,
+                'link'           => $linkPdf,
+                'response'       => $response,
+            ]);
+
+            if (!$response || !isset($response->status)) {
+                throw new \Exception('Sin respuesta de ECO.');
+            }
+
+            if ($response->status >= 400) {
+                $msg = $response->response->message ?? 'Error al enviar WhatsApp por ECO';
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $msg,
+                    'eco'     => $response->response,
+                ], 422);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Documento enviado por WhatsApp',
+                'eco'     => $response->response,
+            ], 200);
+
+        } catch (\Throwable $e) {
+            \Log::error('Error enviando WhatsApp documento general', [
+                'id_comprobante' => $request->id_comprobante ?? null,
+                'consecutivo'    => $request->consecutivo ?? null,
+                'error'          => $e->getMessage(),
+                'line'           => $e->getLine(),
+                'file'           => $e->getFile(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Devuelve un texto legible del tipo de documento según el comprobante.
+     */
+    private function obtenerTipoDocumentoLegible($comprobante)
+    {
+        switch ($comprobante->tipo_comprobante) {
+            case Comprobantes::TIPO_INGRESOS:
+                return 'Recibo de ingreso';
+            case Comprobantes::TIPO_VENTAS:
+                return 'Factura';
+            case Comprobantes::TIPO_COMPRAS:
+                return 'Compra';
+            case Comprobantes::TIPO_GASTOS:
+                return 'Gasto';
+            case Comprobantes::TIPO_EGRESOS:
+                return 'Pago';
+            case Comprobantes::TIPO_OTROS:
+                return 'Documento';
+            default:
+                return 'Documento';
+        }
+    }
+
+    public function generarClavePDF($has_empresa, $id_comprobante, $consecutivo, $fecha_manual)
+    {
+        $data = [
+            'has_empresa'    => $has_empresa,
+            'id_comprobante' => $id_comprobante,
+            'consecutivo'    => $consecutivo,
+            'fecha_manual'   => $fecha_manual,
+        ];
+
+        $json       = json_encode($data);
+        $compressed = gzcompress($json, 9);
+
+        return rtrim(strtr(base64_encode($compressed), '+/', '-_'), '=');
     }
 
 }

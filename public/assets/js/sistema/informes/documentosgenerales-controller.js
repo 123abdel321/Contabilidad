@@ -137,6 +137,23 @@ function documentosgeneralesInit() {
                         </span>
                     `;
 
+                    // WhatsApp
+                    html += `
+                        <span id="enviarwhatsappdocumentogeneral_${row.id}"
+                            href="javascript:void(0)"
+                            class="btn badge enviar-whatsapp-documentogeneral"
+                            title="Enviar por WhatsApp"
+                            style="margin-bottom: 0rem !important; color: #25D366; background-color: #111 !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
+                            <i class="fab fa-whatsapp" style="font-size: 13px;"></i>
+                        </span>
+
+                        <span id="enviarwhatsappdocumentogeneralloading_${row.id}"
+                            class="btn badge"
+                            style="margin-bottom: 0rem !important; color: #25D366; background-color: #111 !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%; display: none;" disabled>
+                            <i class="fa fa-spinner fa-spin" style="font-size: 13px;"></i>
+                        </span>
+                    `;
+
                     // Anular
                     html += `
                         <span id="anulardocumentogeneral_${row.id}"
@@ -251,6 +268,23 @@ function documentosgeneralesInit() {
                             title="Imprimir documento"
                             style="margin-bottom: 0rem !important; color: black; background-color: white !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
                             <i class="fas fa-print" style="font-size: 13px;"></i>
+                        </span>
+                    `;
+
+                    // WhatsApp
+                    html += `
+                        <span id="enviarwhatsappdocumentogeneral_${row.id}"
+                            href="javascript:void(0)"
+                            class="btn badge enviar-whatsapp-documentogeneral"
+                            title="Enviar por WhatsApp"
+                            style="margin-bottom: 0rem !important; color: #25D366; background-color: #111 !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
+                            <i class="fab fa-whatsapp" style="font-size: 13px;"></i>
+                        </span>
+
+                        <span id="enviarwhatsappdocumentogeneralloading_${row.id}"
+                            class="btn badge"
+                            style="margin-bottom: 0rem !important; color: #25D366; background-color: #111 !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%; display: none;" disabled>
+                            <i class="fa fa-spinner fa-spin" style="font-size: 13px;"></i>
                         </span>
                     `;
 
@@ -728,3 +762,83 @@ function formatNitDocumentosGenerales (nit) {
 function formatRepoSelectionDocumentosGenerales (nit) {
     return nit.full_name || nit.text;
 }
+
+$(document).on('click', '.enviar-whatsapp-documentogeneral', function () {
+    var id = this.id.split('_')[1];
+    var data = getDataById(id, documentos_generales_table);
+
+    if (!data) {
+        agregarToast('error', 'Error', 'No se encontraron datos del documento');
+        return;
+    }
+
+    // Intentar obtener el teléfono del NIT
+    var telefono = '';
+    if (data.numero_documento) {
+        // Buscar el teléfono en el objeto row (si viene en el JSON)
+        telefono = data.telefono_nit || '';
+    }
+    telefono = String(telefono).replace(/\D/g, '');
+
+    if (telefono.length === 10) {
+        telefono = '57' + telefono;
+    }
+
+    Swal.fire({
+        title: 'Enviar documento por WhatsApp',
+        input: 'text',
+        inputLabel: 'Número de WhatsApp (con código país)',
+        inputValue: telefono,
+        inputAttributes: {
+            autocapitalize: 'off',
+            placeholder: '573001234567'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Enviar',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: (numero) => {
+            var numeroLimpio = String(numero || '').replace(/\D/g, '');
+
+            if (!numeroLimpio || numeroLimpio.length < 10) {
+                Swal.showValidationMessage('Número inválido (mínimo 10 dígitos)');
+                return false;
+            }
+
+            $('#enviarwhatsappdocumentogeneral_' + id).hide();
+            $('#enviarwhatsappdocumentogeneralloading_' + id).show();
+
+            return $.ajax({
+                url: base_url + 'documentos-generales-whatsapp',
+                method: 'POST',
+                data: JSON.stringify({
+                    id_comprobante: data.id_comprobante,
+                    consecutivo:    data.consecutivo,
+                    fecha_manual:   data.fecha_manual,
+                    telefono:       numeroLimpio,
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if (!res.success) {
+                    throw new Error(res.message || 'Error al enviar');
+                }
+                return res;
+            }).fail((err) => {
+                throw new Error(err.responseJSON?.message || 'Error al enviar WhatsApp');
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        $('#enviarwhatsappdocumentogeneral_' + id).show();
+        $('#enviarwhatsappdocumentogeneralloading_' + id).hide();
+
+        if (result.isConfirmed) {
+            agregarToast('exito', 'Enviado', 'Documento enviado por WhatsApp');
+        }
+    }).catch((err) => {
+        $('#enviarwhatsappdocumentogeneral_' + id).show();
+        $('#enviarwhatsappdocumentogeneralloading_' + id).hide();
+        agregarToast('error', 'Error', err.message);
+    });
+});
