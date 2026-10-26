@@ -201,6 +201,39 @@ abstract class AbstractFESender
 				];
 			}
 		}
+
+		// Si no hay 'data', devolvemos error estructurado (no explota)
+		if (!property_exists($data, 'data')) {
+			return [
+				"status"         => 500,
+				"message_object" => "Respuesta de la API con formato desconocido",
+				"error_message"  => ["detalle" => "No contiene 'data' ni estructura compatible."],
+				"json_response"  => json_encode($data),
+				"zip_key"        => null,
+			];
+		}
+
+		// ============================================================
+		// FALLBACK: si la respuesta trae un CUFE/CUDE pero no 'data',
+		// se trata como éxito (compatibilidad con formatos legacy).
+		// ============================================================
+		$cufeLegacy = null;
+		if (isset($data->cude))                       $cufeLegacy = $data->cude;
+		elseif (isset($data->cufe))                   $cufeLegacy = $data->cufe;
+		elseif (isset($data->response['cufe']))       $cufeLegacy = $data->response['cufe'];
+		elseif (isset($data->data['cufe']))           $cufeLegacy = $data->data['cufe'];
+
+		if ($cufeLegacy !== null) {
+			return [
+				"zip_key" => null,
+				"status"  => 200,
+				"cufe"    => $cufeLegacy,
+				"xml_url" => $data->urlinvoicexml
+								?? ($data->response['XmlUrl'] ?? ($data->data['XmlUrl'] ?? '')),
+				"mensaje" => $data->message
+								?? ($data->response['StatusDescription'] ?? 'Documento generado'),
+			];
+		}
 		
 		$zipKey = $data->data->ResponseDian['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'];
 
