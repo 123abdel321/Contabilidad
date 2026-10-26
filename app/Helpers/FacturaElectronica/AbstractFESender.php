@@ -71,157 +71,160 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		$url = $this->getUrl() . $setTestId;
+		$url    = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
-			'Content-Type' => 'application/json',
+			'Content-Type'     => 'application/json',
 			'X-Requested-With' => 'XMLHttpRequest',
-			'Authorization' => 'Bearer ' . $bearerToken
+			'Authorization'    => 'Bearer ' . $bearerToken,
 		])->post($url, $params);
 
 		$data = (object) $response->json();
-		
+
 		info(json_encode($data), $params);
-		
+
+		// ============================================================
+		// 1) RESPUESTA 200 → ÉXITO
+		// ============================================================
 		if (property_exists($data, 'status') && $data->status == 200) {
 			return [
-				"status" => $data->status,
-				"cufe" => $data->response['cufe'],
-				"xml_url" => $data->response["XmlUrl"],
-				"mensaje" => $data->response['StatusDescription'],
-				"zip_key" => ''
+				"status"  => $data->status,
+				"cufe"    => $data->response['cufe']              ?? ($data->response['cude'] ?? null),
+				"xml_url" => $data->response['XmlUrl']            ?? '',
+				"mensaje" => $data->response['StatusDescription'] ?? '',
+				"zip_key" => '',
 			];
 		}
 
+		// ============================================================
+		// 2) RESPUESTA 400 → revisar si es "documento ya procesado"
+		// ============================================================
 		if (property_exists($data, 'status') && $data->status == 400) {
-			// Verificar si existe CUFE y si el error es por documento ya procesado
-			$hasCufe = isset($data->response['cufe']);
+			// 2.1) ¿Trae CUFE/CUDE en cualquier lugar?
+			$cufe400 = $data->response['cufe']
+					?? ($data->response['cude']             ?? null)
+					?? ($data->response['response']['cufe'] ?? null)
+					?? ($data->response['response']['cude'] ?? null)
+					?? ($data->cude                         ?? null)
+					?? ($data->cufe                         ?? null);
+
+			$hasCufe = $cufe400 !== null;
+
+			// 2.2) ¿Es "ya procesado"? → por 'message' o por mensajesValidacion
 			$isAlreadyProcessed = false;
-			
-			// Buscar el mensaje "Documento procesado anteriormente"
+
+			if (isset($data->message) && (
+				stripos($data->message, 'ya fue enviado') !== false ||
+				stripos($data->message, 'ya fue procesado') !== false
+			)) {
+				$isAlreadyProcessed = true;
+			}
+
 			if (isset($data->response['mensajesValidacion']['string'])) {
 				foreach ($data->response['mensajesValidacion']['string'] as $mensaje) {
-					if (strpos($mensaje, 'Documento procesado anteriormente') !== false) {
+					if (stripos($mensaje, 'Documento procesado anteriormente') !== false) {
 						$isAlreadyProcessed = true;
 						break;
 					}
 				}
 			}
-			
-			// Si tiene CUFE y es por documento ya procesado, tratarlo como éxito
+
 			if ($hasCufe && $isAlreadyProcessed) {
 				return [
 					"zip_key" => '',
-					"status" => 200, // Cambiamos a 200 para indicar éxito
-					"cufe" => $data->response['cufe'],
-					"xml_url" => '', // No hay URL porque ya fue procesado
-					"mensaje" => "Documento ya fue procesado anteriormente",
+					"status"  => 200,
+					"cufe"    => $cufe400,
+					"xml_url" => '',
+					"mensaje" => $data->message ?? "Documento ya fue procesado anteriormente",
 				];
 			}
 		}
 
-		if (property_exists($data, 'response')) {
-			$response = $data->response;
-			if (array_key_exists('unexpected', $response)) {
-				$erroresOrganizados = [];
+		// ============================================================
+		// 3) response.unexpected → error estructurado por reglas DIAN
+		// ============================================================
+		if (property_exists($data, 'response') && is_array($data->response)
+			&& array_key_exists('unexpected', $data->response)) {
 
-				foreach ($response['unexpected'] as $error) {
-					// Dividir cada error en la parte de la regla y el mensaje
-					$partes = explode(', ', $error, 2);
-					
-					if (count($partes) === 2) {
-						$regla = $partes[0];
-						$mensaje = $partes[1];
-						
-						// Agregar al arreglo organizado
-						$erroresOrganizados[$regla] = [$mensaje];
-					}
+			$erroresOrganizados = [];
+			foreach ($data->response['unexpected'] as $error) {
+				$partes = explode(', ', $error, 2);
+				if (count($partes) === 2) {
+					$erroresOrganizados[$partes[0]] = [$partes[1]];
 				}
-
-				return [
-					"status" => 500,
-					"message_object" => 'Error al generar la factura',
-					"error_message" => $erroresOrganizados,
-					'json_response' => json_encode($params),
-					"zip_key" => null
-				];
 			}
-		}
 
-		if (property_exists($data, 'status') && $data->status >= 500) {
-			return [
-				"status" => 500,
-				"message_object" => ["Error interno: https://fe.portafolioerp.com"]
-			];
-		}
-
-		if (property_exists($data, 'status') && $data->status >= 400) {
-			
-			$statusDescription = $data->data['StatusDescription'];
-			$errorMessage = $data->data['ErrorMessage'];
-			$zipKey = $data->data['ZipKey'];
-
-			return [
-				"status" => $data->status,
-				"message_object" => $statusDescription,
-				"error_message" => $errorMessage,
-				'json_response' => json_encode($params),
-				"zip_key" => $zipKey
-			];
-		}
-
-		if(property_exists($data, 'cuds')){
-			return [
-				"status" => 200,
-				"cuds" => $data->cuds,
-				"mensaje" => $data->message,
-				"xml" => $data->invoicexml,
-				"data" => $data,
-				"zip_key" => null
-			];
-		}
-
-		if (!property_exists($data, 'data')) {
-			if (property_exists($data, 'status')) {
-				return [
-					"status" => $data->status,
-					"message_object" => $data->message,
-					"error_message" => $data->errors,
-					'json_response' => json_encode($params),
-					"zip_key" => null
-				];
-			}
-			if (property_exists($data, 'errors')) {
-				return [
-					"status" => 500,
-					"message_object" => $data->message,
-					"error_message" => $data->errors,
-					'json_response' => json_encode($params),
-					"zip_key" => null
-				];
-			}
-		}
-
-		// Si no hay 'data', devolvemos error estructurado (no explota)
-		if (!property_exists($data, 'data')) {
 			return [
 				"status"         => 500,
-				"message_object" => "Respuesta de la API con formato desconocido",
-				"error_message"  => ["detalle" => "No contiene 'data' ni estructura compatible."],
-				"json_response"  => json_encode($data),
+				"message_object" => 'Error al generar la factura',
+				"error_message"  => $erroresOrganizados,
+				"json_response"  => json_encode($params),
 				"zip_key"        => null,
 			];
 		}
 
 		// ============================================================
-		// FALLBACK: si la respuesta trae un CUFE/CUDE pero no 'data',
-		// se trata como éxito (compatibilidad con formatos legacy).
+		// 4) status >= 500 → error interno
 		// ============================================================
-		$cufeLegacy = null;
-		if (isset($data->cude))                       $cufeLegacy = $data->cude;
-		elseif (isset($data->cufe))                   $cufeLegacy = $data->cufe;
-		elseif (isset($data->response['cufe']))       $cufeLegacy = $data->response['cufe'];
-		elseif (isset($data->data['cufe']))           $cufeLegacy = $data->data['cufe'];
+		if (property_exists($data, 'status') && $data->status >= 500) {
+			return [
+				"status"         => 500,
+				"message_object" => ["Error interno: https://fe.portafolioerp.com"],
+			];
+		}
+
+		// ============================================================
+		// 5) status >= 400 (400/401/403/404...) → error con detalle
+		//    Con guard: solo accede a $data->data si existe.
+		// ============================================================
+		if (property_exists($data, 'status') && $data->status >= 400) {
+			// Intentar extraer el detalle desde distintos formatos posibles
+			$statusDescription = $data->data['StatusDescription']
+							?? ($data->response['mensaje']            ?? null)
+							?? ($data->response['StatusDescription']  ?? null)
+							?? ($data->message                        ?? null);
+
+			$errorMessage = $data->data['ErrorMessage']
+						?? ($data->response['mensajesValidacion'] ?? null)
+						?? ($data->response['unexpected']         ?? null)
+						?? ($data->errors                         ?? null);
+
+			$zipKey = $data->data['ZipKey'] ?? null;
+
+			return [
+				"status"         => $data->status,
+				"message_object" => $statusDescription,
+				"error_message"  => $errorMessage,
+				"json_response"  => json_encode($params),
+				"zip_key"        => $zipKey,
+			];
+		}
+
+		// ============================================================
+		// 6) cuds (contingencia / proceso especial)
+		// ============================================================
+		if (property_exists($data, 'cuds')) {
+			return [
+				"status"  => 200,
+				"cuds"    => $data->cuds,
+				"mensaje" => $data->message ?? 'Documento generado',
+				"xml"     => $data->invoicexml ?? null,
+				"data"    => $data,
+				"zip_key" => null,
+			];
+		}
+
+		// ============================================================
+		// 7) FALLBACK FINAL: si trae CUFE/CUDE en cualquier lugar, éxito
+		// ============================================================
+		$cufeLegacy = $data->cude
+				?? ($data->cufe                         ?? null)
+				?? ($data->response['cufe']             ?? null)
+				?? ($data->response['cude']             ?? null)
+				?? ($data->response['response']['cufe'] ?? null)
+				?? ($data->response['response']['cude'] ?? null)
+				?? ($data->data['cufe']                 ?? null)
+				?? ($data->data['cude']                 ?? null);
 
 		if ($cufeLegacy !== null) {
 			return [
@@ -234,15 +237,32 @@ abstract class AbstractFESender
 								?? ($data->response['StatusDescription'] ?? 'Documento generado'),
 			];
 		}
-		
-		$zipKey = $data->data->ResponseDian['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'];
 
+		// ============================================================
+		// 8) ÚLTIMO RECURSO: estructura 'data' clásica (SendTestSetAsync)
+		//    Se protege por completo con propiedad existente.
+		// ============================================================
+		if (property_exists($data, 'data')) {
+			$zipKey = $data->data->ResponseDian['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'] ?? null;
+
+			return [
+				"zip_key" => $zipKey,
+				"status"  => $data->status ?? 200,
+				"cufe"    => $data->data['cufe']              ?? null,
+				"xml_url" => $data->data['XmlUrl']            ?? '',
+				"mensaje" => $data->data['StatusDescription'] ?? 'Documento generado',
+			];
+		}
+
+		// ============================================================
+		// 9) Nada coincidió → error estructurado (nunca explota)
+		// ============================================================
 		return [
-			"zip_key" => $zipKey,
-			"status" => $data->status,
-			"cufe" => $data->data["cufe"],
-			"xml_url" => $data->data["XmlUrl"],
-			"mensaje" => $data->data["StatusDescription"],
+			"status"         => 500,
+			"message_object" => "Respuesta de la API con formato desconocido",
+			"error_message"  => ["detalle" => "No contiene 'data' ni estructura compatible."],
+			"json_response"  => json_encode($data),
+			"zip_key"        => null,
 		];
 	}
 
