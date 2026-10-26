@@ -33,6 +33,7 @@ function notacreditoInit () {
 function cargarTablasNotasCredito() {
     nota_credito_table = $('#notaCreditoTable').DataTable({
         dom: '',
+        paging: false,
         responsive: false,
         processing: true,
         serverSide: false,
