@@ -161,8 +161,9 @@ class DocumentoController extends Controller
                         ->showPdf();
                 }
             }
+
             if ($comprobante->tipo_comprobante == Comprobantes::TIPO_VENTAS) {
-                $venta = FacVentas::where('id', $documento->relation_id)->first();;
+                $venta = FacVentas::where('id', $documento->relation_id)->first();
                 if ($venta) {
                     return (new VentasPdf($empresa, $venta, $claveUrl))
                         ->buildPdf()
@@ -204,7 +205,26 @@ class DocumentoController extends Controller
                         ->showPdf();
                 }
             }
+
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_OTROS) {
+                $venta = FacVentas::where('id', $documento->relation_id)->first();
+                if ($venta) {
+                    // $data = (new VentasPdf($empresa, $venta))->buildPdf()->getData();
+                    // return view('pdf.facturacion.ventas', $data);
+                    return (new VentasPdf($empresa, $venta, $claveUrl))
+                        ->buildPdf()
+                        ->showPdf();
+                }
+            }
             
+            
+
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_OTROS && count($facDocumento->documentos)) {
+                return (new DocumentosPdf($empresa, $facDocumento, 'pdf.facturacion.documentos_otros'))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+
             $facDocumento = FacDocumentos::where('id', $documento->relation_id)->first();
 
             if (!$facDocumento) {
@@ -213,12 +233,6 @@ class DocumentoController extends Controller
                     'data' => [],
                     'message'=> 'La factura no existe'
                 ]);
-            }
-
-            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_OTROS && count($facDocumento->documentos)) {
-                return (new DocumentosPdf($empresa, $facDocumento, 'pdf.facturacion.documentos_otros'))
-                    ->buildPdf()
-                    ->showPdf();
             }
 
             if (count($facDocumento->documentos)) {
