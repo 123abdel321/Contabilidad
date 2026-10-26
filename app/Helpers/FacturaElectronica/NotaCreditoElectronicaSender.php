@@ -58,19 +58,12 @@ class NotaCreditoElectronicaSender extends AbstractFESender
 
 	protected function legalMonetaryTotals()
     {
-        // Usar $this->iva_inluido que ya está disponible desde el constructor
-        
         if ($this->iva_inluido) {
-            // Cuando el precio INCLUYE IVA
-            // Fórmula: subtotal_sin_iva = total_factura - total_iva
             $subtotal_sin_iva = $this->factura->total_factura - $this->factura->total_iva;
         } else {
-            // Cuando el precio NO incluye IVA
-            // Asumir que subtotal ya es sin IVA
             $subtotal_sin_iva = $this->factura->subtotal;
         }
         
-        // Asegurar redondeo correcto
         $subtotal_sin_iva = round($subtotal_sin_iva, 2);
         
         return [

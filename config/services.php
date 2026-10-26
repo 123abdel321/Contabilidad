@@ -46,5 +46,14 @@ return [
                 ? 'https://sandbox.wompi.co/v1'
                 : 'https://production.wompi.co/v1',
     ],
+    'suscripcion_venta' => [
+        'token_db'      => env('SUSCRIPCION_VENTA_TOKEN_DB'),
+        'id_bodega'     => env('SUSCRIPCION_VENTA_ID_BODEGA'),
+        'id_forma_pago' => env('SUSCRIPCION_VENTA_ID_FORMA_PAGO'),
+        'id_resolucion' => env('SUSCRIPCION_VENTA_ID_RESOLUCION'),
+        'id_vendedor'   => env('SUSCRIPCION_VENTA_ID_VENDEDOR'),
+        'id_familia'    => env('SUSCRIPCION_VENTA_ID_FAMILIA'),
+        'id_usuario'    => env('SUSCRIPCION_VENTA_ID_USUARIO'),
+    ],
 
 ];

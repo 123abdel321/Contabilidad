@@ -52,7 +52,6 @@ class Nits extends Model
 		'telefono_1',
 		'telefono_2',
 		'tipo_cuenta_banco',
-		'tipo_contribuyente',
 		'cuenta_bancaria',
 		'plazo',
 		'cupo',
@@ -60,8 +59,6 @@ class Nits extends Model
 		'no_calcular_iva',
 		'inactivar',
 		'observaciones',
-		'email_1',
-		'email_2',
 		'logo_nit',
 		'declarante',
 		'sumar_aiu',
@@ -69,6 +66,8 @@ class Nits extends Model
 		'proveedor',
 		'porcentaje_aiu',
 		'porcentaje_reteica',
+		'notificacion_email',
+		'notificacion_whatsapp',
 		'created_by',
 		'updated_by',
 		'created_at',
@@ -76,6 +75,11 @@ class Nits extends Model
 	];
 
 	protected $appends = ['nombre_completo', 'text'];
+
+	protected $casts = [
+		'notificacion_email'    => 'boolean',
+		'notificacion_whatsapp' => 'boolean',
+	];
 
 	public function tipo_documento()
     {

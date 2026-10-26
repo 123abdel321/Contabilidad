@@ -163,6 +163,20 @@
                         <label class="form-check-label" for="sumar_aiu_nits">Sumar calculo AIU</label>
                     </div>
 
+                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6">
+                        <input class="form-check-input" type="checkbox" id="notificacion_email_nit" checked>
+                        <label class="form-check-label" for="notificacion_email_nit">
+                            <i class="fas fa-envelope me-1"></i> Notificaciones por email
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6">
+                        <input class="form-check-input" type="checkbox" id="notificacion_whatsapp_nit">
+                        <label class="form-check-label" for="notificacion_whatsapp_nit">
+                            <i class="fab fa-whatsapp me-1"></i> Notificaciones por WhatsApp
+                        </label>
+                    </div>
+
                 </form>
 
             </div>

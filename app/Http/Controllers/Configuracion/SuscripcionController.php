@@ -10,12 +10,18 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessProvisionedDatabase;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
+// SERVICES
+use App\Http\Services\VentaSuscripcionService;
+use App\Http\Services\SuscripcionPagoLinkService;
+// HELPERS
+use App\Helpers\Wompi;
 // MODELS
 use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\UsuarioEmpresa;
 use App\Models\Empresas\PagosSuscripcion;
 use App\Models\Empresas\EmpresaSuscripcion;
+use App\Models\Empresas\SuscripcionPagoLink;
 use App\Models\Empresas\ComponentesSuscripcion;
 use App\Models\Empresas\EmpresaComponentesSuscripcion;
 
@@ -579,7 +585,7 @@ class SuscripcionController extends Controller
     public function wompiAcceptanceToken(Request $request)
     {
         try {
-            $token = (new \App\Helpers\Wompi())->acceptanceToken();
+            $token = (new Wompi())->acceptanceToken();
 
             if (!$token) {
                 return response()->json([
@@ -797,7 +803,7 @@ class SuscripcionController extends Controller
             $estadoAnterior = (int) $pago->estado;
 
 
-            $wompi = new \App\Helpers\Wompi();
+            $wompi = new Wompi();
 
             if ($request->get('transaction_id')) {
                 $transaccion = $wompi->obtenerTransaccion($request->get('transaction_id'));
@@ -954,6 +960,19 @@ class SuscripcionController extends Controller
                         'wompi_status' => $estadoWompi,
                         'message'      => 'Pago reconciliado correctamente.',
                     ]);
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // 🔑 GENERAR VENTA EN LA BD DEL EMISOR
+                // ═══════════════════════════════════════════════════════
+                try {
+                    app(VentaSuscripcionService::class)->generarVentaDesdePago($pago);
+                } catch (\Throwable $e) {
+                    \Log::error('Error generando venta suscripción (panel)', [
+                        'pago_id' => $pago->id,
+                        'error'   => $e->getMessage(),
+                    ]);
+                    // No lanzar, para no romper la reconciliación del pago
                 }
             }
 
@@ -2275,7 +2294,7 @@ class SuscripcionController extends Controller
     public function pagoPublicoInfo(Request $request, $token)
     {
         try {
-            $link = app(\App\Http\Services\SuscripcionPagoLinkService::class)
+            $link = app(SuscripcionPagoLinkService::class)
                 ->buscarPorToken($token);
 
             if (!$link) {
@@ -2401,7 +2420,7 @@ class SuscripcionController extends Controller
         }
 
         try {
-            $link = app(\App\Http\Services\SuscripcionPagoLinkService::class)
+            $link = app(SuscripcionPagoLinkService::class)
                 ->buscarPorToken($request->get('token'));
 
             if (!$link) throw new Exception('Link inválido o expirado.');
@@ -2457,7 +2476,7 @@ class SuscripcionController extends Controller
         try {
             DB::connection('clientes')->beginTransaction();
 
-            $link = app(\App\Http\Services\SuscripcionPagoLinkService::class)
+            $link = app(SuscripcionPagoLinkService::class)
                 ->buscarPorToken($request->get('token'));
 
             if (!$link) {
@@ -2617,7 +2636,7 @@ class SuscripcionController extends Controller
             }
 
             // Consultar Wompi
-            $wompi = new \App\Helpers\Wompi();
+            $wompi = new Wompi();
 
             if ($request->get('transaction_id')) {
                 $transaccion = $wompi->obtenerTransaccion($request->get('transaction_id'));
@@ -2743,10 +2762,22 @@ class SuscripcionController extends Controller
                 // Marcar el link como usado
                 $tokenLink = $detalle['token_link'] ?? null;
                 if ($tokenLink) {
-                    $link = \App\Models\Empresas\SuscripcionPagoLink::where('token', $tokenLink)->first();
+                    $link = SuscripcionPagoLink::where('token', $tokenLink)->first();
                     if ($link) {
                         $link->marcarComoUsado();
                     }
+                }
+
+                // ═══════════════════════════════════════════════════════
+                // 🔑 GENERAR VENTA EN LA BD DEL EMISOR
+                // ═══════════════════════════════════════════════════════
+                try {
+                    app(VentaSuscripcionService::class)->generarVentaDesdePago($pago);
+                } catch (\Throwable $e) {
+                    \Log::error('Error generando venta suscripción (público)', [
+                        'pago_id' => $pago->id,
+                        'error'   => $e->getMessage(),
+                    ]);
                 }
             }
 

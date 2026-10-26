@@ -116,6 +116,18 @@ function llenarFormNitGeneral(d) {
         $('#retencion_general_nit').prop('checked', false);
     }
 
+    if (d.notificacion_email) {
+        $('#notificacion_email_general_nit').prop('checked', true);
+    } else {
+        $('#notificacion_email_general_nit').prop('checked', false);
+    }
+
+    if (d.notificacion_whatsapp) {
+        $('#notificacion_whatsapp_general_nit').prop('checked', true);
+    } else {
+        $('#notificacion_whatsapp_general_nit').prop('checked', false);
+    }
+
     // Responsabilidades (array de ids)
     var idsResp = [];
     if (d.id_responsabilidades) {
@@ -169,6 +181,8 @@ function clearFormNitGeneral() {
     $("#id_responsabilidades_general_nit").val([]).trigger('change');
 
     $('#retencion_general_nit').prop('checked', false);
+    $('#notificacion_email_general_nit').prop('checked', true);
+    $('#notificacion_whatsapp_general_nit').prop('checked', false);
     $('#proveedor_general_nit').prop('checked', false);
     $('#sumar_aiu_general_nits').prop('checked', false);
     
@@ -214,7 +228,10 @@ function guardarNitGeneral() {
         sumar_aiu: $("input[type='checkbox']#sumar_aiu_general_nits").is(':checked') ? '1' : '',
         proveedor: $("input[type='checkbox']#proveedor_general_nit").is(':checked') ? '1' : '',
         retencion: $("input[type='checkbox']#retencion_general_nit").is(':checked') ? '1' : '',
+        notificacion_email:    $("input[type='checkbox']#notificacion_email_general_nit").is(':checked')    ? '1' : '',
+        notificacion_whatsapp: $("input[type='checkbox']#notificacion_whatsapp_general_nit").is(':checked') ? '1' : '',
     };
+    
     if (esEdicion) data.id = idNit;
 
     $.ajax({

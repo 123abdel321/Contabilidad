@@ -11,6 +11,6 @@ class NotaCreditoScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
-		$builder->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::NOTA_CREDITO);
+		  $builder->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::NOTA_CREDITO);
     }
 }

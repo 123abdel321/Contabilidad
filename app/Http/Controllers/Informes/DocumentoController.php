@@ -142,12 +142,12 @@ class DocumentoController extends Controller
 
             $documento = DocumentosGeneral::with('comprobante')
                 ->where('id_comprobante', $id_comprobante)
-                ->where('fecha_manual', $fecha_manual)
+                ->where('fecha_manual', 'LIKE', $fecha_manual.'%')
                 ->where('consecutivo', $consecutivo)
                 ->first();
 
             if (!$documento) {
-                logger()->critical("Error showGeneralPdf: el documento id: {$documento->id} no tiene cabezas para imprimir;");
+                logger()->critical("Error showGeneralPdf: el documento no tiene cabezas para imprimir;");
                 abort(404, 'El enlace no es válido o ha expirado.');
             }
 
@@ -249,7 +249,7 @@ class DocumentoController extends Controller
 
         $documento = DocumentosGeneral::with('comprobante')
             ->where('id_comprobante', $id_comprobante)
-            ->where('fecha_manual', $fecha_manual)
+            ->where('fecha_manual', 'LIKE', $fecha_manual.'%')
             ->where('consecutivo', $consecutivo)
             ->first();
 

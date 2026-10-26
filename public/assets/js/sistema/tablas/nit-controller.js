@@ -192,6 +192,18 @@ function nitInit() {
                 $('#retencion_nit').prop('checked', false);
             }
 
+            if (data.notificacion_email) {
+                $('#notificacion_email_nit').prop('checked', true);
+            } else {
+                $('#notificacion_email_nit').prop('checked', false);
+            }
+
+            if (data.notificacion_whatsapp) {
+                $('#notificacion_whatsapp_nit').prop('checked', true);
+            } else {
+                $('#notificacion_whatsapp_nit').prop('checked', false);
+            }
+
             if (data.id_responsabilidades) {
                 var id_responsabilidades = data.id_responsabilidades.split(",");
                 $("#id_responsabilidades").val(id_responsabilidades).change();
@@ -507,6 +519,8 @@ $(document).on('click', '#updateNit', function () {
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             proveedor: $("input[type='checkbox']#proveedor_nit").is(':checked') ? '1' : '',
             retencion: $("input[type='checkbox']#retencion_nit").is(':checked') ? '1' : '',
+            notificacion_email:    $("input[type='checkbox']#notificacion_email_nit").is(':checked')    ? '1' : '',
+            notificacion_whatsapp: $("input[type='checkbox']#notificacion_whatsapp_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
 
@@ -583,6 +597,8 @@ $(document).on('click', '#saveNit', function () {
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             proveedor: $("input[type='checkbox']#proveedor_nit").is(':checked') ? '1' : '',
             retencion: $("input[type='checkbox']#retencion_nit").is(':checked') ? '1' : '',
+            notificacion_email: $("input[type='checkbox']#notificacion_email_nit").is(':checked')    ? '1' : '',
+            notificacion_whatsapp: $("input[type='checkbox']#notificacion_whatsapp_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
 
@@ -649,6 +665,9 @@ function clearFormNits(){
     $('#new_avatar').hide();
     $("#id_actividad_economica_nit").val('').change();
     $("#id_responsabilidades").val([5,7]).change();
+
+    $('#notificacion_email_nit').prop('checked', true);
+    $('#notificacion_whatsapp_nit').prop('checked', false);
     
     $("#div_sumar_aiu").hide();
     $("#div_declarante").hide();

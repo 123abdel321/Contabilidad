@@ -233,6 +233,8 @@ class NitController extends Controller
                 'sumar_aiu' => $request->get('sumar_aiu'),
                 'proveedor' => $request->get('proveedor') ? 1 : 0,
                 'retencion' => $request->get('retencion') ? 1 : 0,
+                'notificacion_email' => $request->get('notificacion_email')    ? 1 : 0,
+                'notificacion_whatsapp' => $request->get('notificacion_whatsapp') ? 1 : 0,
                 'plazo' => 0,
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
@@ -312,6 +314,8 @@ class NitController extends Controller
                 'proveedor' => $request->get('proveedor'),
                 'sumar_aiu' => $request->get('sumar_aiu'),
                 'retencion' => $request->get('retencion'),
+                'notificacion_email'    => $request->get('notificacion_email')    ? 1 : 0,
+                'notificacion_whatsapp' => $request->get('notificacion_whatsapp') ? 1 : 0,
                 'updated_by' => request()->user()->id,
             ]);
 

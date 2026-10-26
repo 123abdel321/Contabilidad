@@ -546,6 +546,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('ventas-fe', 'facturacionElectronica');
             Route::post('ventas-notificar', 'sendNotification');
             Route::post('ventas-email', 'sendEmail');
+            Route::post('ventas-whatsapp', 'sendWhatsapp');
         });
         //PEDIDO VENTA
         Route::controller(PedidoController::class)->group(function () {

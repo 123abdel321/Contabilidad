@@ -7,26 +7,23 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;  
 use Illuminate\Support\Facades\Validator;
-//SERVICES
+// SERVICES
 use App\Http\Services\VentaServices;
-//JOBS
+// JOBS
 use App\Jobs\SendSingleEmail;
 use App\Jobs\ProcessConsultarFE;
-//HELPERS
-use App\Helpers\Extracto;
-use App\Helpers\Documento;
+// HELPERS
 use App\Helpers\Printers\VentasPdf;
 use App\Helpers\Printers\VentasPos;
+use App\Helpers\Eco\SendEcoWhatsApp;
 use App\Helpers\Printers\VentasInformeZ;
 use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
-//TRAITS
-use App\Http\Controllers\Traits\BegConsecutiveTrait;
+// TRAITS
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 use App\Http\Controllers\Traits\BegFacturacionElectronica;
-//MODELS
+// MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
@@ -34,69 +31,41 @@ use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
-use App\Models\Sistema\FacVentaPagos;
-use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacVentaDetalles;
-use App\Models\Sistema\DocumentosGeneral;
-use App\Models\Sistema\FacTipoFormasPago;
-use App\Models\Sistema\FacProductosBodegas;
-use App\Models\Sistema\FacProductosBodegasMovimiento;
 
 class VentaController extends Controller
 {
-    use BegConsecutiveTrait;
     use BegDocumentHelpersTrait;
     use BegFacturacionElectronica;
 
     protected VentaServices $ventaServices;
 
-    protected $nit = null;
-    protected $bodega = null;
-    protected $resolucion = null;
-    protected $ivaIncluido = null;
-	protected $messages = [
+    protected $messages = [
         'required' => 'El campo :attribute es requerido.',
-        'exists' => 'El :attribute es inválido.',
-        'numeric' => 'El campo :attribute debe ser un valor numérico.',
-        'string' => 'El campo :attribute debe ser texto',
-        'array' => 'El campo :attribute debe ser un arreglo.',
-        'date' => 'El campo :attribute debe ser una fecha válida.',
+        'exists'   => 'El :attribute es inválido.',
+        'numeric'  => 'El campo :attribute debe ser un valor numérico.',
+        'string'   => 'El campo :attribute debe ser texto',
+        'array'    => 'El campo :attribute debe ser un arreglo.',
+        'date'     => 'El campo :attribute debe ser una fecha válida.',
     ];
+
     protected $ventaData = [];
-    protected $totalesPagos = [
-        'total_efectivo' => 0,
-        'total_otrospagos' => 0,
-    ];
-    protected $totalesFactura = [
-        'tope_retencion' => 0,
-        'porcentaje_rete_fuente' => 0,
-        'id_cuenta_rete_fuente' => null,
-        'propina' => 0,
-        'subtotal' => 0,
-        'total_iva' => 0,
-        'total_rete_fuente' => 0,
-        'total_descuento' => 0,
-        'total_factura' => 0
-    ];
-    protected $cuentasContables = [
-        "cuenta_venta" => ["valor" => "subtotal"],
-		"cuenta_venta_descuento" => ["valor" => "descuento_valor"],
-        "cuenta_venta_iva" => ["valor" => "iva_valor"],
-        "cuenta_inventario" => ["valor" => "costo_total"],
-        "cuenta_costos" => ["valor" => "costo_total"],
-    ];
 
     public function __construct(
         Request $request,
         VentaServices $ventaServices,
     ) {
         $this->ventaServices = $ventaServices;
-	}
+    }
 
-    public function index (Request $request)
+    // ============================================================
+    // INDEX
+    // ============================================================
+
+    public function index(Request $request)
     {
         $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
             ->where('id_empresa', request()->user()->id_empresa)
@@ -117,9 +86,8 @@ class VentaController extends Controller
         if ($cuentaPropina) {
             $cuentaPropina = PlanCuentas::where('cuenta', $cuentaPropina)->first();
         }
-        
+
         $clientePorDefecto = null;
-        
         if ($idClientePorDefecto) $clientePorDefecto = Nits::with('vendedor.nit')->where('id', $idClientePorDefecto)->first();
         else $clientePorDefecto = Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222%')->first();
 
@@ -130,39 +98,44 @@ class VentaController extends Controller
             ->get();
 
         $data = [
-            'cliente' => $clientePorDefecto,
-            'resolucion' => $resolucionesData,
-            'cuentaPropina' => $cuentaPropina,
-            'multiplesPrecios' => $multiplesPrecios,
-            'porcentajePropina' => $porcentajePropina,
-            'valor_uvt' => $valorUVT ? $valorUVT->valor : 0,
-            'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
-            'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
-            'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : ''
+            'cliente'            => $clientePorDefecto,
+            'resolucion'         => $resolucionesData,
+            'cuentaPropina'      => $cuentaPropina,
+            'multiplesPrecios'   => $multiplesPrecios,
+            'porcentajePropina'  => $porcentajePropina,
+            'valor_uvt'          => $valorUVT ? $valorUVT->valor : 0,
+            'bodegas'            => FacBodegas::whereIn('id', $bodegas)->get(),
+            'iva_incluido'       => $ivaIncluido ? $ivaIncluido->valor : '',
+            'vendedores_ventas'  => $vendedorVentas ? $vendedorVentas->valor : ''
         ];
 
         return view('pages.capturas.venta.venta-view', $data);
     }
 
-    public function indexInforme ()
+    public function indexInforme()
     {
         return view('pages.contabilidad.ventas.ventas-view');
     }
 
-    public function indexInformeGeneral ()
+    public function indexInformeGeneral()
     {
         return view('pages.contabilidad.ventas.ventas-view');
     }
 
-    public function create (Request $request)
+    // ============================================================
+    // CREATE — wrapper del servicio
+    // ============================================================
+
+    public function create(Request $request)
     {
         $rules = [
-            'id_cliente' => 'required|exists:sam.nits,id',
-            'id_bodega' => 'required|exists:sam.fac_bodegas,id',
-            'fecha_manual' => 'required|date',
+            'id_cliente'           => 'required|exists:sam.nits,id',
+            'id_bodega'            => 'required|exists:sam.fac_bodegas,id',
+            'id_resolucion'        => 'required|exists:sam.fac_resoluciones,id',
+            'fecha_manual'         => 'required|date',
             'documento_referencia' => 'required|string',
-            'propina' => 'nullable',
-            'productos' => 'array|required',
+            'propina'              => 'nullable',
+            'productos'            => 'array|required',
             'productos.*.id_producto' => [
                 'required',
                 'exists:sam.fac_productos,id',
@@ -178,17 +151,17 @@ class VentaController extends Controller
                     }
                 }
             ],
-            'productos.*.cantidad' => 'required|numeric|gt:0',
-            'productos.*.costo' => 'required|min:0',
+            'productos.*.cantidad'             => 'required|numeric|gt:0',
+            'productos.*.costo'                => 'required|min:0',
             'productos.*.descuento_porcentaje' => 'required|numeric|min:0|max:100',
-            'productos.*.descuento_valor' => 'required|numeric|min:0',
-            'productos.*.iva_porcentaje' => 'required|numeric|min:0|max:100',
-            'productos.*.iva_valor' => 'required|numeric|min:0',
-            'productos.*.total' => 'required|numeric|min:0',
-            'productos.*.concepto' => 'nullable',
-            'pagos' => 'array|required',
-            'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
-            'pagos.*.valor' => 'required|numeric|min:1',
+            'productos.*.descuento_valor'      => 'required|numeric|min:0',
+            'productos.*.iva_porcentaje'       => 'required|numeric|min:0|max:100',
+            'productos.*.iva_valor'            => 'required|numeric|min:0',
+            'productos.*.total'                => 'required|numeric|min:0',
+            'productos.*.concepto'             => 'nullable',
+            'pagos'                            => 'array|required',
+            'pagos.*.id'                       => 'required|exists:sam.fac_formas_pagos,id',
+            'pagos.*.valor'                    => 'required|numeric|min:1',
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -196,370 +169,60 @@ class VentaController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                'data' => [],
+                'data'    => [],
                 "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $this->resolucion = FacResoluciones::whereId($request->get('id_resolucion'))
-            ->with('comprobante')
-            ->first();
-
-        if (!$this->resolucion->isValid) {
-            return response()->json([
-                "success" => false,
-                'data' => [],
-                "message" => ["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está agotada"]]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
-
-        $request->request->add([
-            'id_comprobante' => $this->resolucion->comprobante->id,
-            'consecutivo' => $consecutivo
-        ]);
-
-        $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
-
         try {
-            DB::connection('sam')->beginTransaction();
-            //CREAR FACTURA VENTA
-            $this->nit = $this->findCliente($request->get('id_cliente'), $request->get('calcula_retencion'));
-            $venta = $this->createFacturaVenta($request);
-            $enviarFacturaElectronica = false;
+            $user = $request->user();
 
-            //GUARDAR DETALLE & MOVIMIENTO CONTABLE VENTAS
-            $documentoGeneral = new Documento(
-                $this->resolucion->comprobante->id,
-                $venta,
-                $request->get('fecha_manual'),
-                $request->get('consecutivo'),
-                false,
-                true
-            );
-            
-            //AGREGAR DETALLE DE PRODUCTOS
-            foreach ($request->get('productos') as $producto) {
-                $producto = (object)$producto;
-                $productoDb = $this->findProducto($producto->id_producto);
+            $contexto = [
+                'id_usuario'           => $user->id,
+                'id_empresa'           => $user->id_empresa,
+                'token_db'             => $user->has_empresa,
+                'id_cliente'           => $request->get('id_cliente'),
+                'id_bodega'            => $request->get('id_bodega'),
+                'id_resolucion'        => $request->get('id_resolucion'),
+                'id_vendedor'          => $request->get('id_vendedor'),
+                'id_familia'           => null,
+                'productos'            => $request->get('productos'),
+                'pagos'                => $request->get('pagos'),
+                'propina'              => $request->get('propina') ?? 0,
+                'calcula_retencion'    => $request->get('calcula_retencion') ?? false,
+                'fecha_manual'         => $request->get('fecha_manual'),
+                'documento_referencia' => $request->get('documento_referencia'),
+                'observacion'          => $request->get('observacion'),
+                'auto_crear_nit'       => false,
+                'auto_crear_producto'  => false,
+                'fe_async'             => false,
+            ];
 
-                // Procesar COMBOS
-                if ($productoDb->tipo_producto == 2) {
-                    $this->ventaServices->procesarCombo(
-                        $producto,
-                        $venta,
-                        $documentoGeneral,
-                        request()->user()->id
-                    );
-                    continue;
-                }
-
-                // --- Lógica para productos normales-
-                $producto->costo_total = $productoDb->precio_inicial * $producto->cantidad;
-
-                //AGREGAR MOVIMIENTO BODEGA
-                $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
-                    ->where('id_producto', $producto->id_producto)
-                    ->first();
-
-                if (
-                    $productoDb->familia->inventario &&
-                    $bodegaProducto &&
-                    $producto->cantidad > $bodegaProducto->cantidad &&
-                    !request()->user()->can('venta negativa')
-                ) {
-                    DB::connection('sam')->rollback();
-                    return response()->json([
-                        "success" => false,
-                        'data' => [],
-                        "message" => ['Cantidad bodega' => ['La cantidad del producto ' . $productoDb->codigo . ' - ' . $productoDb->nombre . ' supera la cantidad en bodega']]
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
-
-                $subTotal = (float)$producto->costo * $producto->cantidad;
-
-                if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
-                    $ivaIncluido = round($subTotal * ($producto->iva_porcentaje / ($producto->iva_porcentaje + 100)), 2);
-                    $subTotal -= $ivaIncluido;
-                }
-
-                //CREAR VENTA DETALLE
-                FacVentaDetalles::create([
-                    'id_venta' => $venta->id,
-                    'id_producto' => $productoDb->id,
-                    'id_cuenta_venta' => $productoDb->familia->id_cuenta_venta,
-                    'id_cuenta_venta_retencion' => $productoDb->familia->id_cuenta_venta_retencion,
-                    'id_cuenta_venta_iva' => $productoDb->familia->id_cuenta_venta_iva,
-                    'id_cuenta_venta_descuento' => $productoDb->familia->id_cuenta_venta_descuento,
-                    'descripcion' => $productoDb->codigo . ' - ' . $productoDb->nombre,
-                    'cantidad' => $producto->cantidad,
-                    'costo' => $producto->costo,
-                    'subtotal' => $subTotal,
-                    'descuento_porcentaje' => $producto->descuento_porcentaje,
-                    'descuento_valor' => $producto->descuento_valor,
-                    'iva_porcentaje' => $producto->iva_porcentaje,
-                    'iva_valor' => $producto->iva_valor,
-                    'total' => $producto->total,
-                    'observacion' => $producto->concepto,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
-
-                //AGREGAR MOVIMIENTO CONTABLE
-                $this->ventaServices->movimientoContable(
-                    $venta,
-                    $productoDb,
-                    $documentoGeneral,
-                    (array)$producto
-                );
-
-                //AGREGAR MOVIMIENTO BODEGA
-                if ($productoDb->tipo_producto != 2) {
-                    if (!$bodegaProducto) {
-                        $bodegaProducto = FacProductosBodegas::create([
-                            'id_producto' => $producto->id_producto,
-                            'id_bodega' => $venta->id_bodega,
-                            'cantidad' => 0,
-                            'created_by' => request()->user()->id,
-                            'updated_by' => request()->user()->id
-                        ]);
-                    }
-    
-                    $movimiento = new FacProductosBodegasMovimiento([
-                        'id_producto' => $producto->id_producto,
-                        'id_bodega' => $venta->id_bodega,
-                        'cantidad_anterior' => $bodegaProducto->cantidad,
-                        'cantidad' => $producto->cantidad,
-                        'tipo_tranferencia' => 2,
-                        'inventario' => $productoDb->familia->inventario ? 1 : 0,
-                        'created_by' => request()->user()->id,
-                        'updated_by' => request()->user()->id
-                    ]);
-    
-                    if ($bodegaProducto && $productoDb->familia->inventario) {
-                        $bodegaProducto->updated_by = request()->user()->id;
-                        $bodegaProducto->cantidad -= $producto->cantidad;
-                        $bodegaProducto->save();
-                    }
-    
-                    $movimiento->relation()->associate($venta);
-                    $venta->bodegas()->save($movimiento);
-                }
-            }
-
-            //AGREGAR RETE FUENTE
-            if ($this->totalesFactura['total_rete_fuente']) {
-                $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
-
-                if ($cuentaRetencion->naturaleza_ventas == PlanCuentas::DEBITO || $cuentaRetencion->naturaleza_ventas == PlanCuentas::CREDITO) {
-                    $doc = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaRetencion->id,
-                        "id_nit" => $cuentaRetencion->exige_nit ? $venta->id_cliente : null,
-                        "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $venta->id_centro_costos : null,
-                        "concepto" => 'TOTAL: ' . ($cuentaRetencion->exige_concepto ? $this->nit->nombre_nit . ' - ' . $venta->documento_referencia : null),
-                        "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $venta->documento_referencia : null,
-                        "debito" => $this->totalesFactura['total_rete_fuente'],
-                        "credito" => $this->totalesFactura['total_rete_fuente'],
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_ventas);
-                } else {
-                    DB::connection('sam')->rollback();
-                    return response()->json([
-                        "success" => false,
-                        'data' => [],
-                        "message" => ['Cuenta retención' => ['La cuenta ' . $cuentaRetencion->cuenta . ' - ' . $cuentaRetencion->nombre . ' no tiene naturaleza en ventas']]
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
-            }
-
-            //AGREGAR PROPINA
-            if ($this->totalesFactura['propina']) {
-                $porcentajePropina = VariablesEntorno::where('nombre', 'porcentaje_propina')->first();
-                $porcentajePropina = $porcentajePropina && $porcentajePropina->valor ? $porcentajePropina->valor : null;
-                $cuentaPropina = VariablesEntorno::where('nombre', 'cuenta_propina')->first();
-                $cuentaPropina = $cuentaPropina && $cuentaPropina->valor ? $cuentaPropina->valor : null;
-
-                $cuentaPropina = PlanCuentas::whereCuenta($cuentaPropina)->first();
-
-                if ($cuentaPropina->naturaleza_ventas == PlanCuentas::DEBITO || $cuentaPropina->naturaleza_ventas == PlanCuentas::CREDITO) {
-                    $doc = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaPropina->id,
-                        "id_nit" => $cuentaPropina->exige_nit ? $venta->id_cliente : null,
-                        "id_centro_costos" => $cuentaPropina->exige_centro_costos ? $venta->id_centro_costos : null,
-                        "concepto" => 'TOTAL: ' . ($cuentaPropina->exige_concepto ? $this->nit->nombre_nit . ' - ' . $venta->documento_referencia : null),
-                        "documento_referencia" => $cuentaPropina->exige_documento_referencia ? $venta->documento_referencia : null,
-                        "debito" => $this->totalesFactura['propina'],
-                        "credito" => $this->totalesFactura['propina'],
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($doc, $cuentaPropina->naturaleza_ventas);
-                } else {
-                    DB::connection('sam')->rollback();
-                    return response()->json([
-                        "success" => false,
-                        'data' => [],
-                        "message" => ['Cuenta retención' => ['La cuenta ' . $cuentaPropina->cuenta . ' - ' . $cuentaPropina->nombre . ' no tiene naturaleza en ventas']]
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
-            }
-
-            $saldoPendiente = $this->totalesFactura['total_factura'];
-
-            //AGREGAR FORMAS DE PAGO
-            foreach ($request->get('pagos') as $pagoItem) {
-
-                $pagoItem = (object)$pagoItem;
-                $formaPago = $this->findFormaPago($pagoItem->id);
-
-                $pagoValor = $pagoItem->valor;
-                //VALIDAR CAMBIO
-                if ($formaPago->tipoFormaPago && $formaPago->tipoFormaPago->codigo == FacTipoFormasPago::EFECTIVO) {
-                    $pagoValor = $pagoItem->valor - $this->totalesPagos['total_cambio'];
-                }
-
-                $saldoPendiente -= $pagoValor;
-
-                $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $venta->id_nit);
-                //CRUZAR ANTICIPOS
-                if (count($documentoReferenciaAnticipos)) {
-
-                    $pagoAnticipos = $pagoItem->valor;
-
-                    foreach ($documentoReferenciaAnticipos as $anticipos) {
-
-                        if (!$pagoAnticipos) {
-                            break;
-                        }
-
-                        $anticipoUsado = 0;
-                        $anticipoDisponible = floatval($anticipos->saldo);
-
-                        if ($anticipoDisponible >= $pagoAnticipos) {
-                            $anticipoUsado = $pagoAnticipos;
-                        } else {
-                            $anticipoUsado = $anticipoDisponible;
-                        }
-
-                        $pagoAnticipos -= $anticipoUsado;
-
-                        $doc = $this->addFormaPago(
-                            $anticipos->documento_referencia,
-                            $formaPago,
-                            $this->nit,
-                            $pagoItem,
-                            $venta,
-                            $anticipoUsado,
-                            $saldoPendiente
-                        );
-                        $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
-                    }
-                } else {
-                    $doc = $this->addFormaPago(
-                        $venta->documento_referencia,
-                        $formaPago,
-                        $this->nit,
-                        $pagoItem,
-                        $venta,
-                        $pagoValor,
-                        $saldoPendiente
-                    );
-                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
-                }
-            }
-
-            if (!$documentoGeneral->save()) {
-                DB::connection('sam')->rollback();
-                return response()->json([
-                    'success' => false,
-                    'data' => [],
-                    'message' => $documentoGeneral->getErrors()
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
-
-            //FACTURAR ELECTRONICAMENTE
-            if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
-                $ventaElectronica = (new VentaElectronicaSender($venta))->send();
-
-                if ($ventaElectronica["status"] >= 400) {
-                    if ($ventaElectronica["zip_key"]) {
-                        $venta->fe_zip_key = $ventaElectronica["zip_key"];
-                        $venta->save();
-
-                        if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
-                            info('Batch en proceso de validación.');
-                            ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
-                        }
-                    }
-                    if (!$ventaElectronica["zip_key"] && $ventaElectronica["status"] == 500) {
-                        return response()->json([
-                            "success" => false,
-                            'data' => [],
-                            "message" => $ventaElectronica["error_message"],
-                            "json" => $ventaElectronica["json_response"]
-                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                    }
-                }
-
-                if ($ventaElectronica['status'] == 200) {
-                    $feSended = $ventaElectronica['status'] == 200;
-                    $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
-
-                    if ($feSended || $hasCufe) {
-                        $ventaElectronica['status'] = 200;
-                        $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
-                        $venta->fe_zip_key = $ventaElectronica['zip_key'];
-                        $venta->fe_xml_file = $ventaElectronica['xml_url'];
-                        $venta->save();
-
-                        if ($venta->cliente->email) {
-                            $enviarFacturaElectronica = true;
-                        }
-                    }
-                }
-            }
-
-            DB::connection('sam')->commit();
-
-            if ($enviarFacturaElectronica) {
-                $claveUrl = $this->generarClavePDF(
-                    $empresa->id,
-                    $this->resolucion->comprobante->id,
-                    $venta->consecutivo,
-                    $venta->fecha_manual
-                );
-
-                $pdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
-
-                $this->sendEmailFactura(
-                    $request->user()['has_empresa'],
-                    $venta->cliente->email,
-                    $venta,
-                    $pdf
-                );
-            }
+            $venta = $this->ventaServices->create($contexto);
 
             return response()->json([
-                'success' => true,
-                'data' => $documentoGeneral->getRows(),
-                'impresion' => $this->resolucion->comprobante->imprimir_en_capturas ? $venta->id : '',
-                'message' => 'Venta creada con exito!'
+                'success'   => true,
+                'data'      => [],
+                'impresion' => ($venta->resolucion
+                    && $venta->resolucion->comprobante
+                    && $venta->resolucion->comprobante->imprimir_en_capturas)
+                    ? $venta->id
+                    : '',
+                'message'   => 'Venta creada con exito!'
             ], 200);
 
-        } catch (Exception $e) {
-            DB::connection('sam')->rollback();
+        } catch (\Throwable $e) {
             return response()->json([
                 "success" => false,
-                'data' => [],
+                'data'    => [],
                 "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
+
+    // ============================================================
+    // GENERATE — listado de ventas (intacto)
+    // ============================================================
 
     public function generate(Request $request)
     {
@@ -575,7 +238,7 @@ class VentaController extends Controller
 
         $with = [
             'bodega:id,codigo,nombre',
-            'cliente:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,email',
+            'cliente:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,email,telefono_1,telefono_2,notificacion_whatsapp',
             'vendedor.nit:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido',
             'resolucion:id,tipo_resolucion,nombre,prefijo,consecutivo_desde,consecutivo_hasta',
             'factura:id,id_resolucion,fe_codigo_identificador',
@@ -616,28 +279,18 @@ class VentaController extends Controller
         ]);
     }
 
+    // ============================================================
+    // READ — facturas para POS (intacto)
+    // ============================================================
+
     public function read(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
+        $draw       = $request->get('draw');
+        $start      = $request->get("start");
         $rowperpage = $request->get("length");
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
 
         $facturas = FacVentas::orderBy('id', 'DESC')
-            ->with(
-                'bodega',
-                'cliente',
-                'comprobante',
-                'centro_costo',
-            )
+            ->with('bodega', 'cliente', 'comprobante', 'centro_costo')
             ->select(
                 '*',
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
@@ -646,39 +299,30 @@ class VentaController extends Controller
                 'updated_by'
             );
 
-        if ($request->get('consecutivo')) {
-            $facturas->where('consecutivo', $request->get('consecutivo'));
-        }
-
-        if ($request->get('id_cliente')) {
-            $facturas->where('id_cliente', $request->get('id_cliente'));
-        }
-
-        if ($request->get('id_bodega')) {
-            $facturas->where('id_bodega', $request->get('id_bodega'));
-        }
-
-        if ($request->get('id_resolucion')) {
-            $facturas->where('id_resolucion', $request->get('id_resolucion'));
-        }
+        if ($request->get('consecutivo'))  $facturas->where('consecutivo', $request->get('consecutivo'));
+        if ($request->get('id_cliente'))   $facturas->where('id_cliente', $request->get('id_cliente'));
+        if ($request->get('id_bodega'))    $facturas->where('id_bodega', $request->get('id_bodega'));
+        if ($request->get('id_resolucion')) $facturas->where('id_resolucion', $request->get('id_resolucion'));
 
         $facturas->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL);
 
-        $facturasTotals = $facturas->get();
-
-        $facturasPaginate = $facturas->skip($start)
-            ->take(10);
+        $facturasTotals   = $facturas->get();
+        $facturasPaginate = $facturas->skip($start)->take(10);
 
         return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $facturasTotals->count(),
+            'success'              => true,
+            'draw'                 => $draw,
+            'iTotalRecords'        => $facturasTotals->count(),
             'iTotalDisplayRecords' => $facturasTotals->count(),
-            'data' => $facturasPaginate->get(),
-            'perPage' => 10,
-            'message'=> 'Facturas generados con exito!'
+            'data'                 => $facturasPaginate->get(),
+            'perPage'              => 10,
+            'message'              => 'Facturas generados con exito!'
         ]);
     }
+
+    // ============================================================
+    // PDFs (intactos)
+    // ============================================================
 
     public function showPdf(Request $request, $id)
     {
@@ -686,16 +330,16 @@ class VentaController extends Controller
             ->with('resolucion', 'comprobante')
             ->first();
 
-        if(!$factura) {
+        if (!$factura) {
             return response()->json([
-                'success'=>	false,
-                'data' => [],
-                'message'=> 'La factura no existe'
+                'success' => false,
+                'data'    => [],
+                'message' => 'La factura no existe'
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        
+
         if ($factura->resolucion?->tipo_impresion == 0) {
             $data = (new VentasPos($empresa, $factura, null))->buildPdf()->getData();
             return view('pdf.facturacion.ventas-pos', $data);
@@ -707,7 +351,7 @@ class VentaController extends Controller
             $factura->consecutivo,
             $factura->fecha_manual
         );
- 
+
         return (new VentasPdf($empresa, $factura, $claveUrl))
             ->buildPdf()
             ->showPdf();
@@ -715,57 +359,46 @@ class VentaController extends Controller
 
     public function showPdfZ(Request $request)
     {
-        // $factura = FacVentas::whereId($id)
-        //     ->with('resolucion')
-        //     ->first();
-
-        // if(!$factura) {
-        //     return response()->json([
-        //         'success'=>	false,
-        //         'data' => [],
-        //         'message'=> 'La factura no existe'
-        //     ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        // }
-
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $data = (new VentasInformeZ($empresa, $request->all()))->buildPdf()->getData();
+        $data    = (new VentasInformeZ($empresa, $request->all()))->buildPdf()->getData();
 
         return view('pdf.facturacion.ventas-informez-pos', $data);
     }
 
+    // ============================================================
+    // FACTURACIÓN ELECTRÓNICA — reintento manual (intacto)
+    // ============================================================
+
     public function facturacionElectronica(Request $request)
     {
-        $rules = [
-			'id_venta' => "required|exists:sam.fac_ventas,id",
-		];
-         
+        $rules = ['id_venta' => "required|exists:sam.fac_ventas,id"];
+
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
-		if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$validator->errors()
+                "success" => false,
+                'data'    => [],
+                "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $venta = FacVentas::where('id', $request->id_venta)->first();
+        $venta   = FacVentas::where('id', $request->id_venta)->first();
         $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
 
         if ($venta->fe_codigo_identificador) {
-			return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>['factura_electronica' => ['mensaje' => "La factura $venta->consecutivo ya fue emitida."]]
+            return response()->json([
+                "success" => false,
+                'data'    => [],
+                "message" => ['factura_electronica' => ['mensaje' => "La factura $venta->consecutivo ya fue emitida."]]
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
-		}
+        }
 
         try {
             DB::connection('sam')->beginTransaction();
-            
+
             if ($venta->fe_zip_key) {
-                $consulta = (new VentaElectronicaSender($venta))
-                    ->consultarZip($venta->fe_zip_key);
+                $consulta = (new VentaElectronicaSender($venta))->consultarZip($venta->fe_zip_key);
 
                 if ($consulta['success'] && $consulta['is_valid']) {
                     $venta = $this->SetFeFields($venta, $consulta['cufe'], $empresa->nit);
@@ -786,43 +419,41 @@ class VentaController extends Controller
             }
 
             $ventaElectronica = (new VentaElectronicaSender($venta))->send();
-            
+
             if ($ventaElectronica["status"] >= 400) {
                 if ($ventaElectronica["zip_key"]) {
                     $venta->fe_zip_key = $ventaElectronica["zip_key"];
                     $venta->save();
 
                     if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
-                        //JOB CONSULTAR FACTURA EN 1MN
                         ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id);
 
                         DB::connection('sam')->commit();
 
                         return response()->json([
                             "success" => false,
-                            'data' => [],
+                            'data'    => [],
                             "message" => 'Batch en proceso de validación, el sistema le notificará una vez haya consultado la información'
                         ], 300);
                     }
                 }
 
                 DB::connection('sam')->commit();
-                
+
                 return response()->json([
                     "success" => false,
-                    'data' => [],
+                    'data'    => [],
                     "message" => $ventaElectronica["error_message"]
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             if ($ventaElectronica["status"] == 200) {
                 $feSended = $ventaElectronica['status'] == 200;
-                $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
+                $hasCufe  = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
 
-                if($feSended || $hasCufe){
-                    $ventaElectronica['status'] = 200;
+                if ($feSended || $hasCufe) {
                     $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
-                    $venta->fe_zip_key = $ventaElectronica['zip_key'];
+                    $venta->fe_zip_key  = $ventaElectronica['zip_key'];
                     $venta->fe_xml_file = $ventaElectronica['xml_url'];
                     $venta->save();
                 }
@@ -831,41 +462,43 @@ class VentaController extends Controller
             DB::connection('sam')->commit();
 
             return response()->json([
-				'success'=>	true,
-				'data' => [],
-				'message'=> 'Factura electrónica enviada!'
-			], 200);
-            
-        } catch (Exception $e) {
+                'success' => true,
+                'data'    => [],
+                'message' => 'Factura electrónica enviada!'
+            ], 200);
 
-			DB::connection('sam')->rollback();
+        } catch (\Throwable $e) {
+            DB::connection('sam')->rollback();
             return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$e->getMessage()
+                "success" => false,
+                'data'    => [],
+                "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
+    // ============================================================
+    // EMAIL / NOTIFICACIÓN (intactos)
+    // ============================================================
+
     public function sendEmail(Request $request)
     {
         $rules = [
-            'email' => 'required|email',
-			'id_venta' => "required|exists:sam.fac_ventas,id",
-		];
+            'email'    => 'required|email',
+            'id_venta' => "required|exists:sam.fac_ventas,id",
+        ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
-		if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$validator->errors()
+                "success" => false,
+                'data'    => [],
+                "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
-            
             $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
 
             $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
@@ -873,39 +506,44 @@ class VentaController extends Controller
 
             if (!$ecoToken) {
                 return response()->json([
-                    "success"=>false,
-                    'data' => [],
-                    "message"=> ['token Eco' => ['No se ha configurado el token de ECO en las variables de entorno.']]
+                    "success" => false,
+                    'data'    => [],
+                    "message" => ['token Eco' => ['No se ha configurado el token de ECO en las variables de entorno.']]
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            $venta = FacVentas::with('cliente')
-                ->where('id', $request->id_venta)
-                ->first();
+            $venta = FacVentas::with('cliente')->where('id', $request->id_venta)->first();
+
+            $claveUrl = $this->generarClavePDF(
+                $empresa->id,
+                $venta->comprobante->id,
+                $venta->consecutivo,
+                $venta->fecha_manual
+            );
 
             $filterData = [
-                'id_nit' => $venta->cliente->id_nit,
-                'nombre_completo' => $venta->cliente->nombre_completo,
+                'id_nit'           => $venta->cliente->id_nit,
+                'nombre_completo'  => $venta->cliente->nombre_completo,
                 'numero_documento' => $venta->cliente->numero_documento,
-                'email' => $venta->cliente->email,
+                'email'            => $venta->cliente->email,
             ];
 
-            $facturaPdf = (new VentasPdf($empresa, $venta))->buildPdf()->saveStorage();
-            $emailData = [
-                'cliente' => $venta->cliente,
-                'factura' => $venta,
-                'empresa' => $empresa
+            $facturaPdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
+            $emailData  = [
+                'cliente'  => $venta->cliente,
+                'factura'  => $venta,
+                'empresa'  => $empresa
             ];
 
             if ($facturaPdf) {
-                $path = stripslashes($facturaPdf);
+                $path    = stripslashes($facturaPdf);
                 $baseUrl = "https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/";
-                
+
                 if (!str_contains($path, $baseUrl)) {
                     $facturaPdf = $baseUrl . $path;
                 }
             }
-            
+
             SendSingleEmail::dispatch(
                 $empresa,
                 $request->get('email'),
@@ -915,51 +553,44 @@ class VentaController extends Controller
                 $ecoToken,
                 'emails.capturas.factura',
             );
-            
-             return response()->json([
-				'success'=>	true,
-				'data' => [],
-				'message'=> 'Factura enviada con exito!'
-			], 200);
 
-        } catch (Exception $e) {
-
-			DB::connection('sam')->rollback();
             return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$e->getMessage()
+                'success' => true,
+                'data'    => [],
+                'message' => 'Factura enviada con exito!'
+            ], 200);
+
+        } catch (\Throwable $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success" => false,
+                'data'    => [],
+                "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
     public function sendNotification(Request $request)
-	{
-
-        $rules = [
-			'id_venta' => "required|exists:sam.fac_ventas,id",
-		];
+    {
+        $rules = ['id_venta' => "required|exists:sam.fac_ventas,id"];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
-		if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$validator->errors()
+                "success" => false,
+                'data'    => [],
+                "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        
-		try {
-            
-            $venta = FacVentas::with('cliente')
-                ->where('id', $request->id_venta)
-                ->first();
+
+        try {
+            $venta = FacVentas::with('cliente')->where('id', $request->id_venta)->first();
 
             if ($this->isFe($venta) && !$venta->cufe) {
                 return response()->json([
                     "success" => false,
-                    'data' => [],
+                    'data'    => [],
                     "message" => "La factura electrónica $venta->documento_referencia_fe no tiene cufe generado.",
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
@@ -973,61 +604,221 @@ class VentaController extends Controller
                 $venta->fecha_manual
             );
 
-            $pdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
+            $pdf   = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
             $email = $request->get('email') ?? $venta->cliente->email;
-            
+
             $this->sendEmailFactura(
                 $request->user()['has_empresa'],
                 $email,
                 $venta,
                 $pdf
             );
-            
-            return response()->json([
-				'success'=>	true,
-				'data' => [],
-				'message'=> 'Factura enviada con exito!'
-			], 200);
 
-            
-        } catch (Exception $e) {
-
-			DB::connection('sam')->rollback();
             return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$e->getMessage()
+                'success' => true,
+                'data'    => [],
+                'message' => 'Factura enviada con exito!'
+            ], 200);
+
+        } catch (\Throwable $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success" => false,
+                'data'    => [],
+                "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-	}
+    }
 
-    public function delete(Request $request)
+    public function sendWhatsapp(Request $request)
     {
         $rules = [
             'id_venta' => 'required|exists:sam.fac_ventas,id',
+            'telefono' => 'required|string',
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
-		if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$validator->errors()
+                'success' => false,
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        try {
+            $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+
+            if (!$empresa) {
+                throw new \Exception('Empresa no encontrada.');
+            }
+
+            // Token ECO
+            $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
+            $ecoToken = $ecoToken?->valor ?? null;
+
+            if (!$ecoToken) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se ha configurado el token de ECO en las variables de entorno.',
+                ], 422);
+            }
+
+            // Venta
+            $venta = FacVentas::with('cliente', 'comprobante', 'resolucion')
+                ->where('id', $request->id_venta)
+                ->first();
+
+            if (!$venta) {
+                throw new \Exception('Venta no encontrada.');
+            }
+
+            // ─── Datos de la plantilla ───
+            $nombreCliente = $venta->cliente
+                ? $venta->cliente->nombre_completo
+                : 'Cliente';
+
+            // Tipo de documento
+            $tipoDocumento = 'Factura';
+
+            // Número del documento
+            $numeroDocumento = $venta->documento_referencia ?: $venta->consecutivo;
+
+            // Valor
+            $valorDocumento = number_format((float) $venta->total_factura, 2, ',', '.');
+
+            // Fecha del documento
+            $fechaDocumento = $venta->fecha_manual
+                ? Carbon::parse($venta->fecha_manual)->format('Y-m-d')
+                : Carbon::now()->format('Y-m-d');
+
+            // Estado del documento (Pagada / Completada)
+            $estadoDocumento = 'Pagada';
+
+            // Nombre de la empresa emisora
+            $nombreEmpresa = $empresa->razon_social ?: 'PORTAFOLIO ERP SAS';
+
+            // ─── Clave del PDF ───
+            $claveUrl = $this->generarClavePDF(
+                $empresa->id,
+                $venta->comprobante->id,
+                $venta->consecutivo,
+                $venta->fecha_manual
+            );
+
+            // La URL del PDF va SIN el dominio (el botón ya lo tiene)
+            $linkFactura = 'documentos-generales-pdf?code=' . $claveUrl;
+
+            // ─── Parámetros de la plantilla ───
+            $whatsappData = [
+                "1" => $nombreCliente,
+                "2" => $tipoDocumento,
+                "3" => $numeroDocumento,
+                "4" => $valorDocumento,
+                "5" => $fechaDocumento,
+                "6" => $estadoDocumento,
+                "7" => $nombreEmpresa,
+                "8" => $linkFactura,
+            ];
+
+            // ─── Teléfono ───
+            $telefono = preg_replace('/\D/', '', (string) $request->get('telefono'));
+
+            if (strlen($telefono) < 10) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El número debe tener al menos 10 dígitos.',
+                ], 422);
+            }
+
+            if (strlen($telefono) === 10) {
+                $telefono = '57' . $telefono;
+            }
+
+            // ─── Enviar WhatsApp por ECO ───
+            $sender = new SendEcoWhatsApp(
+                $telefono,
+                $whatsappData,
+                [
+                    'id_nit'           => $venta->cliente->id_nit,
+                    'nombre_completo'  => $nombreCliente,
+                    'numero_documento' => $venta->cliente->numero_documento,
+                ],
+                'general_documento_portafolioerp',
+                'general_documento_portafolioerp'
+            );
+
+            $sender->setToken($ecoToken);
+            $response = $sender->send();
+
+            \Log::info('WhatsApp factura enviada', [
+                'id_venta' => $venta->id,
+                'telefono' => $telefono,
+                'link'     => $linkFactura,
+                'response' => $response,
+            ]);
+
+            if (!$response || !isset($response->status)) {
+                throw new \Exception('Sin respuesta de ECO.');
+            }
+
+            if ($response->status >= 400) {
+                $msg = $response->response->message ?? 'Error al enviar WhatsApp por ECO';
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $msg,
+                    'eco'     => $response->response,
+                ], 422);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Factura enviada por WhatsApp',
+                'eco'     => $response->response,
+            ], 200);
+
+        } catch (\Throwable $e) {
+            \Log::error('Error enviando WhatsApp factura', [
+                'id_venta' => $request->id_venta ?? null,
+                'error'    => $e->getMessage(),
+                'line'     => $e->getLine(),
+                'file'     => $e->getFile(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    // ============================================================
+    // DELETE (intacto)
+    // ============================================================
+
+    public function delete(Request $request)
+    {
+        $rules = ['id_venta' => 'required|exists:sam.fac_ventas,id'];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                'data'    => [],
+                "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
-
             DB::connection('sam')->beginTransaction();
 
-            $venta = FacVentas::with('bodegas')
-                ->where("id", $request->get("id_venta"))
-                ->first();
+            $venta = FacVentas::with('bodegas')->where("id", $request->get("id_venta"))->first();
 
             foreach ($venta->bodegas as $bodega) {
                 if ($bodega->cantidad) {
-                    FacProductosBodegas::where('id_producto', $bodega->id_producto)
+                    \App\Models\Sistema\FacProductosBodegas::where('id_producto', $bodega->id_producto)
                         ->increment('cantidad', $bodega->cantidad);
                 }
             }
@@ -1042,387 +833,23 @@ class VentaController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => [],
+                'data'    => [],
                 'message' => 'Venta eliminada con exito!'
             ], 200);
 
-        } catch (Exception $e) {
-
-			DB::connection('sam')->rollback();
+        } catch (\Throwable $e) {
+            DB::connection('sam')->rollback();
             return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$e->getMessage()
+                "success" => false,
+                'data'    => [],
+                "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
-    private function createFacturaVenta ($request)
-    {
-        $this->calcularTotales($request->get('productos'), $request->get('calcula_retencion'));
-        $propina = $request->get('propina');
-        if ($propina) {
-            $this->totalesFactura['propina'] = $propina;
-            $this->totalesFactura['total_factura']+= $propina;
-        }
-        $this->calcularFormasPago($request->get('pagos'));
-        $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
-        
-        $venta = FacVentas::create([
-            'id_cliente' => $request->get('id_cliente'),
-            'id_resolucion' => $request->get('id_resolucion'),
-            'id_comprobante' => $this->resolucion->comprobante->id,
-            'id_bodega' => $request->get('id_bodega'),
-            'id_centro_costos' => $this->bodega->id_centro_costos,
-            'id_vendedor' => $request->get('id_vendedor'),
-            'fecha_manual' => $request->get('fecha_manual'),
-            'consecutivo' => $request->get('consecutivo'),
-            'documento_referencia' => $request->get('documento_referencia'),
-            'subtotal' => $this->totalesFactura['subtotal'],
-            'total_iva' => $this->totalesFactura['total_iva'],
-            'total_descuento' => $this->totalesFactura['total_descuento'],
-            'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
-            'total_cambio' => $this->totalesPagos['total_cambio'],
-            'propina' => $this->totalesFactura['propina'],
-            'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
-            'codigo_tipo_documento_dian' => CodigoDocumentoDianTypes::VENTA_NACIONAL,
-            'total_factura' => $this->totalesFactura['total_factura'],
-            'observacion' => $request->get('observacion'),
-            'created_by' => request()->user()->id,
-            'updated_by' => request()->user()->id,
-        ]);
-
-        return $venta;
-    }
-
-    private function generarVentaDetalles($dataVentas, $detallar = true)
-    {
-        foreach ($dataVentas as $value) {
-            $resolucion = $value->resolucion && $value->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA ? $value->resolucion : null;
-            $this->ventaData[] = [
-                "id" => $value->id,
-                "descripcion" => "",
-                "cantidad" => $value->detalles()->sum('cantidad'),
-                "costo" => "",
-                "valor" => "",
-                "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
-                "nombre_completo" => $value->id_cliente ? $value->cliente?->nombre_completo : $value->id_cliente,
-                "email_cliente" => $value->cliente?->email,
-                "documento_referencia" => $value->documento_referencia,
-                "fecha_manual" => $value->fecha_manual,
-                "subtotal" => $value->subtotal,
-                "iva_porcentaje" => "",
-                "nombre_vendedor" => $value->vendedor && $value->vendedor->nit ? $value->vendedor->nit->nombre_completo : "",
-                "total_iva" => $value->total_iva,
-                "descuento_porcentaje" => "",
-                "total_descuento" => $value->total_descuento,
-                "rete_fuente_porcentaje" => "",
-                "total_rete_fuente" => $value->total_rete_fuente,
-                "total_factura" => $value->total_factura,
-                "anulado" => null,
-                "fecha_creacion" => $value->fecha_creacion,
-                "fecha_edicion" => $value->fecha_edicion,
-                "created_by" => $value->created_by,
-                "updated_by" => $value->updated_by,
-                "detalle" => $detallar ? false : true,
-                "resolucion" => $resolucion,
-                "factura" => $value->factura ?? null,
-                'fe_codigo_identificador' => $value->fe_codigo_identificador
-            ];
-            if ($detallar) {
-                foreach ($value->detalles as $ventaDetalle) {
-                    
-                    $this->ventaData[] = [
-                        "id" => "",
-                        "descripcion" => $ventaDetalle->producto ? "{$ventaDetalle->producto->codigo} - {$ventaDetalle->producto->nombre}" : "SIN PRODUCTO RELACIONADO",
-                        "cantidad" => $ventaDetalle->cantidad,
-                        "valor" => $ventaDetalle->costo,
-                        "costo" => $ventaDetalle->producto ? $ventaDetalle->producto->precio_inicial : "0",
-                        "subtotal" => $ventaDetalle->subtotal,
-                        "nombre_bodega" => "",
-                        "nombre_completo" => "",
-                        "documento_referencia" => "",
-                        "fecha_manual" => "",
-                        "iva_porcentaje" => $ventaDetalle->iva_porcentaje,
-                        "nombre_vendedor" => "",
-                        "total_iva" => $ventaDetalle->iva_valor,
-                        "descuento_porcentaje" => $ventaDetalle->descuento_porcentaje,
-                        "total_descuento" => $ventaDetalle->descuento_valor,
-                        "rete_fuente_porcentaje" => "",
-                        "total_rete_fuente" => "",
-                        "total_factura" => $ventaDetalle->total,
-                        "anulado" => "",
-                        "fecha_creacion" => "",
-                        "fecha_edicion" => "",
-                        "created_by" => "",
-                        "updated_by" => "",
-                        "detalle" => true,
-                        "resolucion" => null,
-                        'fe_codigo_identificador' => null
-                    ];
-                }
-            }
-        }
-    }
-
-    private function addFormaPago($documentoReferencia, $formaPago, $nit, $pagoItem, $venta, $valor, $saldo)
-    {
-        FacVentaPagos::create([
-            'id_venta' => $venta->id,
-            'id_forma_pago' => $pagoItem->id,
-            'valor' => $valor,
-            'saldo' => $saldo,
-            'created_by' => request()->user()->id,
-            'updated_by' => request()->user()->id
-        ]);
-
-        $doc = new DocumentosGeneral([
-            'id_cuenta' => $formaPago->cuenta->id,
-            'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
-            'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
-            'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
-            'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $documentoReferencia : null,
-            'debito' => $valor,
-            'credito' => $valor,
-            'created_by' => request()->user()->id,
-            'updated_by' => request()->user()->id
-        ]);
-
-        return $doc;
-    }
-
-    private function calcularFormasPago($pagos)
-    {
-        $totalCambio = 0;
-        $totalPagos = 0;
-        foreach ($pagos as $pago) {
-            $pago = (object)$pago;
-            $totalPagos+= $pago->valor;
-            if ($pago->id == 1) $this->totalesPagos['total_efectivo']+= $pago->valor;
-            else $this->totalesPagos['total_otrospagos']+= $pago->valor;
-        }
-        if ($this->totalesFactura['total_factura'] < $totalPagos) {
-            $totalCambio = $totalPagos - $this->totalesFactura['total_factura'];
-        }
-        
-        $this->totalesPagos['total_cambio'] = $totalCambio;
-    }
-
-    private function isAnticiposDocumentoRefe($formaPago, $idNit)
-    {
-        $tiposCuenta = $formaPago->cuenta->tipos_cuenta;
-        foreach ($tiposCuenta as $tipoCuenta) {
-            if ($tipoCuenta->id_tipo_cuenta == PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_CLIENTES_XP) {
-                $anticipoCuenta = (new Extracto(
-                    $idNit,
-                    null,
-                    null,
-                    Carbon::now()->format('Y-m-d H:i:s'),
-                    $formaPago->cuenta->id
-                ))->anticiposDiscriminados()->get();
-
-                return $anticipoCuenta;
-            }
-        }
-
-        return [];
-    }
-
-    private function calcularTotales($productos, $calcula_retencion)
-    {
-        $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
-        $this->ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
-        $responsabilidades = $this->getResponsabilidades();
-        
-        // INICIALIZAR NUEVOS CAMPOS
-        $this->totalesFactura['subtotal_sin_iva'] = 0;
-        $this->totalesFactura['subtotal_con_iva'] = 0;
-        
-        foreach ($productos as $producto) {
-            $producto = (object)$producto;
-            
-            $productoDb = FacProductos::where('id', $producto->id_producto)
-                ->with(
-                    'familia.cuenta_venta',
-                    'familia.cuenta_venta_retencion.impuesto',
-                    'familia.cuenta_venta_iva.impuesto',
-                    'familia.cuenta_venta_descuento'
-                )
-                ->first();
-            
-            // BUSCAR BASE Y PORCENTAJE RETENCIÓN
-            $cuentaRetencion = $productoDb->familia->cuenta_venta_retencion;
-            if ($cuentaRetencion && $cuentaRetencion->impuesto) {
-                $impuesto = $cuentaRetencion->impuesto;
-                $baseActual = floatval($impuesto->base);
-                if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente'] && $baseActual > floatval($this->totalesFactura['tope_retencion'])) {
-                    $this->totalesFactura['porcentaje_rete_fuente'] = floatval($impuesto->porcentaje);
-                    $this->totalesFactura['tope_retencion'] = floatval($impuesto->base);
-                    $this->totalesFactura['id_cuenta_rete_fuente'] = $cuentaRetencion->id;
-                }
-            }
-            
-            $iva = 0;
-            $costo = $producto->costo;
-            $totalPorCantidad = $producto->cantidad * $costo;
-            $cuentaIva = $productoDb->familia->cuenta_venta_iva;
-
-            if ($cuentaIva && $cuentaIva->impuesto) {
-                $impuesto = $cuentaIva->impuesto;
-                
-                if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente']) {
-                    $this->totalesFactura['porcentaje_iva'] = floatval($impuesto->porcentaje);
-                    $this->totalesFactura['id_cuenta_iva'] = $cuentaIva->id;
-                }
-
-                // CALCULAR IVA INCLUIDO
-                if ($this->ivaIncluido) {
-                    $subTotal = $totalPorCantidad - $producto->descuento_valor;
-                    $porcentajeIva = $this->totalesFactura['porcentaje_iva'];
-
-                    // IVA cuando está incluido en el precio
-                    $iva = round($subTotal * ($porcentajeIva / (100 + $porcentajeIva)), 2);
-                    // Valor sin IVA
-                    $valor_linea_sin_iva = round($subTotal - $iva, 2);
-                    // Valor con IVA (realmente es el subtotal)
-                    $valor_linea_con_iva = round($subTotal, 2);
-                } else {
-                    // Cuando el precio NO incluye IVA
-                    $iva = round(($totalPorCantidad - $producto->descuento_valor) * ($this->totalesFactura['porcentaje_iva'] / 100), 2);
-                    // Valor sin IVA
-                    $valor_linea_sin_iva = round(($producto->cantidad * $costo) - $producto->descuento_valor, 2);
-                    // Valor con IVA
-                    $valor_linea_con_iva = $valor_linea_sin_iva + $iva;
-                }
-                
-            } else {
-                // Si no hay IVA
-                $valor_linea_sin_iva = round(($producto->cantidad * $costo) - $producto->descuento_valor,2);
-                $valor_linea_con_iva = $valor_linea_sin_iva;
-            }
-
-            // ACTUALIZAR TOTALES
-            $this->totalesFactura['subtotal_sin_iva'] += $valor_linea_sin_iva;
-            $this->totalesFactura['subtotal_con_iva'] += $valor_linea_con_iva;
-            $this->totalesFactura['total_iva'] += $iva;
-            $this->totalesFactura['total_descuento'] += $producto->descuento_valor;
-            
-            // Mantener compatibilidad con código existente
-            $this->totalesFactura['subtotal'] = $this->totalesFactura['subtotal_sin_iva'];
-            $this->totalesFactura['total_factura'] = $this->totalesFactura['subtotal_con_iva'];
-        }
-
-        // CALCULAR RETENCIÓN EN LA FUENTE
-        if ($calcula_retencion &&
-            $this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] &&
-            $this->totalesFactura['porcentaje_rete_fuente'] > 0
-        ) {
-            // Base para retención: usar subtotal sin IVA (más común)
-            $base_retencion = $this->totalesFactura['subtotal_sin_iva'];
-            $total_rete_fuente = round($base_retencion * ($this->totalesFactura['porcentaje_rete_fuente'] / 100), 2);
-            
-            $this->totalesFactura['total_rete_fuente'] = $total_rete_fuente;
-            $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 2);
-        } else {
-            $this->totalesFactura['id_cuenta_rete_fuente'] = null;
-            $this->totalesFactura['total_rete_fuente'] = 0;
-        }
-    }
-
-    private function getResponsabilidades()
-    {
-        if ($this->nit->id_responsabilidades) {
-            return explode(",", $this->nit->id_responsabilidades);
-        }
-        return [];
-    }
-
-    private function findCliente ($id_cliente, $calcula_retencion)
-    {
-        $nit = Nits::whereId($id_cliente)
-            ->select(
-                '*',
-                DB::raw("CASE
-                    WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
-                    ELSE NULL
-                END AS nombre_nit"),
-                'id_responsabilidades'
-            )
-            ->first();
-
-        if ($calcula_retencion != $nit->retencion) {
-            $nit->retencion = $calcula_retencion;
-            $nit->save();
-        }
-
-        return $nit;
-    }
-
-    private function findProducto ($id_producto)
-    {
-        $producto = FacProductos::where('id', $id_producto)
-            ->with(
-                'familia.cuenta_venta',
-                'familia.cuenta_venta_retencion.impuesto',
-                'familia.cuenta_venta_iva.impuesto',
-                'familia.cuenta_venta_descuento',
-                'familia.cuenta_inventario',
-                'familia.cuenta_costos',
-            )
-            ->first();
-
-        if ($producto->utilizado_captura == 0) {
-            $producto->utilizado_captura = 1;
-            $producto->save();
-        }
-
-        return $producto;
-    }
-
-    private function findFormaPago ($id_forma_pago)
-    {
-        return FacFormasPago::where('id', $id_forma_pago)
-            ->with(
-                'cuenta',
-                'tipoFormaPago'
-            )
-            ->first();
-    }
-
-    private function queryTotalesVentaCosto($request, $notas = false)
-    {
-        return DB::connection('sam')->table('fac_ventas AS FV')
-            ->leftJoin('fac_venta_detalles AS FVD', 'FV.id', 'FVD.id_venta')
-            ->leftJoin('fac_productos AS FP', 'FVD.id_producto', 'FP.id')
-            ->leftJoin('fac_venta_pagos AS FVP', 'FV.id', 'FVP.id_venta')
-            ->leftJoin('fac_ventas AS FVNC', 'FV.id_factura', 'FVNC.id')
-            ->when(true, function ($query) use ($notas) {
-                if ($notas) {
-                    $query->whereNotNull('FV.id_factura');
-                } else {
-                    $query->whereNull('FV.id_factura');
-                }
-            })
-            ->when($request->get('id_cliente') ? true : false, function ($query) use ($request) {
-                $query->where('FV.id_cliente', $request->get('id_cliente'));
-            })
-            ->when($request->get('fecha_desde') ? true : false, function ($query) use ($request) {
-                $query->whereDate('FV.fecha_manual', '>=', $request->get('fecha_desde'));
-            })
-            ->when($request->get('fecha_hasta') ? true : false, function ($query) use ($request) {
-                $query->whereDate('FV.fecha_manual', '<=', $request->get('fecha_hasta'));
-            })
-            ->when($request->get('factura') ? true : false, function ($query) use ($request) {
-                $query->where('FV.documento_referencia', 'LIKE', '%'.$request->get('factura').'%');
-            })
-            ->when($request->get('id_resolucion') ? true : false, function ($query) use ($request) {
-                $query->where('FV.id_resolucion', $request->get('id_resolucion'));
-            })
-            ->when($request->get('id_bodega') ? true : false, function ($query) use ($request) {
-                $query->where('FV.id_bodega', $request->get('id_bodega'));
-            });
-    }
+    // ============================================================
+    // HELPERS PRIVADOS — solo los que siguen usándose
+    // ============================================================
 
     private function buildVentasQuery(Request $request)
     {
@@ -1430,7 +857,7 @@ class VentaController extends Controller
             ->select([
                 'id', 'id_cliente', 'id_bodega', 'id_resolucion', 'id_vendedor',
                 'id_factura', 'documento_referencia', 'fecha_manual',
-                'consecutivo',                                  // ⬅ AGREGAR ESTA LÍNEA
+                'consecutivo',
                 'subtotal', 'total_iva', 'total_descuento', 'total_rete_fuente',
                 'total_factura', 'fe_codigo_identificador',
                 'created_by', 'updated_by', 'created_at', 'updated_at',
@@ -1519,6 +946,7 @@ class VentaController extends Controller
 
     private function generarVentaDetallesOptimizado($dataVentas, bool $detallar): void
     {
+
         foreach ($dataVentas as $value) {
             $cantidadTotal = $detallar
                 ? $value->detalles->sum('cantidad')
@@ -1552,6 +980,8 @@ class VentaController extends Controller
                 'anulado'                 => null,
                 'fecha_creacion'          => $value->created_at?->format('Y-m-d H:i:s'),
                 'fecha_edicion'           => $value->updated_at?->format('Y-m-d H:i:s'),
+                'telefono_1'              => $value->cliente->telefono_1,
+                'telefono_2'              => $value->cliente->telefono_2,
                 'created_by'              => $value->created_by,
                 'updated_by'              => $value->updated_by,
                 'detalle'                 => false,
@@ -1596,5 +1026,4 @@ class VentaController extends Controller
             }
         }
     }
-
 }

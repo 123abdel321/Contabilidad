@@ -127,31 +127,126 @@ function cargarTablasVentas() {
             }, className: 'cell-date'},
 
             // Acciones
-            {"data": function (row) {
-                var html = '';
-                if (row.id) {
-                    html += '<span id="imprimirventa_' + row.id + '" class="btn badge bg-gradient-info imprimir-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;">PDF &nbsp;<i class="fas fa-print"></i></span>';
-                    if (eliminarVentas && !row.fe_codigo_identificador) {
-                        html += '<span id="eliminarventa_' + row.id + '" class="btn badge bg-gradient-danger eliminar-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;">ELIMINAR &nbsp;<i class="fa-solid fa-trash-can"></i></span>';
-                        html += '<span id="eliminarventaloading_' + row.id + '" class="btn badge bg-gradient-danger" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>ELIMINANDO &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+            {
+                "data": function (row) {
+                    var html = '';
+
+                    // ── PDF ──
+                    if (row.id) {
+                        html += '<span id="imprimirventa_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-info imprimir-venta" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;" ' +
+                                'title="Imprimir PDF">' +
+                                '<i class="fas fa-print"></i>' +
+                                '</span>';
+
+                        // ── Eliminar ──
+                        if (eliminarVentas && !row.fe_codigo_identificador) {
+                            html += '<span id="eliminarventa_' + row.id + '" ' +
+                                    'class="btn badge bg-gradient-danger eliminar-venta" ' +
+                                    'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;" ' +
+                                    'title="Eliminar venta">' +
+                                    '<i class="fa-solid fa-trash-can"></i>' +
+                                    '</span>';
+
+                            html += '<span id="eliminarventaloading_' + row.id + '" ' +
+                                    'class="btn badge bg-gradient-danger" ' +
+                                    'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" ' +
+                                    'title="Eliminando..." disabled>' +
+                                    '<i class="fa fa-spinner fa-spin"></i>' +
+                                    '</span>';
+                        }
                     }
-                }
-                if (row.resolucion && !row.fe_codigo_identificador) {
-                    html += '<span id="enviarfeventa_' + row.id + '" class="btn badge bg-gradient-primary enviar-fe-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;">Enviar FE &nbsp;<i class="fas fa-share"></i></span>';
-                    html += '<span id="enviarfeventaloading_' + row.id + '" class="btn badge bg-gradient-primary" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
-                } else if (row.factura && row.factura.resolucion && !row.fe_codigo_identificador) {
-                    html += '<span id="enviarnceventa_' + row.id + '" class="btn badge bg-gradient-primary enviar-nce-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;">Enviar NCE &nbsp;<i class="fas fa-share"></i></span>';
-                    html += '<span id="enviarnceventaloading_' + row.id + '" class="btn badge bg-gradient-primary" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
-                }
-                if (row.resolucion && row.fe_codigo_identificador) {
-                    html += '<span id="reenviaremail_' + row.id + '" class="btn badge bg-gradient-success reenviar-email-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;">REENVIAR &nbsp;<i class="fas fa-envelope"></i></span>';
-                    html += '<span id="reenviaremailloading_' + row.id + '" class="btn badge bg-gradient-success" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
-                } else if (row.id && enviarEmailVentas) {
-                    html += '<span id="enviaremail_' + row.id + '" class="btn badge bg-gradient-success enviar-email-venta" style="margin-bottom:0;color:#fff;background-color:#fff !important;">ENVIAR &nbsp;<i class="fas fa-envelope"></i></span>';
-                    html += '<span id="enviaremailloading_' + row.id + '" class="btn badge bg-gradient-success" style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
-                }
-                return html;
-            }, className: 'cell-actions'}
+
+                    // ── Enviar FE (factura normal) ──
+                    if (row.resolucion && !row.fe_codigo_identificador) {
+                        html += '<span id="enviarfeventa_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-primary enviar-fe-venta" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;" ' +
+                                'title="Enviar factura electrónica">' +
+                                '<i class="fas fa-share"></i>' +
+                                '</span>';
+
+                        html += '<span id="enviarfeventaloading_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-primary" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" ' +
+                                'title="Enviando factura..." disabled>' +
+                                '<i class="fa fa-spinner fa-spin"></i>' +
+                                '</span>';
+                    }
+
+                    // ── Enviar NCE (nota crédito) ──
+                    else if (row.factura && row.factura.resolucion && !row.fe_codigo_identificador) {
+                        html += '<span id="enviarnceventa_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-primary enviar-nce-venta" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;" ' +
+                                'title="Enviar nota crédito electrónica">' +
+                                '<i class="fas fa-share"></i>' +
+                                '</span>';
+
+                        html += '<span id="enviarnceventaloading_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-primary" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" ' +
+                                'title="Enviando nota crédito..." disabled>' +
+                                '<i class="fa fa-spinner fa-spin"></i>' +
+                                '</span>';
+                    }
+
+                    // ── Reenviar email (si FE ya está emitida) ──
+                    if (row.resolucion && row.fe_codigo_identificador) {
+                        html += '<span id="reenviaremail_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-success reenviar-email-venta" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;" ' +
+                                'title="Reenviar factura por email">' +
+                                '<i class="fas fa-envelope"></i>' +
+                                '</span>';
+
+                        html += '<span id="reenviaremailloading_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-success" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" ' +
+                                'title="Reenviando email..." disabled>' +
+                                '<i class="fa fa-spinner fa-spin"></i>' +
+                                '</span>';
+                    }
+
+                    // ── Enviar email (sin FE) ──
+                    else if (row.id && enviarEmailVentas) {
+                        html += '<span id="enviaremail_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-success enviar-email-venta" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;" ' +
+                                'title="Enviar factura por email">' +
+                                '<i class="fas fa-envelope"></i>' +
+                                '</span>';
+
+                        html += '<span id="enviaremailloading_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-success" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" ' +
+                                'title="Enviando email..." disabled>' +
+                                '<i class="fa fa-spinner fa-spin"></i>' +
+                                '</span>';
+                    }
+
+                    // ── Enviar WhatsApp (NUEVO) ──
+                    if (row.id) {
+                        html += '<span id="enviarwhatsapp_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-success enviar-whatsapp-venta" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;" ' +
+                                'title="Enviar factura por WhatsApp">' +
+                                '<i class="fab fa-whatsapp"></i>' +
+                                '</span>';
+
+                        html += '<span id="enviarwhatsapploading_' + row.id + '" ' +
+                                'class="btn badge bg-gradient-success" ' +
+                                'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;display:none;" ' +
+                                'title="Enviando WhatsApp..." disabled>' +
+                                '<i class="fa fa-spinner fa-spin"></i>' +
+                                '</span>';
+                    }
+
+                    return html;
+                },
+                className: 'cell-actions'
+            }
         ]
     });
 
@@ -542,6 +637,93 @@ $(document).on('click', '.enviar-nce-venta', function () {
         const mensaje = err.responseJSON.message;
         var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Envio a la dian errado', errorsMsg);
+    });
+});
+
+$(document).on('click', '.enviar-whatsapp-venta', function () {
+    var id = this.id.split('_')[1];
+    var data = getDataById(id, ventas_table);
+    
+    if (!data) {
+        agregarToast('error', 'Error', 'No se encontraron datos de la venta');
+        return;
+    }
+
+    // 🔑 Intentar varias fuentes del teléfono
+    var telefono = '';
+    if (data.cliente && data.cliente.telefono_1) {
+        telefono = data.cliente.telefono_1;
+    } else if (data.telefono_1) {
+        telefono = data.telefono_1;
+    }
+
+    // Limpiar el teléfono (solo dígitos)
+    telefono = String(telefono).replace(/\D/g, '');
+
+    // Si tiene 10 dígitos, agregar el código de Colombia (57)
+    if (telefono.length === 10) {
+        telefono = telefono;
+    }
+
+    Swal.fire({
+        title: 'Enviar factura por WhatsApp',
+        input: 'text',
+        inputLabel: 'Número de WhatsApp',
+        inputValue: telefono,
+        inputAttributes: {
+            autocapitalize: 'off',
+            placeholder: '3001234567'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Enviar',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: (numero) => {
+            var numeroLimpio = String(numero || '').replace(/\D/g, '');
+
+            if (!numeroLimpio) {
+                Swal.showValidationMessage('Debes ingresar un número');
+                return false;
+            }
+
+            if (numeroLimpio.length < 10) {
+                Swal.showValidationMessage('El número debe tener al menos 10 dígitos');
+                return false;
+            }
+
+            $('#enviarwhatsapp_' + id).hide();
+            $('#enviarwhatsapploading_' + id).show();
+
+            return $.ajax({
+                url: base_url + 'ventas-whatsapp',
+                method: 'POST',
+                data: JSON.stringify({
+                    id_venta: id,
+                    telefono: numeroLimpio,
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if (!res.success) {
+                    throw new Error(res.message || 'Error al enviar');
+                }
+                return res;
+            }).fail((err) => {
+                throw new Error(err.responseJSON?.message || 'Error al enviar WhatsApp');
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        $('#enviarwhatsapp_' + id).show();
+        $('#enviarwhatsapploading_' + id).hide();
+
+        if (result.isConfirmed) {
+            agregarToast('exito', 'Enviado', 'Factura enviada por WhatsApp');
+        }
+    }).catch((err) => {
+        $('#enviarwhatsapp_' + id).show();
+        $('#enviarwhatsapploading_' + id).hide();
+        agregarToast('error', 'Error', err.message);
     });
 });
 
