@@ -262,7 +262,9 @@ class GastosController extends Controller
                     $ivaGasto = $this->redondearGasto($ivaGasto, $redondeo_gastos);
                     $retencionGasto =  $calcularRetencion ? $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos) : 0;
                     $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
-                    $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
+                    $totalGasto = $this->redondearGasto(($subtotalGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
+                    
+                    $subtotalGasto+= $ivaGasto;
                 } else {
                     $ivaGasto = $this->redondearGasto($porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0, $redondeo_gastos);
                     $retencionGasto = $calcularRetencion ? $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos) : 0;
