@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Jobs\ProcessConsultarFE;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 //HELPERS
 use App\Helpers\Documento;
 use App\Helpers\Printers\VentasPdf;
+use App\Helpers\Eco\SendEcoWhatsApp;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 use App\Helpers\FacturaElectronica\NotaCreditoElectronicaSender;
 //TRAITS
@@ -140,6 +142,8 @@ class NotaCreditoController extends Controller
 
             $enviarFacturaElectronica = false;
             $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+
+            $nitCliente = Nits::find($this->facturaVentas->id_cliente); 
             
             // Crear nota crédito
             $notaCredito = $this->createNotaCredito($request);
@@ -178,6 +182,18 @@ class NotaCreditoController extends Controller
             }
             
             DB::connection('sam')->commit();
+
+            // ── WhatsApp Nota Crédito (fuera de la transacción) ──
+            if ($nitCliente && $nitCliente->notificacion_whatsapp) {
+                try {
+                    $this->enviarWhatsappNotaCredito($notaCredito, $empresa, $nitCliente);
+                } catch (\Throwable $e) {
+                    \Log::warning('Nota crédito creada, pero falló el envío de WhatsApp', [
+                        'nota_credito_id' => $notaCredito->id,
+                        'error'           => $e->getMessage(),
+                    ]);
+                }
+            }
 
             return response()->json([
                 'success' => true,
@@ -1178,6 +1194,127 @@ class NotaCreditoController extends Controller
                 'cuenta'
             )
             ->first();
+    }
+
+    /**
+     * Envía la nota crédito al cliente por WhatsApp (ECO).
+     * Solo se llama si el NIT tiene notificacion_whatsapp = true.
+     */
+    protected function enviarWhatsappNotaCredito($notaCredito, $empresa, $nitCliente): void
+    {
+        // ── Teléfono del cliente ──
+        $telefono = $nitCliente->telefono_1 ?? null;
+
+        if (!$telefono) {
+            \Log::info('WhatsApp nota crédito omitido: NIT sin teléfono', [
+                'nota_credito_id' => $notaCredito->id,
+                'nit_id'          => $nitCliente->id,
+            ]);
+            return;
+        }
+
+        $telefono = preg_replace('/\D/', '', (string) $telefono);
+
+        if (strlen($telefono) < 10) {
+            \Log::info('WhatsApp nota crédito omitido: teléfono inválido', [
+                'nota_credito_id' => $notaCredito->id,
+                'telefono'        => $telefono,
+            ]);
+            return;
+        }
+
+        if (strlen($telefono) === 10) {
+            $telefono = '57' . $telefono;
+        }
+
+        // ── Token ECO ──
+        $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
+        $ecoToken = $ecoToken?->valor ?? null;
+
+        if (!$ecoToken) {
+            \Log::info('WhatsApp nota crédito omitido: token ECO no configurado', [
+                'nota_credito_id' => $notaCredito->id,
+            ]);
+            return;
+        }
+
+        // ── Datos para la plantilla ──
+        $nombreCliente   = $nitCliente->nombre_completo ?: 'Cliente';
+        $tipoDocumento   = 'Nota Crédito';
+        $numeroDocumento = $notaCredito->documento_referencia ?: $notaCredito->consecutivo;
+        $valorDocumento  = number_format((float) $notaCredito->total_factura, 2, ',', '.');
+        $fechaDocumento  = $notaCredito->fecha_manual
+            ? Carbon::parse($notaCredito->fecha_manual)->format('Y-m-d')
+            : Carbon::now()->format('Y-m-d');
+        $estadoDocumento = 'Aplicada';
+        $nombreEmpresa   = $empresa->razon_social ?: 'PORTAFOLIO ERP SAS';
+
+        // ── Clave del PDF ──
+        $claveUrl = $this->generarClavePDF(
+            $empresa->id,
+            $this->resolucion->comprobante->id,
+            $notaCredito->consecutivo,
+            $notaCredito->fecha_manual
+        );
+
+        $linkPdf = 'documentos-generales-pdf?code=' . $claveUrl;
+
+        // ── Parámetros de la plantilla ──
+        $whatsappData = [
+            "1" => $nombreCliente,
+            "2" => $tipoDocumento,
+            "3" => $numeroDocumento,
+            "4" => $valorDocumento,
+            "5" => $fechaDocumento,
+            "6" => $estadoDocumento,
+            "7" => $nombreEmpresa,
+            "8" => $linkPdf,
+        ];
+
+        // ── Enviar ──
+        $sender = new SendEcoWhatsApp(
+            $telefono,
+            $whatsappData,
+            [
+                'id_nit'           => $nitCliente->id,
+                'nombre_completo'  => $nombreCliente,
+                'numero_documento' => $nitCliente->numero_documento,
+            ],
+            'general_documento_portafolioerp',
+            'general_documento_portafolioerp'
+        );
+
+        $sender->setToken($ecoToken);
+        $response = $sender->send();
+
+        \Log::info('WhatsApp nota crédito enviada', [
+            'nota_credito_id' => $notaCredito->id,
+            'telefono'        => $telefono,
+            'link'            => $linkPdf,
+            'response'        => $response,
+        ]);
+
+        if (!$response || !isset($response->status) || $response->status >= 400) {
+            \Log::warning('WhatsApp nota crédito falló en ECO', [
+                'nota_credito_id' => $notaCredito->id,
+                'response'        => $response,
+            ]);
+        }
+    }
+
+    public function generarClavePDF($has_empresa, $id_comprobante, $consecutivo, $fecha_manual)
+    {
+        $data = [
+            'has_empresa'    => $has_empresa,
+            'id_comprobante' => $id_comprobante,
+            'consecutivo'    => $consecutivo,
+            'fecha_manual'   => $fecha_manual,
+        ];
+
+        $json       = json_encode($data);
+        $compressed = gzcompress($json, 9);
+
+        return rtrim(strtr(base64_encode($compressed), '+/', '-_'), '=');
     }
 
 }
