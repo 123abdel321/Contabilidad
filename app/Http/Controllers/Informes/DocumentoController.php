@@ -178,7 +178,7 @@ class DocumentoController extends Controller
 
                 if ($compra) {
                     // $data = (new ComprasPdf($empresa, $compra))->buildPdf()->getData();
-                    return (new ComprasPdf($empresa, $compra))
+                    return (new ComprasPdf($empresa, $compra, $claveUrl))
                         ->buildPdf()
                         ->showPdf();
                 }
