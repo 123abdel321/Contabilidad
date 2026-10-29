@@ -3254,10 +3254,7 @@
                         </div>
 
                         <div class="o-core" aria-hidden="true">
-                            <svg class="ic">
-                                <use href="#i-layers" />
-                            </svg>
-                            <span>ERP</span>
+                            <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="Portafolio ERP" width="40" height="40">
                         </div>
                     </div>
 
