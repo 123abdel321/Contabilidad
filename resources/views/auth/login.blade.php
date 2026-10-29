@@ -5,7 +5,12 @@
 <link
     href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
-<link id="pagestyle" href="/assets/css/login.css" rel="stylesheet" />
+<link
+    id="pagestyle"
+    href="{{ asset('assets/css/login.css') }}?v={{ config('app.version') }}"
+    rel="stylesheet"
+>
+
 <script src="https://cdn.jsdelivr.net/npm/animejs@4.0.2/lib/anime.iife.min.js"></script>
 
 <div class="pe-login" id="peLoginRoot">
