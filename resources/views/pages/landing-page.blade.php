@@ -2808,6 +2808,31 @@
                 animation: none;
             }
         }
+
+        /* 1. Radios: el ángulo va en `rotate`, Anime sigue usando `transform` para scaleX */
+.o-spoke {
+    rotate: var(--a);
+    transform: none;
+    transform-origin: 0 50%;
+}
+
+/* 2 y 3. Anillos centrados con `translate`, sin usar `transform` */
+.o-ring,
+.o-ring-3 {
+    transform: none;
+    translate: -50% -50%;
+}
+
+/* 4. Velocidades más naturales + GPU */
+.o-r1 { animation-duration: 45s; }
+.o-r1 .o-node-in { animation-duration: 45s; }
+.o-r2 { animation-duration: 70s; }
+.o-r2 .o-node-in { animation-duration: 70s; }
+.o-rotor, .o-node-in { will-change: transform; }
+
+/* Pausa suave al pasar el mouse (ya la tenías, esto la mantiene) */
+.orbita-wrap:hover .o-rotor,
+.orbita-wrap:hover .o-node-in { animation-play-state: paused; }
     </style>
 </head>
 
@@ -4153,7 +4178,7 @@
 
                 onView(wrap, () => {
                     animate($$('.o-ring', wrap), {
-                        scale: [0.6, 1], opacity: [0, 1], duration: 1200, delay: stagger(150), ease: 'outExpo'
+                        scale: [0.6, 1], opacity: [0, 1], duration: 1400, delay: stagger(150), ease: 'outCubic'
                     });
                     animate($$('.o-spoke', wrap), {
                         scaleX: [0, 1], duration: 1100, delay: stagger(110, { start: 300 }), ease: 'outExpo'
