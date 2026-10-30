@@ -1,0 +1,230 @@
+/* =====================================================================
+   PORTAFOLIO ERP · TEMA PRO (cargar DESPUÉS de argon-dashboard.css y app.css)
+   ===================================================================== */
+
+:root {
+  --pf-bg: #060e26;
+  --pf-surface: #0f1729;
+  --pf-primary: #4f46e5;
+  --pf-primary-2: #6366f1;
+  --pf-primary-3: #818cf8;
+  --pf-cyan: #22d3ee;
+  --pf-ok: #10b981;
+  --pf-bad: #ef4444;
+  --pf-warn: #f59e0b;
+  --pf-grad: linear-gradient(120deg, #4f46e5 0%, #6366f1 55%, #818cf8 100%);
+  --pf-grad-cyan: linear-gradient(120deg, #4f46e5 0%, #06b6d4 100%);
+  --pf-border: rgba(99, 102, 241, .22);
+  --pf-radius: 1rem;
+  --pf-shadow: 0 10px 30px rgba(2, 6, 23, .28);
+  --pf-font-display: "Sora", "Open Sans", sans-serif;
+  --pf-font-body: "Manrope", "Open Sans", sans-serif;
+
+  /* Corrige el rgb naranja heredado de Argon */
+  --bs-primary-rgb: 79, 70, 229;
+  --bs-primary: #4f46e5;
+  --bs-primary-second: #4338ca;
+  --bs-body-font-family: var(--pf-font-body);
+}
+
+/* ---------- Base ---------- */
+body {
+  font-family: var(--pf-font-body);
+  background-color: var(--pf-bg) !important;
+  background-image:
+    radial-gradient(700px 400px at 85% -5%, rgba(99, 102, 241, .28), transparent 60%),
+    radial-gradient(600px 380px at 5% 105%, rgba(34, 211, 238, .12), transparent 60%),
+    linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
+  background-size: auto, auto, 56px 56px, 56px 56px;
+  background-attachment: fixed;
+}
+h1, h2, h3, h4, h5, h6, .modal-title { font-family: var(--pf-font-display); letter-spacing: -.02em; }
+a { color: var(--pf-primary); }
+a:hover { color: var(--pf-primary-2); }
+
+/* Fondo superior del sistema: transparente para ver el degradado */
+.fondo-sistema { background: transparent !important; }
+
+/* ---------- Scrollbar ---------- */
+* { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, .5) transparent; }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, .5); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--pf-primary-2); }
+
+/* ---------- Tarjetas ---------- */
+.card {
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-radius);
+  box-shadow: var(--pf-shadow);
+  transition: box-shadow .3s ease, border-color .3s ease;
+}
+.card:hover { border-color: rgba(99, 102, 241, .45); }
+
+/* ---------- Botones ---------- */
+.btn {
+  border-radius: .7rem;
+  font-family: var(--pf-font-body);
+  font-weight: 700;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(2, 6, 23, .25);
+  transition: transform .2s ease, box-shadow .25s ease, filter .2s ease;
+}
+.btn:hover:not(.btn-icon-only) { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(79, 70, 229, .38) !important; }
+.btn:active { transform: translateY(0); }
+
+.btn-primary, .bg-gradient-primary.btn {
+  background: var(--pf-grad) !important;
+  border: 0 !important;
+  color: #fff !important;
+}
+.btn-success, .bg-gradient-success.btn { background: linear-gradient(120deg, #059669, #10b981) !important; }
+.btn-danger, .bg-gradient-danger.btn { background: linear-gradient(120deg, #dc2626, #f43f5e) !important; }
+.btn-info, .bg-gradient-info.btn { background: var(--pf-grad-cyan) !important; }
+
+/* Brillo que cruza los botones primarios */
+.btn-primary::after, .btn-bg-gold::after, .btn-bg-blue-dark::after {
+  content: ""; position: absolute; top: 0; left: -70%; width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .32), transparent);
+  transform: skewX(-20deg); animation: pfSheen 4.5s ease-in-out infinite; pointer-events: none;
+}
+@keyframes pfSheen { 0%, 60% { left: -70%; } 100% { left: 150%; } }
+
+/* Botones "oscuros" con icono de color (tus btn-bg-*) más pro */
+.btn-bg-gold, .btn-bg-info, .btn-bg-excel, .btn-bg-danger, .btn-bg-blue-dark {
+  background: linear-gradient(135deg, #0f1729, #1b2547) !important;
+  border: 1px solid var(--pf-border) !important;
+  border-radius: .7rem !important;
+}
+
+/* ---------- Formularios ---------- */
+.form-control, .form-select {
+  border: 1px solid #d6dbe6;
+  border-radius: .6rem;
+  background-color: #fff;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--pf-primary-2) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, .18) !important;
+}
+label, .form-label { color: #1e293b; letter-spacing: .01em; }
+
+.select2-container--bootstrap-5.select2-container--focus .select2-selection,
+.select2-container--bootstrap-5.select2-container--open .select2-selection {
+  border-color: var(--pf-primary-2) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, .18) !important;
+}
+.select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted {
+  background: var(--pf-grad); color: #fff;
+}
+
+/* Switches */
+.form-switch .form-check-input:checked { background: var(--pf-grad); border-color: var(--pf-primary-2); }
+.form-check-input:checked[type=checkbox], .form-check-input:checked[type=radio] { background-image: var(--pf-grad); }
+
+/* Buscador de tablas */
+.search-table { border-radius: 999px !important; padding-left: 1.1rem !important; border: 1px solid var(--pf-border); }
+
+/* ---------- Tablas / DataTables ---------- */
+thead tr:first-child th {
+  background: linear-gradient(120deg, #131a3a, #231f63) !important;
+  color: #fff;
+  font-family: var(--pf-font-display);
+  font-size: 11.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border-color: rgba(255, 255, 255, .06) !important;
+}
+.table > :not(caption) > * > * { border-color: #eef1f7; }
+table.dataTable tbody tr { transition: background .2s ease, box-shadow .2s ease; }
+tr.odd:hover, tr.even:hover { background: rgba(99, 102, 241, .09) !important; box-shadow: inset 3px 0 0 var(--pf-primary-2); }
+
+.dataTables_info { color: #64748b; font-weight: 600; }
+.dataTables_processing { border-radius: 1rem !important; border: 1px solid var(--pf-border) !important; }
+
+/* Paginación */
+.page-item .page-link { border: 0; background: #f1f4fb; color: #475569; transition: all .2s ease; }
+.page-item .page-link:hover { background: rgba(99, 102, 241, .15); color: var(--pf-primary); }
+.page-item.active .page-link { background: var(--pf-grad) !important; color: #fff; }
+
+/* Badges de acción en tablas (Editar / Eliminar) */
+.badge { border-radius: .55rem; letter-spacing: .04em; transition: transform .2s ease, filter .2s ease; }
+.badge.btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.badge.bg-gradient-success { background: linear-gradient(120deg, #059669, #10b981) !important; }
+.badge.bg-gradient-danger  { background: linear-gradient(120deg, #dc2626, #f43f5e) !important; }
+
+/* Chips SI/NO reutilizables */
+.chip-si, .chip-no, .chip-info {
+  display: inline-block; padding: .18rem .65rem; border-radius: 999px;
+  font-size: 11px; font-weight: 800; letter-spacing: .04em;
+}
+.chip-si   { background: rgba(16, 185, 129, .15); color: #059669; }
+.chip-no   { background: rgba(239, 68, 68, .12);  color: #dc2626; }
+.chip-info { background: rgba(99, 102, 241, .14); color: var(--pf-primary); }
+
+/* ---------- Modales ---------- */
+.modal-content {
+  border: 1px solid var(--pf-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 30px 80px rgba(2, 6, 23, .45);
+  overflow: hidden;
+}
+.modal-header {
+  background: linear-gradient(120deg, #131a3a 0%, #3730a3 100%) !important;
+  border-bottom: 0;
+  border-radius: 0;
+}
+.modal-title { color: #fff; font-weight: 700; }
+.modal-footer { background: #f8faff; border-top: 1px solid #e8ecf6; }
+.modal-backdrop.show { opacity: .65; backdrop-filter: blur(4px); }
+.btn-close { filter: none; opacity: .9; }
+
+/* ---------- Pestañas inferiores (footer-navigation) ---------- */
+.footer-navigation .nav-item .nav-link {
+  border: 1px solid var(--pf-border);
+  background: rgba(15, 23, 41, .85) !important;
+  color: #cbd5e1;
+  backdrop-filter: blur(10px);
+  transition: all .25s ease;
+}
+.footer-navigation .nav-item .nav-link:hover { color: #fff; transform: translateY(-2px); }
+.footer-navigation .nav-item .nav-link.active {
+  background: var(--pf-grad) !important;
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 -4px 18px rgba(99, 102, 241, .45);
+}
+.tab-porta-15px, .tab-porta-13 { color: inherit; }
+
+/* ---------- Sidenav ---------- */
+.navbar-nav > .nav-item > .nav-link.active {
+  background-image: var(--pf-grad) !important;
+  box-shadow: 0 8px 22px rgba(79, 70, 229, .4);
+}
+.navbar-vertical .navbar-nav .nav-link { transition: background .2s ease, transform .2s ease; }
+.navbar-vertical .navbar-nav .nav-link:hover { transform: translateX(3px); }
+
+/* ---------- Toasts ---------- */
+.toast { border-radius: 1rem; backdrop-filter: blur(8px); }
+.toast.exito   { background: linear-gradient(135deg, #059669, #10b981); }
+.toast.error   { background: linear-gradient(135deg, #dc2626, #f43f5e); }
+.toast.info    { background: var(--pf-grad-cyan); }
+.toast.warning { background: linear-gradient(135deg, #d97706, #f59e0b); }
+
+/* ---------- Loader global ---------- */
+.water { background: var(--pf-grad); box-shadow: 0 0 40px rgba(99, 102, 241, .6), inset 0 0 30px rgba(0, 0, 0, .35); }
+svg.tea { --secondary: #fff; }
+
+/* ---------- Banner de suscripción ---------- */
+#banner-estado-restringido .card {
+  background: linear-gradient(135deg, #0f1729, #1b2547) !important;
+  border: 1px solid rgba(245, 158, 11, .35) !important;
+}
+
+/* ---------- Utilidades de entrada (las usa el JS) ---------- */
+[data-pf-hidden] { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

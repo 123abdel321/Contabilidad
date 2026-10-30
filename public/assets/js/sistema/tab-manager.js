@@ -1,25 +1,28 @@
 // ============================================================
 // TAB MANAGER — Sistema de pestañas SPA con cache de HTML
+// Requiere que el archivo principal defina:
+//   modulos, modulosCargados, modulosCargando, includeJs,
+//   base_web, version_app, $ (jQuery)
 // ============================================================
 
-// Configuración
 var TAB_CONFIG = {
-    LIBERAR_HTML_AL_CERRAR: false,   // Si true, al cerrar se borra el HTML cacheado
-    PRECARGAR_VISTAS: ['dashboard'], // Vistas a precargar en idle (opcional)
-    PRECARGA_DELAY_MS: 3000,         // Espera antes de empezar a precargar
+    LIBERAR_HTML_AL_CERRAR: false,
+    PRECARGAR_VISTAS: ['dashboard'],
+    PRECARGA_DELAY_MS: 3000,
 };
 
-// Estado interno
-window.__viewCacheHTML   = {};   // { id: htmlString }
-window.__viewInited      = {};   // { id: true } — módulo ya inicializado alguna vez
-window.__tabCacheVersion = version_app;
+window.__viewCacheHTML = {};   // { id: htmlString }
+window.__viewInited    = {};   // { id: true }  → init ya ejecutado
 
-/**
- * Abre (o enfoca) una vista en una pestaña.
- */
+// ============================================================
+// ABRIR VISTA
+// ============================================================
 function generateView(id, nombre, icon) {
 
-    if ($('#containner-' + id).length === 0) {
+    // ¿Ya existe el contenedor y tab? Entonces solo montamos el HTML
+    const yaExiste = $('#containner-' + id).length > 0;
+
+    if (!yaExiste) {
         $('#contenerdores-views').append(
             '<main class="tab-pane main-content border-radius-lg change-view" ' +
             'style="margin-left:5px;" id="containner-' + id + '"></main>'
@@ -29,70 +32,58 @@ function generateView(id, nombre, icon) {
 
     $('.water').show();
 
-    if (window.__viewCacheHTML[id]) {
+    // Si hay cache de HTML y el contenedor sigue en el DOM, lo re-montamos
+    if (yaExiste && window.__viewCacheHTML[id]) {
         $('#containner-' + id).html(window.__viewCacheHTML[id]);
         afterViewMounted(id);
         return;
     }
 
-    $.ajax({
-        url: '/' + id,
-        method: 'GET',
-        dataType: 'html',
-    }).done(function (html) {
-        window.__viewCacheHTML[id] = html;
-        $('#containner-' + id).html(html);
+    // 1) Traer HTML + cargar controller en paralelo
+    Promise.all([
+        new Promise(function (resolve, reject) {
+            $.ajax({
+                url: '/' + id,
+                method: 'GET',
+                dataType: 'html',
+            }).done(function (html) {
+                window.__viewCacheHTML[id] = html;
+                resolve(html);
+            }).fail(function (xhr) {
+                if (xhr.status === 401) window.location.href = '/login';
+                reject(new Error('HTML ' + id + ' falló: ' + xhr.status));
+            });
+        }),
+        includeJs(id).catch(function (err) {
+            console.error('[tab-manager]', err);
+            if (typeof agregarToast === 'function') {
+                agregarToast('error', 'Error', 'No se pudo cargar el módulo: ' + id, true);
+            }
+        }),
+    ]).then(function (result) {
+        $('#containner-' + id).html(result[0]);
         afterViewMounted(id);
-    }).fail(function (xhr) {
-        if (xhr.status === 401) window.location.href = '/login';
-    }).always(function () {
+    }).catch(function (err) {
+        console.error('[tab-manager] generateView:', err);
         $('.water').hide();
     });
 }
 
 /**
  * Se ejecuta cada vez que el HTML de una vista se monta en el DOM.
+ * Solo inicializa la PRIMERA vez; si se re-monta, avisa con xxOnReopen().
  */
 function afterViewMounted(id) {
-    if (!moduloCreado[id]) {
-        includeJs(id);
-    } else {
+    try {
         callInitFuntion(id);
+    } catch (e) {
+        console.error('[tab-manager] afterViewMounted:', e);
     }
     $('.water').hide();
 }
 
 /**
- * Carga el JS del módulo solo una vez.
- */
-function includeJs(id) {
-    var scriptId = 'js-module-' + id;
-
-    if (document.getElementById(scriptId)) {
-        callInitFuntion(id);
-        return;
-    }
-
-    var urlFile = base_web + 'assets/js/sistema/' + moduloRoute[id] + '/' + id + '-controller.js?v=' + version_app;
-
-    var scriptEle = document.createElement('script');
-    scriptEle.id  = scriptId;
-    scriptEle.src = urlFile;
-
-    scriptEle.onload = function () {
-        moduloCreado[id] = true;
-        callInitFuntion(id);
-    };
-
-    scriptEle.onerror = function () {
-        console.error('[tab-manager] Error cargando JS del módulo:', id, urlFile);
-    };
-
-    document.body.appendChild(scriptEle);
-}
-
-/**
- * Llama a xxInit() con guard automático.
+ * Init con guard: primera vez → xxInit(); siguientes → xxOnReopen() si existe.
  */
 function callInitFuntion(id) {
     var fnName = id + 'Init';
@@ -118,9 +109,9 @@ function callInitFuntion(id) {
     }
 }
 
-/**
- * Destroy genérico.
- */
+// ============================================================
+// DESTROY
+// ============================================================
 function callDestroyFunction(id) {
     var $cont = $('#containner-' + id);
 
@@ -159,10 +150,12 @@ function callDestroyFunction(id) {
     window.__viewInited[id] = false;
 }
 
-/**
- * Marca una vista como activa.
- */
-function seleccionarView(id, nombre = 'Inicio', idPadre) {
+// ============================================================
+// SELECCIONAR VISTA
+// ============================================================
+function seleccionarView(id, nombre, idPadre) {
+    nombre = nombre || 'Inicio';
+
     $(".dtfh-floatingparent").remove();
     $('.change-view').removeClass("active");
     $('.seleccionar-view').removeClass("active");
@@ -171,7 +164,28 @@ function seleccionarView(id, nombre = 'Inicio', idPadre) {
 
     $('#containner-' + id).addClass("active");
     $('#tab-' + id).addClass("active");
-    $('#sidenav_' + id).addClass("active");
+
+    // Submenú activo
+    const $submenu = $('#sidenav_' + id);
+    $submenu.addClass("active");
+
+    // Padre activo
+    const idPadreFinal = idPadre || $submenu.closest('li.nav-item').find('.nav-padre').attr('id')?.replace('nav_', '');
+    if (idPadreFinal) {
+        const $padre = $('#nav_' + idPadreFinal);
+        $padre.addClass("active").removeClass("collapsed");
+        $padre.attr('aria-expanded', 'true');
+
+        const $collapse = $('#collapse' + idPadreFinal);
+        if ($collapse.length) {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                const instance = bootstrap.Collapse.getOrCreateInstance($collapse[0], { toggle: false });
+                instance.show();
+            } else {
+                $collapse.addClass('show');
+            }
+        }
+    }
 
     $("#titulo-view").text(nombre);
 
@@ -192,49 +206,56 @@ function seleccionarView(id, nombre = 'Inicio', idPadre) {
     }
 }
 
-/**
- * Cierra una vista.
- */
-function closeView(nameView) {
-    var id = nameView.id.split('_')[1];
+// ============================================================
+// CERRAR VISTA
+// ============================================================
+function closeView(el) {
+    var id = el.id.split('_')[1];
+    var $tab = $('#lista_view_' + id);
+    var eraActivo = $tab.find('.seleccionar-view').hasClass('active');
 
     callDestroyFunction(id);
 
-    $('#lista_view_' + id).remove();
+    $tab.remove();
     $('#containner-' + id).empty().remove();
 
     if (TAB_CONFIG.LIBERAR_HTML_AL_CERRAR) {
         delete window.__viewCacheHTML[id];
+        delete window.__viewInited[id];
     }
 
-    setTimeout(function () {
-        var abiertas = $('.change-view').length;
-        if (abiertas === 0) seleccionarView('dashboard');
-    }, 10);
+    // Si era la activa, ir a la vecina (o al dashboard si no queda ninguna)
+    if (eraActivo) {
+        var $next = $('#footer-navigation .nav-item').last();
+        var nextId = $next.attr('id')?.replace('lista_view_', '') || 'dashboard';
+        var nextNombre = $next.find('.seleccionar-view').text().trim() || 'Inicio';
+        seleccionarView(nextId, nextNombre);
+    }
 }
 
-/**
- * Botón de la pestaña.
- */
+// ============================================================
+// TAB BUTTON
+// ============================================================
 function generateNewTabButton(id, nombre, icon) {
+    var safeNombre = String(nombre).replace(/'/g, "\\'");
     return `
         <li class="nav-item" id="lista_view_${id}">
             <div class="nav-link col seleccionar-view"
-                 onclick="seleccionarView('${id}', '${nombre}')"
+                 onclick="seleccionarView('${id}', '${safeNombre}')"
                  id="tab-${id}">
                 <i class="${icon}"></i>&nbsp;
                 ${nombre}&nbsp;&nbsp;
                 <i class="fas fa-times-circle close_item_navigation"
                    id="closetab_${id}"
-                   onclick="closeView(this)"></i>&nbsp;
+                   onclick="event.stopPropagation(); closeView(this)"></i>&nbsp;
             </div>
         </li>
     `;
 }
 
-/**
- * Precarga en idle las vistas más usadas.
- */
+// ============================================================
+// PRECARGA EN IDLE
+// ============================================================
 function precargarVistasFrecuentes() {
     var vistas = TAB_CONFIG.PRECARGAR_VISTAS || [];
     var i = 0;
@@ -258,15 +279,41 @@ function precargarVistasFrecuentes() {
     setTimeout(siguiente, TAB_CONFIG.PRECARGA_DELAY_MS);
 }
 
-/**
- * Apertura desde el menú.
- */
+// ============================================================
+// APERTURA DESDE MENÚ
+// ============================================================
 function openNewItem(id, nombre, icon, idPadre) {
     if ($('#containner-' + id).length === 0) {
         generateView(id, nombre, icon);
     }
     seleccionarView(id, nombre, idPadre);
-    document.getElementById('sidenav-main-2').click();
+    var side2 = document.getElementById('sidenav-main-2');
+    if (side2) side2.click();
+}
+
+function closeAnotherItems(id) {
+    var items = document.getElementsByClassName("nav-padre");
+    for (var index = 0; index < items.length; index++) {
+        var element = items[index];
+        if (element.id != 'nav_' + id) {
+            element.classList.add("collapsed");
+            var c = document.getElementById('collapse' + element.id.split('_')[1]);
+            if (c) c.classList.remove("show");
+        }
+    }
+}
+
+function closeMenu() {
+    if (typeof className !== 'undefined' && document.body.classList.contains(className)) {
+        toggleSidenavMaximo();
+    }
+}
+
+function abrirVistaDesdeBanner(id, nombre, icon) {
+    if ($('#containner-' + id).length === 0) {
+        generateView(id, nombre, icon);
+    }
+    seleccionarView(id, nombre);
 }
 
 // ============================================================
@@ -274,7 +321,7 @@ function openNewItem(id, nombre, icon, idPadre) {
 // ============================================================
 $(document).ready(function () {
 
-    // -------- Wheel horizontal sobre la barra de tabs --------
+    // Wheel horizontal sobre la barra de tabs
     $('#footer-navigation').on('wheel', function (e) {
         var delta = e.originalEvent.deltaY;
         if (delta !== 0) {
@@ -283,20 +330,17 @@ $(document).ready(function () {
         }
     });
 
-    // -------- Cerrar tab con click medio (rueda) --------
+    // Cerrar tab con click medio (rueda)
     $(document).on('auxclick', '.nav-link.seleccionar-view', function (e) {
-        if (e.which === 2) {   // 2 = botón medio del mouse
+        if (e.which === 2) {
             e.preventDefault();
             var id = this.id.replace('tab-', '');
-
-            // No cerrar el dashboard con click medio
             if (id === 'dashboard') return;
-
             var $btn = document.getElementById('closetab_' + id);
             if ($btn) closeView($btn);
         }
     });
 
-    // -------- Precarga de vistas frecuentes --------
+    // Precarga de vistas frecuentes
     precargarVistasFrecuentes();
 });

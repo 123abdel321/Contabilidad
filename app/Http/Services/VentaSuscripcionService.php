@@ -55,7 +55,7 @@ class VentaSuscripcionService
                 return null;
             }
 
-            // ── 3. Idempotencia (por si acaso el servicio ya la tiene) ──
+            // ── 3. Idempotencia ──
             $existente = FacVentas::where('documento_referencia', 'SUSC-' . $pago->id)->first();
             if ($existente) {
                 Log::info('Venta suscripción ya existe', [
@@ -69,34 +69,102 @@ class VentaSuscripcionService
             $detalle     = json_decode($pago->detalle_json, true) ?: [];
             $componentes = $detalle['componentes'] ?? [];
             $meses       = (int) ($detalle['meses'] ?? 1);
+            $desglose    = $detalle['desglose'] ?? [];
 
             if (empty($componentes)) {
                 Log::warning('Venta suscripción: pago sin componentes', ['pago_id' => $pago->id]);
                 return null;
             }
 
-            // ── 5. Armar productos para el contexto ──
-            //     Como auto_crear_producto = true, VentaServices se encarga de:
-            //     buscar por nombre, y si no existe, crear como servicio.
+            // ── 5. Armar productos ──
+            //     El desglose trae:
+            //       - monto_mes_actual  (proporcional días del mes en curso)
+            //       - monto_meses_extra (meses completos)
+            //       - descuento         (se aplica al producto del mes actual)
+            //     Se arma 1 producto por componente por cada bloque (actual / extra),
+            //     con el descuento YA aplicado al costo, para que el movimiento contable cuadre.
+
+            $montoActual = (float) ($desglose['monto_mes_actual'] ?? 0);
+            $montoExtra  = (float) ($desglose['monto_meses_extra'] ?? 0);
+            $descuento   = (float) ($desglose['descuento'] ?? 0);
+            $porcentaje  = (float) ($desglose['porcentaje'] ?? 0);
+            $precioMensualTotal = (float) ($desglose['precio_mensual'] ?? 0);
+
+            // Fallback si el pago es viejo (sin desglose)
+            if ($montoActual <= 0 && $montoExtra <= 0) {
+                $montoExtra = (float) $pago->valor;
+            }
+
+            // Si no vino precio_mensual, lo calculamos de los componentes
+            if ($precioMensualTotal <= 0) {
+                foreach ($componentes as $item) {
+                    $precioMensualTotal += ((float) ($item['precio'] ?? 0)) * max(1, (int) ($item['cantidad'] ?? 1));
+                }
+            }
+
             $productos = [];
-            foreach ($componentes as $item) {
-                $nombre = $item['nombre'] ?? null;
-                $precio = (float) ($item['precio'] ?? 0);
-                if (!$nombre || $precio <= 0) continue;
 
-                $cantidad = max(1, (int) ($item['cantidad'] ?? 1));
+            // ── Producto 1: proporcional mes actual (con descuento aplicado) ──
+            if ($montoActual > 0) {
+                foreach ($componentes as $item) {
+                    $nombre = $item['nombre'] ?? null;
+                    $precio = (float) ($item['precio'] ?? 0);
+                    if (!$nombre || $precio <= 0) continue;
 
-                $productos[] = [
-                    'nombre_producto'      => $nombre,   // ← VentaServices busca/crea por este campo
-                    'cantidad'             => $cantidad,
-                    'costo'                => $precio,
-                    'descuento_porcentaje' => 0,
-                    'descuento_valor'      => 0,
-                    'iva_porcentaje'       => 0,
-                    'iva_valor'            => 0,
-                    'total'                => $precio * $cantidad,
-                    'concepto'             => $meses > 1 ? "Suscripción {$meses} mes(es)" : null,
-                ];
+                    $cantidad   = max(1, (int) ($item['cantidad'] ?? 1));
+                    $proporcion = $precioMensualTotal > 0
+                        ? (($precio * $cantidad) / $precioMensualTotal)
+                        : 1;
+
+                    $costoBruto      = round($montoActual * $proporcion, 2);
+                    $descuentoComp   = round($descuento   * $proporcion, 2);
+                    $costoNeto       = round($costoBruto - $descuentoComp, 2);
+
+                    $productos[] = [
+                        'nombre_producto'      => $nombre,
+                        'cantidad'             => $cantidad,
+                        'costo'                => $costoNeto,
+                        'costo_total'          => 0,
+                        'subtotal'             => $costoNeto,
+                        'descuento_porcentaje' => 0,
+                        'descuento_valor'      => 0,
+                        'iva_porcentaje'       => 0,
+                        'iva_valor'            => 0,
+                        'total'                => $costoNeto,
+                        'concepto'             => ($desglose['detalle_meses'][0]['label'] ?? 'Mes actual')
+                                                    . ($porcentaje > 0 ? " (desc. {$porcentaje}%)" : ''),
+                    ];
+                }
+            }
+
+            // ── Producto 2: meses completos extras (sin descuento) ──
+            if ($montoExtra > 0) {
+                foreach ($componentes as $item) {
+                    $nombre = $item['nombre'] ?? null;
+                    $precio = (float) ($item['precio'] ?? 0);
+                    if (!$nombre || $precio <= 0) continue;
+
+                    $cantidad   = max(1, (int) ($item['cantidad'] ?? 1));
+                    $proporcion = $precioMensualTotal > 0
+                        ? (($precio * $cantidad) / $precioMensualTotal)
+                        : 1;
+
+                    $costoComponente = round($montoExtra * $proporcion, 2);
+
+                    $productos[] = [
+                        'nombre_producto'      => $nombre,
+                        'cantidad'             => $cantidad,
+                        'costo'                => $costoComponente,
+                        'costo_total'          => 0,
+                        'subtotal'             => $costoComponente,
+                        'descuento_porcentaje' => 0,
+                        'descuento_valor'      => 0,
+                        'iva_porcentaje'       => 0,
+                        'iva_valor'            => 0,
+                        'total'                => $costoComponente,
+                        'concepto'             => ($meses - 1) . ' mes(es) completo(s)',
+                    ];
+                }
             }
 
             if (empty($productos)) {
@@ -156,4 +224,5 @@ class VentaSuscripcionService
             return null;
         }
     }
+
 }

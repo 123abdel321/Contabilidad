@@ -953,30 +953,32 @@ class SuscripcionController extends Controller
                     );
 
                     \Log::info('Provisión de BD despachada para empresa ' . $empresa->id);
-
-                    return response()->json([
-                        'success'      => true,
-                        'estado'       => $estadoPago,
-                        'wompi_status' => $estadoWompi,
-                        'message'      => 'Pago reconciliado correctamente.',
-                    ]);
                 }
+
+                DB::connection('clientes')->commit();
 
                 // ═══════════════════════════════════════════════════════
                 // 🔑 GENERAR VENTA EN LA BD DEL EMISOR
                 // ═══════════════════════════════════════════════════════
                 try {
+                    \Log::info('Procensando venta en PORTAFOLIO ERP');
                     app(VentaSuscripcionService::class)->generarVentaDesdePago($pago);
                 } catch (\Throwable $e) {
                     \Log::error('Error generando venta suscripción (panel)', [
                         'pago_id' => $pago->id,
                         'error'   => $e->getMessage(),
                     ]);
-                    // No lanzar, para no romper la reconciliación del pago
                 }
+
+                return response()->json([
+                    'success'      => true,
+                    'estado'       => $estadoPago,
+                    'wompi_status' => $estadoWompi,
+                    'message'      => 'Pago reconciliado correctamente.',
+                ]);
             }
 
-            DB::connection('clientes')->commit();
+            DB::connection('clientes')->rollback();
 
             return response()->json([
                 'success'      => true,
@@ -2609,7 +2611,7 @@ class SuscripcionController extends Controller
             'reference'         => 'nullable|string',
             'payment_source_id' => 'nullable',
         ];
-
+            dd('aca');
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
         if ($validator->fails()) {

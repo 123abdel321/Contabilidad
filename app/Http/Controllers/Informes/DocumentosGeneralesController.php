@@ -853,7 +853,7 @@ class DocumentosGeneralesController extends Controller
             $tipoDocumento = $this->obtenerTipoDocumentoLegible($comprobante);
 
             // ─── Estado ───
-            $estadoDocumento = $documento->anulado == 1 ? 'Anulado' : '';
+            $estadoDocumento = $documento->anulado == 1 ? 'Anulado' : 'APROVADO';
 
             // ─── Fecha ───
             $fechaDocumento = $documento->fecha_manual

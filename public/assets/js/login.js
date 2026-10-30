@@ -61,10 +61,7 @@ function peHeaders() {
 function formatearMoneda(valor) {
     var num = parseFloat(valor);
     if (isNaN(num)) num = 0;
-    return '$ ' + num.toLocaleString('es-CO', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
+    return '$ ' + Math.round(num).toLocaleString('es-CO');
 }
 
 // ============================================================
@@ -534,31 +531,65 @@ function cargarArbolComponentes() {
     });
 }
 
+var PE_ICO = {
+    doc:  '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+    chart:'<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>',
+    users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
+    cart: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
+    build:'<path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/>',
+    bolt: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'
+};
+
+// meta por id de componente (nombre y subtítulo que ve el cliente)
+var PE_COMP_META = {
+    1:  { ico: 'chart', nombre: 'Contabilidad',           sub: 'Libros, balances e impuestos automáticos' },
+    2:  { ico: 'doc',   nombre: 'Facturación',            sub: 'Cotiza, factura y controla tu cartera' },
+    4:  { ico: 'users', nombre: 'Nómina',                 sub: 'Liquida y transmite nómina electrónica' },
+    5:  { ico: 'cart',  nombre: 'POS e inventario',       sub: 'Vende en mostrador y controla el stock' },
+    6:  { ico: 'build', nombre: 'Máximo PH',              sub: 'Administración de propiedad horizontal' },
+    14: { ico: 'bolt',  nombre: 'Facturación electrónica',sub: 'Emite y envía facturas a la DIAN' }
+};
+
+function peMeta(c) {
+    var m = PE_COMP_META[c.id] || {};
+    return { ico: PE_ICO[m.ico] || PE_ICO.doc, nombre: m.nombre || c.nombre, sub: m.sub || '' };
+}
+
 function renderizarArbolComponentes() {
     var html = '';
 
     peArbolComponentes.forEach(function (c) {
+        var m = peMeta(c);
+        var icono = '<svg class="pe-comp-ico" viewBox="0 0 24 24">' + m.ico + '</svg>';
+        var sub = m.sub ? '<span class="pe-comp-sub">' + m.sub + '</span>' : '';
+
         if (c.tipo === 0) {
-            html += '<div style="padding: 0.5rem 0; border-bottom: 1px solid rgba(148,163,184,0.1);">' +
-                '<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: #cbd5e1;">' +
+            html += '<div class="pe-comp">' +
+                '<label class="pe-comp-head">' +
                     '<input type="checkbox" class="pe-check-componente" data-id="' + c.id + '" data-precio="' + c.precio + '">' +
-                    '<span>' + c.nombre + '</span>' +
-                    '<span style="margin-left: auto; color: #a5b4fc; font-weight: 600;">' + formatearMoneda(c.precio) + '</span>' +
+                    '<span class="pe-comp-box"></span>' + icono +
+                    '<span class="pe-comp-name">' + m.nombre + sub + '</span>' +
+                    '<span class="pe-comp-price">' + formatearMoneda(c.precio) + '<small>/ mes</small></span>' +
                 '</label>' +
             '</div>';
         } else {
-            html += '<div style="padding: 0.5rem 0; border-bottom: 1px solid rgba(148,163,184,0.1);">' +
-                '<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: #cbd5e1; font-weight: 600;">' +
+            var minimo = Math.min.apply(null, c.hijos.map(function (h) { return parseFloat(h.precio) || 0; }));
+
+            html += '<div class="pe-comp">' +
+                '<label class="pe-comp-head">' +
                     '<input type="checkbox" class="pe-check-padre" data-id="' + c.id + '">' +
-                    '<span>' + c.nombre + '</span>' +
+                    '<span class="pe-comp-box"></span>' + icono +
+                    '<span class="pe-comp-name">' + m.nombre + sub + '</span>' +
+                    '<span class="pe-comp-more">Desde ' + formatearMoneda(minimo) + '</span>' +
                 '</label>' +
-                '<div class="pe-hijos" data-padre="' + c.id + '" style="margin-left: 1.5rem; margin-top: 0.5rem; display: none;">';
+                '<div class="pe-hijos" data-padre="' + c.id + '">';
 
             c.hijos.forEach(function (h) {
-                html += '<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: #94a3b8; padding: 0.25rem 0;">' +
+                html += '<label class="pe-tier">' +
                     '<input type="radio" name="pe-rad-' + c.id + '" class="pe-radio-hijo" data-padre="' + c.id + '" data-id="' + h.id + '" data-precio="' + h.precio + '">' +
+                    '<span class="pe-tier-dot"></span>' +
                     '<span>' + h.nombre + '</span>' +
-                    '<span style="margin-left: auto; color: #a5b4fc; font-weight: 500;">' + formatearMoneda(h.precio) + '</span>' +
+                    '<span class="pe-tier-price">' + formatearMoneda(h.precio) + '</span>' +
                 '</label>';
             });
 
@@ -572,13 +603,7 @@ function renderizarArbolComponentes() {
 
 $(document).on('change', '.pe-check-padre', function () {
     var id = $(this).data('id');
-    var checked = $(this).is(':checked');
-    var $hijos = $('.pe-hijos[data-padre="' + id + '"]');
-
-    if (checked) {
-        $hijos.show();
-    } else {
-        $hijos.hide();
+    if (!$(this).is(':checked')) {
         $('input[name="pe-rad-' + id + '"]').prop('checked', false);
     }
     peActualizarTotales();
@@ -654,38 +679,22 @@ function pePedirPreviewPago(componentes) {
 
         res.data.detalle_meses.forEach(function (item) {
             if (item.monto > 0) {
-                html += '<div style="display: flex; justify-content: space-between; font-size: 0.8125rem; color: #cbd5e1; padding: 0.15rem 0;">' +
-                    '<span>' + item.label + '</span>' +
-                    '<span>' + formatearMoneda(item.monto) + '</span>' +
-                '</div>';
+                html += '<div class="pe-line"><span>' + item.label + '</span><span>' + formatearMoneda(item.monto) + '</span></div>';
             }
         });
 
-        html += '<hr style="border-color: rgba(148,163,184,0.15); margin: 0.5rem 0;">';
-        html += '<div style="display: flex; justify-content: space-between; font-size: 0.8125rem; color: #cbd5e1; padding: 0.15rem 0;">' +
-            '<span>Subtotal</span>' +
-            '<span>' + formatearMoneda(res.data.subtotal) + '</span>' +
-        '</div>';
+        html += '<div class="pe-line pe-line-sub"><span>Subtotal</span><span>' + formatearMoneda(res.data.subtotal) + '</span></div>';
 
         if (res.data.descuento > 0) {
-            html += '<div style="display: flex; justify-content: space-between; font-size: 0.8125rem; color: #22c55e; padding: 0.15rem 0;">' +
-                '<span>Descuento ' + res.data.porcentaje + '%</span>' +
-                '<span>− ' + formatearMoneda(res.data.descuento) + '</span>' +
-            '</div>';
+            html += '<div class="pe-line pe-line-save"><span>🎉 Descuento ' + res.data.porcentaje + '%</span><span>− ' + formatearMoneda(res.data.descuento) + '</span></div>';
         }
 
-        html += '<hr style="border-color: rgba(148,163,184,0.15); margin: 0.5rem 0;">';
-        html += '<div style="display: flex; justify-content: space-between; font-weight: 700;">' +
-            '<span>TOTAL</span>' +
-            '<span>' + formatearMoneda(res.data.total) + '</span>' +
-        '</div>';
-
-        // Insertar el desglose debajo del total mensual
         var $desglose = $('#pe-desglose-pago');
         if ($desglose.length === 0) {
-            $desglose = $('<div id="pe-desglose-pago" style="margin-top: 1rem; padding: 0.75rem; background: rgba(2,6,23,0.5); border-radius: 10px;"></div>');
+            $desglose = $('<div id="pe-desglose-pago" class="pe-desglose"></div>');
             $('#pe-total-mensual').after($desglose);
         }
+
         $desglose.html(html);
 
     }).fail(function () {

@@ -1,472 +1,204 @@
 /* ============================================================
-    PAGO PÚBLICO — Estilos específicos
-    ============================================================ */
+   PAGO PÚBLICO — usa login.css como base (fondo, tarjeta, .pe-comp)
+   ============================================================ */
 
-/* Grid de 2 columnas */
-.pp-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    align-items: start;
+/* ---------- Layout de página ---------- */
+.pp-page { overflow: clip; align-items: center; padding: 2rem 1.25rem; } /* clip: no rompe position:sticky */
+.pp-wrap { position: relative; z-index: 1; width: 100%; max-width: 1040px; }
+.pp-card { max-width: none; justify-self: auto; overflow: visible; }
+.pp-card .pe-login-card-header { border-radius: 20px 20px 0 0; }
+.pp-card .pe-login-card-body { max-height: none; overflow: visible; padding: 1.5rem; }
+
+.pp-center { text-align: center; padding: 2.5rem 0; }
+.pp-center-sm { text-align: center; padding: 1rem 0; }
+.pp-spinner-lg { width: 22px; height: 22px; margin: 0 auto 1rem; }
+.pp-muted { color: #94a3b8; font-size: .875rem; margin: 0; }
+.pp-small { font-size: .75rem; color: #64748b; margin-top: 1rem; }
+.pp-block-link { text-align: center; display: block; text-decoration: none; }
+
+/* ---------- Cabecera de empresa ---------- */
+.pp-company {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.4rem;
+    padding-bottom: 1.2rem; border-bottom: 1px solid rgba(148, 163, 184, .1);
 }
-
-@media (max-width: 768px) {
-    .pp-grid {
-        grid-template-columns: 1fr;
-    }
+.pp-eyebrow { font-size: .65rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #64748b; }
+.pp-company-name {
+    margin: .15rem 0 0; font-family: 'Sora', sans-serif; font-weight: 800;
+    font-size: 1.45rem; letter-spacing: -.03em; color: #fff; line-height: 1.15;
 }
+.pp-company-nit { margin: .25rem 0 0; font-size: .8rem; color: #94a3b8; font-weight: 600; }
 
-.pp-col-left,
-.pp-col-right {
-    min-width: 0;
-}
-
-/* ─────────────────────────────────────────────────
-    SECCIÓN ACTUAL (bloque de componentes contratados)
-    ───────────────────────────────────────────────── */
-.pp-section-title {
-    color: #cbd5e1;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.65rem;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.pp-actual-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.55rem 0.75rem;
-    margin-bottom: 0.35rem;
-    background: rgba(79, 70, 229, 0.08);
-    border: 1px solid rgba(129, 140, 248, 0.15);
-    border-radius: 8px;
-    color: #cbd5e1;
-    font-size: 0.8125rem;
-}
-
-.pp-actual-item .pp-precio {
-    color: #a5b4fc;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-/* ─────────────────────────────────────────────────
-    ÁRBOL DE COMPONENTES (derecha)
-    ───────────────────────────────────────────────── */
-.pp-arbol {
-    max-height: 520px;
-    overflow-y: auto;
-    padding-right: 0.35rem;
-    margin-bottom: 0.25rem;
-    transition: max-height 0.2s ease;
-}
-
-.pp-arbol::-webkit-scrollbar {
-    width: 5px;
-}
-
-.pp-arbol::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.pp-arbol::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.25);
-    border-radius: 10px;
-}
-
-.pp-arbol::-webkit-scrollbar-thumb:hover {
-    background: rgba(148, 163, 184, 0.4);
-}
-
-/* Fila de cada componente */
-.pp-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.6rem;
-    padding: 0.55rem 0.7rem;
-    margin-bottom: 0.35rem;
-    background: rgba(2, 6, 23, 0.35);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    color: #cbd5e1;
-    font-size: 0.8125rem;
-}
-
-.pp-item:hover {
-    border-color: rgba(129, 140, 248, 0.35);
-    background: rgba(79, 70, 229, 0.08);
-}
-
-.pp-item.pp-item-padre {
-    background: rgba(79, 70, 229, 0.1);
-    border-color: rgba(129, 140, 248, 0.25);
-    font-weight: 600;
-}
-
-.pp-item-left {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex: 1;
-    min-width: 0;
-}
-
-.pp-item-nombre {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.pp-item-precio {
-    color: #a5b4fc;
-    font-weight: 700;
-    white-space: nowrap;
-    font-size: 0.8125rem;
-}
-
-/* ─────────────────────────────────────────────────
-    CHECKBOX CUSTOM
-    ───────────────────────────────────────────────── */
-.pp-check {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    border: 2px solid rgba(148, 163, 184, 0.4);
-    border-radius: 5px;
-    background: rgba(2, 6, 23, 0.5);
-    cursor: pointer;
-    position: relative;
-    transition: all 0.15s ease;
-    flex-shrink: 0;
-}
-
-.pp-check:hover {
-    border-color: #818cf8;
-}
-
-.pp-check:checked {
-    background: #4f46e5;
-    border-color: #4f46e5;
-}
-
-.pp-check:checked::after {
-    content: '';
-    position: absolute;
-    left: 5px;
-    top: 1px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
-/* ─────────────────────────────────────────────────
-    RADIO CUSTOM
-    ───────────────────────────────────────────────── */
-.pp-radio {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    border: 2px solid rgba(148, 163, 184, 0.4);
-    border-radius: 50%;
-    background: rgba(2, 6, 23, 0.5);
-    cursor: pointer;
-    position: relative;
-    transition: all 0.15s ease;
-    flex-shrink: 0;
-}
-
-.pp-radio:hover {
-    border-color: #818cf8;
-}
-
-.pp-radio:checked {
-    border-color: #4f46e5;
-}
-
-.pp-radio:checked::after {
-    content: '';
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #4f46e5;
-}
-
-/* ─────────────────────────────────────────────────
-    SUB-HIJOS (dentro de un padre)
-    ───────────────────────────────────────────────── */
-.pp-hijos {
-    margin-left: 1.1rem;
-    margin-top: 0.35rem;
-    padding-left: 0.6rem;
-    border-left: 2px solid rgba(129, 140, 248, 0.25);
-    display: none;
-}
-
-.pp-item-hijo {
-    background: rgba(2, 6, 23, 0.25) !important;
-    font-size: 0.78rem !important;
-    padding: 0.45rem 0.65rem !important;
-}
-
-/* ─────────────────────────────────────────────────
-    DURACIÓN (stepper)
-    ───────────────────────────────────────────────── */
-.pp-stepper {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.pp-stepper-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    background: rgba(2, 6, 23, 0.5);
-    color: #cbd5e1;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.pp-stepper-btn:hover {
-    border-color: #818cf8;
-    color: #a5b4fc;
-}
-
-.pp-stepper-input {
-    width: 60px;
-    height: 34px;
-    text-align: center;
-    background: rgba(2, 6, 23, 0.5);
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    border-radius: 8px;
-    color: #f1f5f9;
-    font-weight: 700;
-    font-size: 0.9rem;
-}
-
-/* ─────────────────────────────────────────────────
-    RESUMEN (total mensual / total a pagar)
-    ───────────────────────────────────────────────── */
-.pp-resumen-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    color: #cbd5e1;
-    font-size: 0.8125rem;
-}
-
-.pp-resumen-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.85rem 1rem;
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(129, 140, 248, 0.1));
-    border: 1px solid rgba(129, 140, 248, 0.35);
-    border-radius: 10px;
-    margin-top: 0.5rem;
-}
-
-.pp-resumen-total span:first-child {
-    font-weight: 700;
-    color: #a5b4fc;
-    font-size: 0.8125rem;
-    letter-spacing: 0.5px;
-}
-
-.pp-resumen-total strong {
-    color: #fff;
-    font-size: 1.25rem;
-    font-weight: 800;
-}
-
-/* ─────────────────────────────────────────────────
-    DESGLOSE
-    ───────────────────────────────────────────────── */
-.pp-desglose {
-    margin-top: 1rem;
-    padding: 0.85rem;
-    background: rgba(2, 6, 23, 0.5);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    border-radius: 10px;
-    font-size: 0.8125rem;
-}
-
-.pp-desglose hr {
-    border: none;
-    border-top: 1px solid rgba(148, 163, 184, 0.15);
-    margin: 0.5rem 0;
-}
-
-/* ─────────────────────────────────────────────────
-    BLOQUE SUSCRIPCIÓN ACTUAL (destacado)
-    ───────────────────────────────────────────────── */
-.pp-actual-header {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
-    padding: 0.7rem 0.9rem;
-    margin-bottom: 0.65rem;
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(22, 163, 74, 0.08));
-    border: 1px solid rgba(34, 197, 94, 0.35);
-    border-radius: 10px;
-    color: #4ade80;
-    font-size: 0.8125rem;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-}
-
-.pp-actual-header i {
-    font-size: 1rem;
-    color: #22c55e;
-}
-
-/* Cada componente contratado — más visible */
-.pp-actual-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0.9rem;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(129, 140, 248, 0.05));
-    border: 1px solid rgba(129, 140, 248, 0.3);
-    border-left: 3px solid #6366f1;
-    border-radius: 8px;
-    color: #e2e8f0;
-    font-size: 0.875rem;
-    transition: all 0.15s ease;
-}
-
-.pp-actual-item:hover {
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.22), rgba(129, 140, 248, 0.1));
-    border-color: rgba(129, 140, 248, 0.5);
-}
-
-.pp-actual-item .pp-actual-nombre {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-weight: 600;
-}
-
-.pp-actual-item .pp-actual-nombre::before {
-    content: '\f00c';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    color: #22c55e;
-    font-size: 0.75rem;
-}
-
-.pp-actual-item .pp-precio {
-    color: #a5b4fc;
-    font-weight: 800;
-    white-space: nowrap;
-    font-size: 0.9rem;
-}
-
-/* ─────────────────────────────────────────────────
-       BOTÓN PAGAR — ancho completo
-       ───────────────────────────────────────────────── */
-.pp-btn-pagar-full {
-    width: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin-top: 1rem !important;
-    padding: 0.95rem 1rem !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.3px;
-}
-
-/* ─────────────────────────────────────────────────
-       STEPPER — centrado y con fondo
-       ───────────────────────────────────────────────── */
-.pp-stepper {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* 🔑 Badge de estado de suscripción */
+/* ---------- Badge de estado ---------- */
 .pp-estado-badge {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-    border-radius: 10px;
-    border: 1px solid rgba(148, 163, 184, 0.15);
-    background: rgba(2, 6, 23, 0.35);
+    display: flex; align-items: center; gap: .75rem;
+    padding: .7rem 1rem; border-radius: 12px; min-width: 260px;
+    border: 1px solid rgba(148, 163, 184, .15); background: rgba(2, 6, 23, .35);
+}
+.pp-estado-badge.al-dia { background: linear-gradient(135deg, rgba(34,197,94,.14), rgba(22,163,74,.05)); border-color: rgba(34,197,94,.35); }
+.pp-estado-badge.vencida { background: linear-gradient(135deg, rgba(239,68,68,.14), rgba(185,28,28,.05)); border-color: rgba(239,68,68,.4); }
+.pp-estado-icon { width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.pp-estado-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.pp-estado-badge.al-dia .pp-estado-icon { background: rgba(34,197,94,.2); color: #4ade80; }
+.pp-estado-badge.vencida .pp-estado-icon { background: rgba(239,68,68,.2); color: #f87171; animation: pp-pulse-red 2s ease-in-out infinite; }
+.pp-estado-texto { flex: 1; min-width: 0; }
+.pp-estado-titulo { font-size: .85rem; font-weight: 800; color: #f1f5f9; margin-bottom: .1rem; }
+.pp-estado-subtitulo { font-size: .72rem; color: #94a3b8; }
+@keyframes pp-pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,.35); }
+    50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
 }
 
-.pp-estado-badge.al-dia {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(22, 163, 74, 0.05));
-    border-color: rgba(34, 197, 94, 0.35);
+/* ---------- Grid principal ---------- */
+.pp-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 1.75rem; align-items: start; }
+.pp-col-main, .pp-col-side { min-width: 0; }
+
+.pp-section-title {
+    display: flex; align-items: center; gap: .5rem;
+    margin: 0 0 .75rem; font-size: .72rem; font-weight: 800;
+    letter-spacing: .1em; text-transform: uppercase; color: #cbd5e1;
+}
+.pp-section-title svg { width: 16px; height: 16px; fill: none; stroke: #818cf8; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pp-title-ok svg { stroke: #4ade80; }
+
+/* ---------- Suscripción activa ---------- */
+.pp-actuales { display: flex; flex-direction: column; gap: .45rem; margin-bottom: 1.6rem; }
+.pp-actual-item {
+    display: flex; align-items: center; gap: .7rem;
+    padding: .7rem .9rem; border-radius: 12px;
+    background: linear-gradient(135deg, rgba(34,197,94,.1), rgba(34,197,94,.02));
+    border: 1px solid rgba(34,197,94,.22);
+}
+.pp-actual-ok {
+    width: 22px; height: 22px; flex-shrink: 0; padding: 4px; border-radius: 50%;
+    background: rgba(34,197,94,.2); color: #4ade80;
+    fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+.pp-actual-nombre { font-size: .86rem; font-weight: 700; color: #e2e8f0; }
+.pp-actual-nombre em { font-style: normal; color: #94a3b8; font-weight: 600; }
+.pp-precio { margin-left: auto; font-family: 'Sora', sans-serif; font-weight: 800; font-size: .88rem; color: #fff; white-space: nowrap; }
+.pp-precio small { font-family: 'Manrope', sans-serif; font-size: .62rem; color: #64748b; font-weight: 600; }
+
+/* ---------- Árbol de módulos (usa .pe-comp de login.css) ---------- */
+.pp-arbol { display: flex; flex-direction: column; gap: .6rem; }
+.pp-arbol .pe-comp-price { margin-left: auto; }
+.pp-badge-pop {
+    display: inline-block; margin-left: .5rem; padding: .12rem .45rem; border-radius: 999px;
+    font-size: .58rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+    color: #a5f3fc; background: rgba(34,211,238,.12); border: 1px solid rgba(34,211,238,.3);
+    vertical-align: middle;
 }
 
-.pp-estado-badge.vencida {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(185, 28, 28, 0.05));
-    border-color: rgba(239, 68, 68, 0.35);
+/* ---------- Resumen fijo ---------- */
+.pp-col-side { position: sticky; top: 1.25rem; }
+.pp-summary {
+    padding: 1.2rem; border-radius: 16px;
+    background: linear-gradient(180deg, rgba(79,70,229,.14), rgba(2,6,23,.55));
+    border: 1px solid rgba(129,140,248,.3);
+    box-shadow: 0 20px 40px -20px rgba(79,70,229,.5);
+}
+.pp-summary-title {
+    margin: 0 0 1rem; font-size: .72rem; font-weight: 800;
+    letter-spacing: .12em; text-transform: uppercase; color: #a5b4fc;
+}
+.pp-block { margin-bottom: 1rem; }
+.pp-label { display: block; margin-bottom: .5rem; font-size: .78rem; font-weight: 600; color: #cbd5e1; }
+
+.pp-chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; margin-bottom: .6rem; }
+.pp-chip {
+    padding: .5rem 0; border-radius: 10px; cursor: pointer;
+    font-family: inherit; font-size: .82rem; font-weight: 800; color: #94a3b8;
+    background: rgba(2,6,23,.5); border: 1px solid rgba(148,163,184,.18);
+    transition: all .2s ease;
+}
+.pp-chip:hover { border-color: rgba(129,140,248,.5); color: #e2e8f0; }
+.pp-chip.active {
+    color: #fff; border-color: #818cf8;
+    background: linear-gradient(180deg, #6366f1, #4f46e5);
+    box-shadow: 0 6px 16px -6px rgba(79,70,229,.8);
 }
 
-.pp-estado-icon {
-    width: 36px;
-    height: 36px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: 1rem;
+.pp-stepper { display: flex; align-items: center; justify-content: center; gap: .5rem; }
+.pp-stepper-btn {
+    width: 34px; height: 34px; border-radius: 9px; cursor: pointer;
+    border: 1px solid rgba(148,163,184,.25); background: rgba(2,6,23,.5);
+    color: #cbd5e1; font-size: 1.1rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; transition: all .15s ease;
+}
+.pp-stepper-btn:hover { border-color: #818cf8; color: #a5b4fc; }
+.pp-stepper-input {
+    width: 58px; height: 34px; text-align: center; border-radius: 9px;
+    background: rgba(2,6,23,.5); border: 1px solid rgba(148,163,184,.25);
+    color: #f1f5f9; font-weight: 800; font-size: .9rem; font-family: inherit; outline: none;
+}
+.pp-stepper-input:focus { border-color: rgba(129,140,248,.6); box-shadow: 0 0 0 3px rgba(79,70,229,.15); }
+.pp-stepper-unit { font-size: .78rem; color: #94a3b8; font-weight: 600; margin-left: .2rem; }
+
+/* líneas y desglose */
+.pp-line { display: flex; justify-content: space-between; gap: 1rem; padding: .3rem 0; font-size: .8rem; color: #94a3b8; }
+.pp-line strong, .pp-line span:last-child { color: #e2e8f0; font-weight: 700; white-space: nowrap; }
+.pp-desglose {
+    margin: .6rem 0; padding: .7rem .85rem; border-radius: 12px;
+    background: rgba(2,6,23,.5); border: 1px solid rgba(148,163,184,.12);
+}
+.pp-line-sub { margin-top: .35rem; padding-top: .5rem; border-top: 1px dashed rgba(148,163,184,.22); }
+.pp-line-save, .pp-line-save span:last-child { color: #34d399 !important; font-weight: 800; }
+
+.pp-ahorro {
+    margin: .6rem 0 0; padding: .5rem .8rem; border-radius: 10px; text-align: center;
+    font-size: .78rem; font-weight: 800; color: #34d399;
+    background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3);
 }
 
-.pp-estado-badge.al-dia .pp-estado-icon {
-    background: rgba(34, 197, 94, 0.2);
-    color: #4ade80;
+/* total */
+.pp-total {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: .8rem; padding: .85rem 1rem; border-radius: 12px;
+    background: rgba(79,70,229,.18); border: 1px solid rgba(129,140,248,.4);
+}
+.pp-total span { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #a5b4fc; }
+.pp-total strong {
+    font-family: 'Sora', sans-serif; font-size: 1.45rem; font-weight: 800; color: #fff;
+    letter-spacing: -.02em; font-variant-numeric: tabular-nums;
 }
 
-.pp-estado-badge.vencida .pp-estado-icon {
-    background: rgba(239, 68, 68, 0.2);
-    color: #f87171;
+/* botón pagar */
+.pp-pay { margin-top: 1rem; padding: .95rem 1.25rem; font-size: .9rem; animation: pp-glow 2.8s ease-in-out infinite; }
+.pp-pay:disabled { animation: none; }
+.pp-pay svg { width: 18px; height: 18px; }
+@keyframes pp-glow {
+    0%, 100% { box-shadow: 0 1px 0 rgba(255,255,255,.15) inset, 0 8px 20px -6px rgba(79,70,229,.5); }
+    50% { box-shadow: 0 1px 0 rgba(255,255,255,.15) inset, 0 8px 30px -2px rgba(99,102,241,.85); }
 }
 
-.pp-estado-texto {
-    flex: 1;
-    min-width: 0;
-}
+.pp-trust { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: .45rem; }
+.pp-trust li { display: flex; align-items: center; gap: .55rem; font-size: .74rem; font-weight: 600; color: #94a3b8; }
+.pp-trust svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: #818cf8; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-.pp-estado-titulo {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: #f1f5f9;
-    margin-bottom: 0.15rem;
-}
+/* alertas (login.css solo trae el rojo) */
+.pe-login-alert.success { background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.3); color: #6ee7b7; }
 
-.pp-estado-subtitulo {
-    font-size: 0.75rem;
-    color: #94a3b8;
+/* ---------- Éxito ---------- */
+.pp-success { position: relative; }
+.pp-success-check { width: 86px; height: 86px; margin: 0 auto 1rem; display: block; }
+.pp-sc-circle { fill: rgba(16,185,129,.12); stroke: #10b981; stroke-width: 2.5; stroke-dasharray: 145; stroke-dashoffset: 145; }
+.pp-sc-tick { fill: none; stroke: #34d399; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 40; stroke-dashoffset: 40; }
+.pp-success.pp-run .pp-sc-circle, .pp-success.pp-run .pp-sc-tick { stroke-dashoffset: 0; } /* fallback sin anime */
+.pp-success-title { font-family: 'Sora', sans-serif; font-size: 1.6rem; font-weight: 800; color: #fff; margin: 0 0 .4rem; }
+.pp-confetti { position: absolute; left: 50%; top: 70px; width: 0; height: 0; pointer-events: none; }
+.pp-confetti span { position: absolute; width: 8px; height: 8px; border-radius: 2px; opacity: 0; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+    .pp-grid { grid-template-columns: 1fr; }
+    .pp-col-side { position: static; }
+    .pp-estado-badge { min-width: 0; width: 100%; }
+}
+@media (max-width: 560px) {
+    .pp-page { padding: 1rem .75rem; }
+    .pp-card .pe-login-card-body { padding: 1.1rem; }
+    .pp-company-name { font-size: 1.2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .pp-pay, .pp-estado-badge.vencida .pp-estado-icon { animation: none; }
 }

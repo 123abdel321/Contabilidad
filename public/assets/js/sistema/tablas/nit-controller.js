@@ -25,6 +25,9 @@ function nitInit() {
             left: 0,
             right : 1,
         },
+        drawCallback: function () {
+            animateDatatables('#nitTable');
+        },
         ajax:  {
             type: "GET",
             headers: headers,
@@ -78,10 +81,7 @@ function nitInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.declarante){
-                        return 'SI';
-                    }
-                    return 'NO';
+                    return row.declarante ? '<span class="chip-si">SI</span>' : '<span class="chip-no">NO</span>';
                 }
             },
             {
@@ -96,10 +96,7 @@ function nitInit() {
             {"data":'porcentaje_aiu', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {
                 "data": function (row, type, set){
-                    if(row.sumar_aiu){
-                        return 'SI';
-                    }
-                    return 'NO';
+                    return row.sumar_aiu ? '<span class="chip-si">SI</span>' : '<span class="chip-no">NO</span>';
                 }
             },
             {"data": function (row, type, set){  
@@ -167,12 +164,6 @@ function nitInit() {
                 $comboCiudad.append(newOption).trigger('change');
                 $comboCiudad.val(dataCiudad.id).trigger('change');
             }
-        
-            // if (data.declarante) {
-            //     $('#declarante_nit').prop('checked', true);
-            // } else {
-            //     $('#declarante_nit').prop('checked', false);
-            // }
 
             if (data.sumar_aiu) {
                 $('#sumar_aiu_nits').prop('checked', true);
@@ -286,7 +277,7 @@ function nitInit() {
                         dataType: 'json',
                     }).done((res) => {
                         if(res.success){
-                            nits_table.row(trNit).remove().draw();
+                            nits_table.ajax.reload(null, false);
                             agregarToast('exito', 'Eliminación exitosa', 'Cedula nit eliminado con exito!', true );
                         } else {
                             agregarToast('error', 'Eliminación errada', res.message);
@@ -413,7 +404,8 @@ function nitInit() {
         $('#nitTable').DataTable().search($("#searchInputNits").val()).draw();
     });
 
-    let column = nits_table.column(12);
+    // La columna 17 es "Acciones"
+    let column = nits_table.column(17);
     
     if (!editarUsuario && !eliminarUsuario) column.visible(false);
     else column.visible(true);
@@ -437,7 +429,8 @@ $('.only-numbers').bind('paste', function() {
     });
 });
 
-$('.form-control').keyup(function() {
+// Excluye el email del uppercase forzado
+$('.form-control').not('#email').keyup(function() {
     $(this).val($(this).val().toUpperCase());
 });
 
@@ -486,6 +479,18 @@ $('#id_actividad_economica_nit').on('change', function (e) {
     }
 });
 
+// Cascada de campos del modal
+$('#nitFormModal').on('shown.bs.modal', function () {
+    if (!window.anime) return;
+    anime.animate('#nitsForm .form-group:visible, #nitsForm .form-check', {
+        opacity: [0, 1],
+        translateY: [16, 0],
+        duration: 500,
+        delay: anime.stagger(30),
+        ease: 'outExpo'
+    });
+});
+
 $(document).on('click', '#updateNit', function () {
 
     var form = document.querySelector('#nitsForm');
@@ -515,7 +520,6 @@ $(document).on('click', '#updateNit', function () {
             porcentaje_reteica: $('#porcentaje_reteica').val(),
             id_responsabilidades: $("#id_responsabilidades").val(),
             id_actividad_economica: $("#id_actividad_economica_nit").val(),
-            // declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             proveedor: $("input[type='checkbox']#proveedor_nit").is(':checked') ? '1' : '',
             retencion: $("input[type='checkbox']#retencion_nit").is(':checked') ? '1' : '',
@@ -537,10 +541,10 @@ $(document).on('click', '#updateNit', function () {
                 $("#updateNit").hide();
                 $("#saveNitLoading").hide();
                 $("#nitFormModal").modal('hide');
-                nits_table.row.add(res.data).draw();
+                nits_table.ajax.reload(null, false);
                 agregarToast('exito', 'Edición exitosa', 'Cedula nit actualizada con exito!', true );
             }
-        }).fail((res) => {
+        }).fail((err) => {
             $('#saveNit').hide();
             $('#updateNit').show();
             $("#saveNitLoading").hide();
@@ -593,7 +597,6 @@ $(document).on('click', '#saveNit', function () {
             porcentaje_reteica: $('#porcentaje_reteica').val(),
             id_responsabilidades: $("#id_responsabilidades").val(),
             id_actividad_economica: $("#id_actividad_economica_nit").val(),
-            // declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             proveedor: $("input[type='checkbox']#proveedor_nit").is(':checked') ? '1' : '',
             retencion: $("input[type='checkbox']#retencion_nit").is(':checked') ? '1' : '',
@@ -615,7 +618,7 @@ $(document).on('click', '#saveNit', function () {
                 $("#updateNit").hide();
                 $("#saveNitLoading").hide();
                 $("#nitFormModal").modal('hide');
-                nits_table.row.add(res.data).draw();
+                nits_table.ajax.reload(null, false);
                 agregarToast('exito', 'Creación exitosa', 'Cedula nit creada con exito!', true);
             }
         }).fail((err) => {

@@ -18,7 +18,7 @@
         <div class="row" style="z-index: 9;">
             <div class="col-12 col-md-4 col-sm-4">
                 @can('cedulas_nits create')
-                    <span id="createNits" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px;">
+                    <span id="createNits" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; cursor: pointer;">
                         <i class="fa-solid fa-user-plus" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CREAR CEDULA / NIT</b>
                     </span>
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
+        <div class="card mb-4 nit-card-wrap" style="content-visibility: auto; overflow: auto;">
             <div class="card-body">
                 
                 @include('pages.tablas.nits.nits-table')

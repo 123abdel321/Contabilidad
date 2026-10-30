@@ -349,7 +349,7 @@
     <script src="assets/js/sistema/tab-manager.js?v={{ config('app.version') }}"></script>
     <script src="assets/js/sistema/visorAdjuntos.js?v={{ config('app.version') }}"></script>
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
-    
+    <script src="https://cdn.jsdelivr.net/npm/animejs@4.0.2/lib/anime.iife.min.js"></script>
     @stack('js')
 </body>
 

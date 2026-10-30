@@ -1,3 +1,6 @@
+/* ============================================================
+   CONFIG BASE
+   ============================================================ */
 const host = window.location.host;
 
 let base_url, base_web, base_url_eco;
@@ -13,13 +16,10 @@ if (host.includes("app.portafolioerp.com")) {
 } else if (host.includes("localhost:8000")) {
     base_url = 'http://localhost:8000/api/';
     base_web = 'http://localhost:8000/';
-    // base_url_eco = "http://127.0.0.1:8989/api/";
     base_url_eco = "https://eco.portafolioerp.com/api/";
 }
 
-const pusher = new Pusher('95252a904d7ad78656ac', {cluster: 'us2'});
-
-// Pusher.logToConsole = true;
+const pusher = new Pusher('95252a904d7ad78656ac', { cluster: 'us2' });
 const bucketUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
 const itemMenuActive = localStorage.getItem("item_active_menu");
@@ -28,45 +28,39 @@ var dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
 
-// Función auxiliar para ajustar fechas
+/* ============================================================
+   HELPERS FECHAS
+   ============================================================ */
 const startOfDay = (date) => new Date(date.setHours(0, 0, 0, 0));
 const endOfDay = (date) => new Date(date.setHours(23, 59, 59, 999));
 
 const rangoFechas = {
-    "Hoy": [
-        startOfDay(new Date(dateNow)),
-        endOfDay(new Date(dateNow))
-    ],
-    "Ayer": [
-        startOfDay(new Date(dateNow.getTime() - 86400000)), // Resta 1 día en milisegundos
-        endOfDay(new Date(dateNow.getTime() - 86400000))
-    ],
-    "Este mes": [
-        startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 1)),
-        endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() + 1, 0))
-    ],
-    "Mes anterior": [
-        startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() - 1, 1)),
-        endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 0))
-    ],
-    "Este año": [
-        startOfDay(new Date(dateNow.getFullYear(), 0, 1)), // 1 de enero
-        endOfDay(new Date(dateNow.getFullYear(), 11, 31)) // 31 de diciembre
-    ]
+    "Hoy": [startOfDay(new Date(dateNow)), endOfDay(new Date(dateNow))],
+    "Ayer": [startOfDay(new Date(dateNow.getTime() - 86400000)), endOfDay(new Date(dateNow.getTime() - 86400000))],
+    "Este mes": [startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 1)), endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() + 1, 0))],
+    "Mes anterior": [startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() - 1, 1)), endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 0))],
+    "Este año": [startOfDay(new Date(dateNow.getFullYear(), 0, 1)), endOfDay(new Date(dateNow.getFullYear(), 11, 31))]
 };
 
+/* ============================================================
+   AJAX SETUP
+   ============================================================ */
 $.ajaxSetup({
-    'headers':{
+    headers: {
         "Authorization": auth_token,
         "Content-Type": "application/json"
     }
 });
+
 const headers = {
     "Authorization": auth_token,
     "Content-Type": "application/json",
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 };
 
+/* ============================================================
+   SIDENAV ELEMENTOS
+   ============================================================ */
 let body = document.getElementsByTagName('body')[0];
 let className = 'g-sidenav-pinned';
 let sidenav = document.getElementById('sidenav-main');
@@ -77,158 +71,81 @@ let iconSidenav = document.getElementById('iconSidenav');
 
 iniciarCanalesDeNotificacion();
 
-var moduloCreado = {
-    'nit': false,
-    'comprobante': false,
-    'plancuenta': false,
-    'cecos': false,
-    'familias': false,
-    'resoluciones': false,
-    'formapago': false,
-    'bodegas': false,
-    'productos': false,
-    'vendedores': false,
-    'documentogeneral': false,
-    'documentosgenerales': false,
-    'auxiliar': false,
-    'balance': false,
-    'cartera': false,
-    'documentos': false,
-    'compra': false,
-    'venta': false,
-    'compras': false,
-    'ventas': false,
-    'usuarios': false,
-    'empresa': false,
-    'entorno': false,
-    'productoprecios': false,
-    'carguedescargue': false,
-    'movimientoinventario': false,
-    'notacredito': false,
-    'ventasgenestales': false,
-    'estadoactual': false,
-    'estadocomprobante': false,
-    'importnits': false,
-    'importproductos': false,
-    'importdocumentos': false,
-    'eliminardocumentos': false,
-    'recibo': false,
-    'pago': false,
-    'recibos': false,
-    'conceptogastos': false,
-    'gasto': false,
-    'resumencomprobante': false,
-    'presupuesto': false,
-    'impuestos': false,
-    'resultados': false,
-    'ubicaciones': false,
-    'pedido': false,
-    'parqueadero': false,
-    'reserva': false,
-    'exogena': false,
-    'resumencartera': false,
-    'administradoras': false,
-    'periodos': false,
-    'conceptosnomina': false,
-    'contratos': false,
-    'configuracionprovisiones': false,
-    'novedadesgenerales': false,
-    'extracto': false,
-    'causar': false,
-    'liquidaciondefinitiva': false,
-    'vacaciones': false,
-    'ventasacumuladas': false,
-    'cesantiasintereses': false,
-    'reuniones': false,
-    'impuesto': false,
-    'cambiodatos': false,
-    'primas': false,
-    'pagos:': false,
-    'nominaelectronica': false,
-    'notificaciones': false,
-    'movimientoproducto': false,
-    'suscripcion': false,
+/* ============================================================
+   MAPA DE MÓDULOS (reemplaza moduloCreado + moduloRoute)
+   ============================================================ */
+const modulos = {
+    nit: 'tablas', comprobante: 'tablas', plancuenta: 'tablas', cecos: 'tablas',
+    familias: 'tablas', resolucion: 'tablas', formapago: 'tablas', bodegas: 'tablas',
+    productos: 'tablas', carguedescargue: 'tablas', vendedores: 'tablas',
+    documentogeneral: 'capturas', auxiliar: 'informes', balance: 'informes',
+    cartera: 'informes', documentos: 'informes', documentosgenerales: 'informes',
+    compras: 'informes', compra: 'capturas', ventas: 'informes', venta: 'capturas',
+    usuarios: 'configuracion', empresa: 'configuracion', entorno: 'configuracion',
+    productoprecios: 'importador', movimientoinventario: 'capturas',
+    notacredito: 'capturas', ventasgenerales: 'informes', estadoactual: 'informes',
+    estadocomprobante: 'informes', importnits: 'importador', importproductos: 'importador',
+    importdocumentos: 'importador', eliminardocumentos: 'capturas', recibo: 'capturas',
+    pago: 'capturas', recibos: 'informes', conceptogastos: 'tablas', gasto: 'capturas',
+    resumencomprobante: 'informes', presupuesto: 'tablas', impuestos: 'informes',
+    resultados: 'informes', ubicaciones: 'tablas', pedido: 'capturas',
+    parqueadero: 'capturas', reserva: 'capturas', exogena: 'informes',
+    resumencartera: 'informes', administradoras: 'tablas', periodos: 'tablas',
+    conceptosnomina: 'tablas', contratos: 'tablas', configuracionprovisiones: 'tablas',
+    novedadesgenerales: 'capturas', extracto: 'informes', causar: 'capturas',
+    liquidaciondefinitiva: 'capturas', vacaciones: 'capturas',
+    ventasacumuladas: 'informes', cesantiasintereses: 'capturas',
+    reuniones: 'configuracion', impuesto: 'tablas', cambiodatos: 'capturas',
+    primas: 'capturas', pagos: 'capturas', nominaelectronica: 'capturas',
+    notificaciones: 'configuracion', movimientoproducto: 'informes',
+    suscripcion: 'configuracion',
 };
 
-var moduloRoute = {
-    'nit': 'tablas',
-    'comprobante': 'tablas',
-    'plancuenta': 'tablas',
-    'cecos': 'tablas',
-    'familias': 'tablas',
-    'resolucion': 'tablas',
-    'formapago': 'tablas',
-    'bodegas': 'tablas',
-    'productos': 'tablas',
-    'carguedescargue': 'tablas',
-    'vendedores': 'tablas',
-    'documentogeneral': 'capturas',
-    'auxiliar': 'informes',
-    'balance': 'informes',
-    'cartera': 'informes',
-    'documentos': 'informes',
-    'documentosgenerales': 'informes',
-    'compras': 'informes',
-    'compra': 'capturas',
-    'ventas': 'informes',
-    'venta': 'capturas',
-    'usuarios': 'configuracion',
-    'empresa': 'configuracion',
-    'entorno': 'configuracion',
-    'productoprecios': 'importador',
-    'movimientoinventario': 'capturas',
-    'notacredito': 'capturas',
-    'ventasgenerales': 'informes',
-    'estadoactual': 'informes',
-    'estadocomprobante': 'informes',
-    'importnits': 'importador',
-    'importproductos': 'importador',
-    'importdocumentos': 'importador',
-    'eliminardocumentos': 'capturas',
-    'recibo': 'capturas',
-    'pago': 'capturas',
-    'recibos': 'informes',
-    'conceptogastos': 'tablas',
-    'gasto': 'capturas',
-    'resumencomprobante': 'informes',
-    'presupuesto': 'tablas',
-    'impuestos': 'informes',
-    'resultados': 'informes',
-    'ubicaciones': 'tablas',
-    'pedido': 'capturas',
-    'parqueadero': 'capturas',
-    'reserva': 'capturas',
-    'exogena': 'informes',
-    'resumencartera': 'informes',
-    'administradoras': 'tablas',
-    'periodos': 'tablas',
-    'conceptosnomina': 'tablas',
-    'contratos': 'tablas',
-    'configuracionprovisiones': 'tablas',
-    'novedadesgenerales': 'capturas',
-    'extracto': 'informes',
-    'causar': 'capturas',
-    'liquidaciondefinitiva': 'capturas',
-    'vacaciones': 'capturas',
-    'ventasacumuladas': 'informes',
-    'cesantiasintereses': 'capturas',
-    'reuniones': 'configuracion',
-    'impuesto': 'tablas',
-    'cambiodatos': 'capturas',
-    'primas': 'capturas',
-    'pagos': 'capturas',
-    'nominaelectronica': 'capturas',
-    'notificaciones': 'configuracion',
-    'movimientoproducto': 'informes',
-    'suscripcion': 'configuracion',
+const modulosCargados = new Set();
+const modulosCargando = new Map();
+
+function includeJs(id) {
+    if (modulosCargados.has(id)) return Promise.resolve();
+    if (modulosCargando.has(id)) return modulosCargando.get(id);
+
+    const promesa = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `${base_web}assets/js/sistema/${modulos[id]}/${id}-controller.js?v=${version_app}`;
+        script.onload = () => {
+            modulosCargados.add(id);
+            modulosCargando.delete(id);
+            resolve();
+        };
+        script.onerror = () => {
+            modulosCargando.delete(id);
+            reject(new Error('No se pudo cargar el controller: ' + id));
+        };
+        document.body.appendChild(script);
+    });
+
+    modulosCargando.set(id, promesa);
+    return promesa;
 }
 
-function iniciarCanalesDeNotificacion () {
-    channelAbdelCastro = pusher.subscribe('canal-general-abdel-castro');
-    channelFe = pusher.subscribe('notificacion-fe-'+localStorage.getItem("notificacion_code"));
+/* ============================================================
+   PUSHER
+   ============================================================ */
+function iniciarCanalesDeNotificacion() {
+    const code = localStorage.getItem("notificacion_code");
+    window.channelAbdelCastro = pusher.subscribe('canal-general-abdel-castro');
+    // Solo suscribirse si hay code válido
+    if (code && code !== 'null' && code !== '') {
+        window.channelFe = pusher.subscribe('notificacion-fe-' + code);
+        channelFe.bind('notificaciones', function (data) {
+            agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
+        });
+    }
 }
 
-$imagenes = [
+/* ============================================================
+   FONDOS DE PANTALLA
+   ============================================================ */
+const $imagenes = [
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_1.jpg',
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_2.jpg',
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_3.jpg',
@@ -280,94 +197,95 @@ const meses = [
     "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
 ];
 
-var urlImgFondo = $imagenes[getRandomInt($imagenes.length)];
-
-// if (localStorage.getItem("fondo_sistema") != 'null' && localStorage.getItem("fondo_sistema") != '') {
-//     urlImgFondo = bucketUrl + localStorage.getItem("fondo_sistema");
-// }
-setTimeout(function(){
-    $(".fondo-sistema").css('background-image', 'url(' +urlImgFondo+ ')');
-},300);
-
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-channelAbdelCastro.bind('notificaciones', function(data) {
+/* Fondo único: preferencia del usuario, sino aleatoria. Sin pedir .../null */
+(function aplicarFondo() {
+    const fondoGuardado = localStorage.getItem('fondo_sistema');
+    const urlImgFondo = (fondoGuardado && fondoGuardado !== 'null' && fondoGuardado !== '')
+        ? bucketUrl + fondoGuardado
+        : $imagenes[getRandomInt($imagenes.length)];
+
+    const img = new Image();
+    img.onload = () => {
+        $('.fondo-sistema').css('background-image', 'url(' + urlImgFondo + ')');
+    };
+    img.src = urlImgFondo;
+})();
+
+/* ============================================================
+   NOTIFICACIONES CANAL GENERAL (recarga por nueva versión)
+   ============================================================ */
+channelAbdelCastro.bind('notificaciones', function (data) {
     let timerInterval;
     Swal.fire({
         title: "Actualizando nueva version!",
-        html: "Se recargará la pagina para aplicar la version: "+version_app,
+        html: "Se recargará la pagina para aplicar la version: " + version_app,
         timer: 4000,
         timerProgressBar: true,
         didOpen: () => {
             Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            }, 100);
+            timerInterval = setInterval(() => {}, 100);
         },
         willClose: () => {
             clearInterval(timerInterval);
         }
-        }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-        }
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) {}
     });
-    setTimeout(function(){
+    setTimeout(function () {
         closeSessionProfile();
-    },4000);
+    }, 4000);
 });
 
-channelFe.bind('notificaciones', function(data) {
-    agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-});
-
+/* ============================================================
+   LOGOUT
+   ============================================================ */
 function closeSessionProfile() {
     $.ajax({
         url: base_web + 'logout-api',
         method: 'POST',
         headers: headers,
         dataType: 'json',
-    }).done((res) => {
-        localStorage.setItem("token_db_portafolio", '');
-        localStorage.setItem("auth_token", '');
-        localStorage.setItem("auth_token_erp", '');
-        localStorage.setItem("empresa_nombre", '');
-        localStorage.setItem("notificacion_code", '');
-        localStorage.setItem("notificacion_code_general", '');
-        localStorage.setItem("fondo_sistema", '');
-        localStorage.setItem("empresa_logo", '');
-
+    }).done(() => {
+        limpiarLocalStorage();
         window.location.href = '/login';
-    }).fail((res) => {
+    }).fail(() => {
+        limpiarLocalStorage();
         window.location.href = '/login';
     });
 }
 
+function limpiarLocalStorage() {
+    ['token_db_portafolio', 'auth_token', 'auth_token_erp', 'empresa_nombre',
+     'notificacion_code', 'notificacion_code_general', 'fondo_sistema', 'empresa_logo']
+        .forEach(k => localStorage.setItem(k, ''));
+}
+
+/* ============================================================
+   CARGA INICIAL
+   ============================================================ */
 $('.water').show();
-$('#containner-dashboard').load('/dashboard', function() {
+$('#containner-dashboard').load('/dashboard', function () {
     $('.water').hide();
 });
 $("#titulo-view").text('Inicio');
 
-$(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
-    if(xhr.status == 401) {
+$(document).ajaxError(function myErrorHandler(event, xhr) {
+    if (xhr.status == 401) {
         closeSessionProfile();
     }
 });
 
 $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
 $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
-$("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
-setTimeout(function(){
-    $(".fondo-sistema").css('background-image', 'url(' +bucketUrl + localStorage.getItem("fondo_sistema")+ ')');
-},200);
 
 if (localStorage.getItem("empresa_logo") == 'null' || !localStorage.getItem("empresa_logo")) {
     $("#side_main_logo").attr('src', '/img/logo_contabilidad.png');
-} else{ 
-    $("#side_main_logo").attr('src', bucketUrl+localStorage.getItem("empresa_logo"));
+} else {
+    $("#side_main_logo").attr('src', bucketUrl + localStorage.getItem("empresa_logo"));
 }
 
 if (iconNavbarSidenavMaximo) {
@@ -384,8 +302,11 @@ if (sidenav2) {
 
 selectMenu(itemMenuActive);
 
+/* ============================================================
+   GESTIÓN DE VISTAS / TABS
+   ============================================================ */
 function openNewItem(id, nombre, icon, idPadre) {
-    if($('#containner-'+id).length == 0) {
+    if ($('#containner-' + id).length == 0) {
         generateView(id, nombre, icon);
     }
     seleccionarView(id, nombre, idPadre);
@@ -396,9 +317,9 @@ function closeAnotherItems(id) {
     let items = document.getElementsByClassName("nav-padre");
     for (let index = 0; index < items.length; index++) {
         const element = items[index];
-        if (element.id != 'nav_'+id) {
+        if (element.id != 'nav_' + id) {
             element.classList.add("collapsed");
-            document.getElementById('collapse'+element.id.split('_')[1]).classList.remove("show"); 
+            document.getElementById('collapse' + element.id.split('_')[1]).classList.remove("show");
         }
     }
 }
@@ -409,39 +330,35 @@ function closeMenu() {
     }
 }
 
-function generateView(id, nombre, icon){
+function generateView(id, nombre, icon) {
     $('.water').show();
-    $('#contenerdores-views').append('<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>');
+    $('#contenerdores-views').append('<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-' + id + '"></main>');
     $('#footer-navigation').append(generateNewTabButton(id, nombre, icon));
-    $('#containner-'+id).load('/'+id, function(response, status, xhr) {
 
-        if (xhr.status === 401) {
-            window.location.href = '/login';
-            return;
-        }
-
-        if(!moduloCreado[id]) includeJs(id);
-        else callInitFuntion(id);
-
+    Promise.all([
+        new Promise((resolve, reject) => {
+            $('#containner-' + id).load('/' + id, (response, status, xhr) => {
+                if (xhr.status === 401) { window.location.href = '/login'; return reject(new Error('401')); }
+                resolve();
+            });
+        }),
+        includeJs(id).catch((err) => {
+            console.error(err);
+            agregarToast('error', 'Error', 'No se pudo cargar el módulo: ' + id, true);
+        }),
+    ]).then(() => {
+        callInitFuntion(id);
+        $('.water').hide();
+    }).catch(() => {
         $('.water').hide();
     });
 }
 
 function callInitFuntion(id) {
-    var functionInit = id+'Init';
-    window[functionInit]();
-}
-
-function includeJs(id){
-    let scriptEle = document.createElement("script");
-
-    let urlFile = base_web + "assets/js/sistema/"+moduloRoute[id]+"/"+id+"-controller.js?v="+version_app;
-    scriptEle.setAttribute("src", urlFile);
-    scriptEle.onload = function () {
-        callInitFuntion(id);
-    };
-    document.body.appendChild(scriptEle);
-    moduloCreado[id] = true;
+    const fn = window[id + 'Init'];
+    if (typeof fn === 'function') {
+        try { fn(); } catch (e) { console.error('Init falló para ' + id, e); }
+    }
 }
 
 function seleccionarView(id, nombre = 'Inicio', idPadre) {
@@ -454,13 +371,11 @@ function seleccionarView(id, nombre = 'Inicio', idPadre) {
     $('#containner-' + id).addClass("active");
     $('#tab-' + id).addClass("active");
 
-    // ✅ Submenú activo
     const $submenu = $('#sidenav_' + id);
     $submenu.addClass("active");
 
-    // ✅ Padre activo (auto-detectado)
     const idPadreFinal = idPadre || $submenu.closest('li.nav-item').find('.nav-padre').attr('id')?.replace('nav_', '');
-    
+
     if (idPadreFinal) {
         const $padre = $('#nav_' + idPadreFinal);
         $padre.addClass("active").removeClass("collapsed");
@@ -468,7 +383,6 @@ function seleccionarView(id, nombre = 'Inicio', idPadre) {
 
         const $collapse = $('#collapse' + idPadreFinal);
         if ($collapse.length) {
-            // Si usas Bootstrap 5 collapse
             if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
                 const instance = bootstrap.Collapse.getOrCreateInstance($collapse[0], { toggle: false });
                 instance.show();
@@ -480,7 +394,6 @@ function seleccionarView(id, nombre = 'Inicio', idPadre) {
 
     $("#titulo-view").text(nombre);
 
-    // Auto-scroll al tab activo (lo que ya tenías)
     var $tab = $('#lista_view_' + id);
     if ($tab.length) {
         var $nav = $('#footer-navigation');
@@ -497,55 +410,73 @@ function seleccionarView(id, nombre = 'Inicio', idPadre) {
     }
 }
 
-function generateNewTabView(id){
-    var html = '<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>';
-}
-
-function generateNewTabButton(id, nombre, icon){
-    
-    var html = `
+function generateNewTabButton(id, nombre, icon) {
+    // Escapamos comillas simples para no romper onclick
+    const safeNombre = String(nombre).replace(/'/g, "\\'");
+    return `
         <li class="nav-item" id="lista_view_${id}">
-            <div class="nav-link col seleccionar-view" onclick="seleccionarView('${id}', '${nombre}')" id="tab-${id}">
+            <div class="nav-link col seleccionar-view" onclick="seleccionarView('${id}', '${safeNombre}')" id="tab-${id}">
                 <i class="${icon}"></i>&nbsp;
                 ${nombre}&nbsp;&nbsp;
-                <i class="fas fa-times-circle close_item_navigation" id="closetab_${id}" onclick="closeView(this)"></i>&nbsp;
+                <i class="fas fa-times-circle close_item_navigation"
+                   id="closetab_${id}"
+                   onclick="event.stopPropagation(); closeView(this)"></i>&nbsp;
             </div>
         </li>
     `;
-    return html;
 }
 
-function closeView(nameView) {
-    var id = nameView.id.split('_')[1];
-    
-    $("#lista_view_"+id).remove();
-    $("#containner-"+id).empty();
-    $("#containner-"+id).remove();
+function closeView(el) {
+    const id = el.id.split('_')[1];
+    const $tab = $('#lista_view_' + id);
+    const eraActivo = $tab.find('.seleccionar-view').hasClass('active');
 
-    setTimeout(() => {
-        seleccionarView('dashboard');
-    }, 10)
+    // Destruir DataTables dentro del contenedor
+    const cont = document.getElementById('containner-' + id);
+    if (cont && $.fn.dataTable) {
+        $(cont).find('table').each(function () {
+            if ($.fn.dataTable.isDataTable(this)) {
+                $(this).DataTable().destroy();
+            }
+        });
+    }
+
+    // Destroyer opcional del controller
+    if (typeof window[id + 'Destroy'] === 'function') {
+        try { window[id + 'Destroy'](); } catch (e) { console.error(e); }
+    }
+
+    $tab.remove();
+    $('#containner-' + id).empty().remove();
+
+    if (eraActivo) {
+        const $next = $('#footer-navigation .nav-item').last();
+        const nextId = $next.attr('id')?.replace('lista_view_', '') || 'dashboard';
+        const nextNombre = $next.find('.seleccionar-view').text().trim() || 'Inicio';
+        seleccionarView(nextId, nextNombre);
+    }
 }
 
-$("#tab-dashboard").click(function(event){
+$("#tab-dashboard").click(function () {
     seleccionarView('dashboard');
 });
 
+/* ============================================================
+   TOGGLE SIDENAV
+   ============================================================ */
 function toggleSidenavMaximo() {
     if (body.classList.contains(className)) {
-
         body.classList.remove(className);
         sidenav.classList.remove('bg-transparent');
         sidenav.classList.add('side-nav-maximo-close');
         sidenav.classList.remove('side-nav-maximo-open');
         buttonMostrarLateral.classList.remove('ocultar');
         buttonocultarLateral.classList.add('ocultar');
-        setTimeout(function() {
+        setTimeout(function () {
             sidenav.classList.remove('bg-white');
         }, 100);
     } else {
         body.classList.add(className);
-
         sidenav.classList.add('bg-white');
         sidenav.classList.remove('bg-transparent');
         iconSidenav.classList.remove('d-none');
@@ -567,103 +498,77 @@ function toggleSidenavMaximoOpen() {
 
 function toggleSidenavMaximoClose() {
     body.classList.remove(className);
-    setTimeout(function() {
-    sidenav.classList.remove('bg-white');
+    setTimeout(function () {
+        sidenav.classList.remove('bg-white');
     }, 100);
     sidenav.classList.remove('bg-transparent');
     sidenav.classList.add('side-nav-maximo-close');
     sidenav.classList.remove('side-nav-maximo-open');
 }
 
-//PERSONAL TABLE LENGUAJE
+/* ============================================================
+   LENGUAJE DATATABLE
+   ============================================================ */
 const lenguajeDatatable = {
-    "sProcessing":     "",
-    "sLengthMenu":     "Mostrar _MENU_ registros",
-    "sZeroRecords":    `<div style="text-align: center; padding: 40px 20px;">
+    "sProcessing": "",
+    "sLengthMenu": "Mostrar _MENU_ registros",
+    "sZeroRecords": `<div style="text-align: center; padding: 40px 20px;">
         <div style="background: #f8f9fa; border-radius: 50%; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
             <i class="fas fa-search" style="font-size: 32px; color: #6c757d;"></i>
         </div>
         <h4 style="color: #495057; margin: 0 0 8px 0; font-weight: 500;">Sin resultados</h4>
         <p style="color: #6c757d; margin: 0; font-size: 14px;">Intenta con otros términos de búsqueda</p>
     </div>`,
-    "sEmptyTable":     `<div style="text-align: center; padding: 40px 20px;">
+    "sEmptyTable": `<div style="text-align: center; padding: 40px 20px;">
         <div style="background: #e7f3ff; border-radius: 50%; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
             <i class="fas fa-table" style="font-size: 32px; color: #007bff;"></i>
         </div>
         <h4 style="color: #495057; margin: 0 0 8px 0; font-weight: 500;">Tabla vacía</h4>
         <p style="color: #6c757d; margin: 0; font-size: 14px;">No hay registros para mostrar en este momento</p>
     </div>`,
-    "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-    "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
-    "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
-    "sInfoPostFix":    "",
-    "sSearch":         "Buscar:",
-    "sUrl":            "",
-    "sInfoThousands":  ",",
+    "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+    "sInfoEmpty": "Mostrando 0 a 0 de 0 registros",
+    "sInfoFiltered": "(filtrado de _MAX_ registros totales)",
+    "sInfoPostFix": "",
+    "sSearch": "Buscar:",
+    "sUrl": "",
+    "sInfoThousands": ",",
     "oPaginate": {
-        "sFirst":    "Primero",
-        "sLast":     "Último",
-        "sNext":     "›",
+        "sFirst": "Primero",
+        "sLast": "Último",
+        "sNext": "›",
         "sPrevious": "‹"
     },
     "oAria": {
-        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
         "sSortDescending": ": Activar para ordenar la columna de manera descendente"
     }
-}
+};
 
-// $("#button-login").click(function(event){
-    
-//     $("#button-login-loading").show();
-//     $("#button-login").hide();
+const animateDatatables = function (selector) {
+    if (!window.anime) return;
+    anime.animate(selector + ' tbody tr', {
+        opacity: [0, 1],
+        translateY: [14, 0],
+        duration: 600,
+        delay: anime.stagger(35),
+        ease: 'outExpo'
+    });
+};
 
-//     $.ajax({
-//         url: base_web + 'login',
-//         headers: {
-//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//         },
-//         method: 'POST',
-//         data: {
-//             "email": $('#email_login').val(),
-//             "password": $('#password_login').val(),
-//             "_token": $('meta[name="csrf-token"]').attr('content'),
-//         },
-//         dataType: 'json',
-//     }).done((res) => {
-//         $("#button-login-loading").hide();
-//         $("#button-login").show();
-//         if(res.success){
-//             localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
-//             localStorage.setItem("empresa_nombre", res.empresa.razon_social);
-//             localStorage.setItem("empresa_logo", res.empresa.logo);
-//             window.location.href = '/home';
-//         }
-//     }).fail((err) => {
-//         $("#button-login-loading").hide();
-//         $("#button-login").show();
-//     });
-// });
-
-$(".btn-cerrar").click(function(event){
-    console.log('asdasd');
-});
-
-function swalFire(titulo, mensaje, estado = true){
+/* ============================================================
+   UTILIDADES GENERALES
+   ============================================================ */
+function swalFire(titulo, mensaje, estado = true) {
     var status = estado ? 'success' : 'error';
-    Swal.fire(
-        titulo,
-        mensaje,
-        status
-    )
+    Swal.fire(titulo, mensaje, status);
 }
 
 function getRowById(idData, tabla) {
     var data = tabla.rows().data();
     for (let index = 0; index < data.length; index++) {
         var element = data[index];
-        if(element.id == idData){
-            return index;
-        }
+        if (element.id == idData) return index;
     }
     return false;
 }
@@ -672,9 +577,7 @@ function getDataById(idData, tabla) {
     var data = tabla.rows().data();
     for (let index = 0; index < data.length; index++) {
         var element = data[index];
-        if(element.id == idData){
-            return element;
-        }
+        if (element.id == idData) return element;
     }
     return false;
 }
@@ -683,18 +586,16 @@ function getIndexById(idData, tabla) {
     var data = tabla.rows().data();
     for (let index = 0; index < data.length; index++) {
         var element = data[index];
-        if(element.id == idData){
-            return index;
-        }
+        if (element.id == idData) return index;
     }
     return false;
 }
 
-function showUser (id_usuario, fecha, creado) {
-
-    if(!id_usuario) {
-        return;
-    }
+/* ============================================================
+   MODALES USUARIO / NIT
+   ============================================================ */
+function showUser(id_usuario, fecha, creado) {
+    if (!id_usuario) return;
 
     $('#usuario_accion').val('');
     $('#correo_accion').val('');
@@ -706,35 +607,26 @@ function showUser (id_usuario, fecha, creado) {
     $.ajax({
         url: base_url + 'usuario-accion',
         method: 'GET',
-        data: {id: id_usuario},
+        data: { id: id_usuario },
         headers: headers,
         dataType: 'json',
     }).done((res) => {
-        if(res.success){
-
+        if (res.success) {
             var data = res.data;
             $('#usuario_accion').val(data.username);
             $('#correo_accion').val(data.email);
             $('#fecha_accion').val(fecha);
-
-            if (creado) {
-                $("#modal-title-usuario-accion").html("Creado por: "+ data.username);
-            } else {
-                $("#modal-title-usuario-accion").html("Actualizado por: "+ data.username);
-            }
+            $("#modal-title-usuario-accion").html((creado ? "Creado por: " : "Actualizado por: ") + data.username);
         }
         $('.water').hide();
-    }).fail((err) => {
+    }).fail(() => {
         swalFire('Error al cargar usuario', '', false);
         $('.water').hide();
     });
 }
 
-function showNit (id_nit) {
-
-    if(!id_nit) {
-        return;
-    }
+function showNit(id_nit) {
+    if (!id_nit) return;
 
     $('#numero_documento').val('');
     $('#nombre_completo').val('');
@@ -750,15 +642,14 @@ function showNit (id_nit) {
     $.ajax({
         url: base_url + 'nit/informacion',
         method: 'GET',
-        data: {id_nit: id_nit},
+        data: { id_nit: id_nit },
         headers: headers,
         dataType: 'json',
     }).done((res) => {
-        if(res.success){
-
+        if (res.success) {
             var data = res.data;
-            if(data.logo_nit) {
-                $('#avatar_nit').attr('src', 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/'+data.logo_nit);
+            if (data.logo_nit) {
+                $('#avatar_nit').attr('src', 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/' + data.logo_nit);
             } else {
                 $('#avatar_nit').attr('src', '/img/theme/tim.png');
             }
@@ -771,98 +662,50 @@ function showNit (id_nit) {
             $('#ciudad_nit').val(data.ciudad ? data.ciudad.nombre_completo : '');
         }
         $('.water').hide();
-    }).fail((err) => {
+    }).fail(() => {
         swalFire('Error al cargar nit', '', false);
         $('.water').hide();
     });
 }
 
-
-// const contenedorBotones = document.getElementById('contenedor-botones');
+/* ============================================================
+   TOASTS
+   ============================================================ */
 const contenedorToast = document.getElementById('contenedor-toast');
+let toastCounter = 0;
 
-// Event listener para detectar click en los botones
-// contenedorBotones.addEventListener('click', (e) => {
-//     e.preventDefault();
-
-//     const tipo = e.target.dataset.tipo;
-
-//     if (tipo === 'exito') {
-//         agregarToast({ tipo: 'exito', titulo: 'Exito!', descripcion: 'La operación fue exitosa.', autoCierre: true });
-//     }
-//     if (tipo === 'error') {
-//         agregarToast({ tipo: 'error', titulo: 'Error', descripcion: 'Hubo un error', autoCierre: true });
-//     }
-//     if (tipo === 'info') {
-//         agregarToast({ tipo: 'info', titulo: 'Info', descripcion: 'Esta es una notificación de información.' });
-//     }
-//     if (tipo === 'warning') {
-//         agregarToast({ tipo: 'warning', titulo: 'Warning', descripcion: 'Ten cuidado' });
-//     }
-// });
-
-// Event listener para detectar click en los toasts
 contenedorToast.addEventListener('click', (e) => {
-    const toastId = e.target.closest('div.toast').id;
-
-    if (e.target.closest('button.btn-cerrar')) {
-        cerrarToast(toastId);
+    const toast = e.target.closest('div.toast');
+    if (toast && e.target.closest('button.btn-cerrar')) {
+        cerrarToast(toast.id);
     }
 });
 
-// Función para cerrar el toast
-function cerrarToast(id){
+function cerrarToast(id) {
     document.getElementById(id)?.classList.add('cerrando');
 }
 
-// Función para agregar la clase de cerrando al toast.
 function agregarToast(tipo, titulo, descripcion, autoCierre = false, tiempoCierre = 3000) {
-    // Crear el nuevo toast7
-    if (descripcion === null || descripcion === undefined || !descripcion) {
-        return;
-    }
-    
-    const nuevoToast = document.createElement('div');
+    if (descripcion === null || descripcion === undefined || !descripcion) return;
 
-    // Agregar clases correspondientes
+    const nuevoToast = document.createElement('div');
     nuevoToast.classList.add('toast');
     nuevoToast.classList.add(tipo);
     if (autoCierre) nuevoToast.classList.add('autoCierre');
 
-    // Agregar id del toast
-    const numeroAlAzar = Math.floor(Math.random() * 100);
-    const fecha = Date.now();
-    const toastId = fecha + numeroAlAzar;
+    toastCounter = (toastCounter + 1) % 1000000;
+    const toastId = 'toast_' + Date.now() + '_' + toastCounter;
     nuevoToast.id = toastId;
 
-    // Iconos
     const iconos = {
-        exito: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path
-                        d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"
-                    />
-                </svg>`,
-        error: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path
-                        d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
-                    />
-                </svg>`,
-        info: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path
-                        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
-                    />
-                </svg>`,
-        warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path
-                        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
-                    />
-                </svg>`,
+        exito: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/></svg>`,
+        error: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>`,
+        info: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>`,
+        warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>`,
     };
 
-    // Detectar si la descripción tiene tablas
     const tieneTabla = descripcion.includes('<table');
-    
-    // Plantilla del toast - VERSION SIMPLIFICADA
+
     var toast = `
         <div class="contenido ${tieneTabla ? 'con-tabla' : ''}">
             <div class="icono">
@@ -875,62 +718,40 @@ function agregarToast(tipo, titulo, descripcion, autoCierre = false, tiempoCierr
                 </div>
             </div>
         </div>
-        <button class="btn-cerrar" onclick="cerrarToast('${toastId}')" href="javascript:void(0)">
+        <button class="btn-cerrar" onclick="event.stopPropagation(); cerrarToast('${toastId}')" href="javascript:void(0)">
             <div class="icono">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path
-                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
-                    />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
             </div>
         </button>
     `;
 
-    // Agregar la plantilla al nuevo toast
     nuevoToast.innerHTML = toast;
-
-    // Agregamos el nuevo toast al contenedor
     contenedorToast.appendChild(nuevoToast);
 
-    // Ajustar el tamaño PARA EVITAR DOBLE SCROLL
     if (tieneTabla) {
         setTimeout(() => {
             const descripcionDiv = nuevoToast.querySelector('.descripcion');
             const tablas = descripcionDiv.querySelectorAll('table');
-            
             tablas.forEach(tabla => {
-                // Quitar cualquier altura máxima o scroll
                 tabla.style.width = '100%';
                 tabla.style.maxWidth = '300px';
                 tabla.style.margin = '8px 0';
                 tabla.style.borderCollapse = 'collapse';
-                
-                // Asegurar que la tabla no tenga scroll interno
                 tabla.style.overflow = 'visible';
-                
-                // Añadir clases de Bootstrap si están disponibles
                 if (typeof bootstrap !== 'undefined') {
                     tabla.classList.add('table', 'table-sm', 'table-bordered');
                 }
             });
-            
-            // IMPORTANTE: NO limitar la altura del texto para evitar scroll interno
             const texto = nuevoToast.querySelector('.texto');
-            texto.style.overflowY = 'visible'; // Cambiado de 'auto' a 'visible'
-            texto.style.maxHeight = 'none'; // Quitar altura máxima
-            
-            // En su lugar, ajustar el toast para que sea más grande
-            nuevoToast.style.maxWidth = '500px'; // Más ancho para tablas
-            nuevoToast.style.minWidth = '350px'; // Ancho mínimo
-            
-            // Ajustar el contenedor del contenido
+            texto.style.overflowY = 'visible';
+            texto.style.maxHeight = 'none';
+            nuevoToast.style.maxWidth = '500px';
+            nuevoToast.style.minWidth = '350px';
             const contenido = nuevoToast.querySelector('.contenido');
             contenido.style.maxHeight = 'none';
-            
         }, 10);
     }
 
-    // Función para manejar el cierre del toast
     const handleAnimacionCierre = (e) => {
         if (e.animationName === 'cierre') {
             nuevoToast.removeEventListener('animationend', handleAnimacionCierre);
@@ -942,66 +763,50 @@ function agregarToast(tipo, titulo, descripcion, autoCierre = false, tiempoCierr
         setTimeout(() => cerrarToast(toastId), tiempoCierre);
     }
 
-    // Agregamos event listener para detectar cuando termine la animación
     nuevoToast.addEventListener('animationend', handleAnimacionCierre);
-};
-
-function removejscssfile(filename, filetype){
-    var targetelement=(filetype=="js")? "script" : (filetype=="css")? "link" : "none" //determine element type to create nodelist from
-    var targetattr=(filetype=="js")? "src" : (filetype=="css")? "href" : "none" //determine corresponding attribute to test for
-    var allsuspects=document.getElementsByTagName(targetelement)
-    for (var i=allsuspects.length; i>=0; i--){ //search backwards within nodelist for matching elements to remove
-        if (allsuspects[i] && allsuspects[i].getAttribute(targetattr)!=null && allsuspects[i].getAttribute(targetattr).indexOf(filename)!=-1)
-            allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
-    }
 }
 
+/* ============================================================
+   DESCARGAS
+   ============================================================ */
 function loadExcel(data) {
-    setTimeout(function(){
-        console.log(data.url_file);
-        window.open('https://'+data.url_file, "_blank");
+    setTimeout(function () {
+        window.open('https://' + data.url_file, "_blank");
         agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    },1000);
+    }, 1000);
 }
 
 function loadPdf(data) {
-    setTimeout(function(){
-        console.log(data.url_file_pdf);
-        window.open('https://'+data.url_file_pdf, "_blank");
+    setTimeout(function () {
+        window.open('https://' + data.url_file_pdf, "_blank");
         agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    },1000);
+    }, 1000);
 }
 
-$(document).on('click', '#descargarPlantilla', function () {
-    
-});
-
+/* ============================================================
+   LOGOUT BOTÓN
+   ============================================================ */
 if (btnLogout) {
     btnLogout.addEventListener('click', event => {
-    
         event.preventDefault();
         $.ajax({
             url: base_web + 'logout-api',
             method: 'POST',
             headers: headers,
             dataType: 'json',
-        }).done((res) => {
-            localStorage.setItem("token_db_portafolio", '');
-            localStorage.setItem("auth_token", '');
-            localStorage.setItem("auth_token_erp", '');
-            localStorage.setItem("empresa_nombre", '');
-            localStorage.setItem("notificacion_code", '');
-            localStorage.setItem("notificacion_code_general", '');
-            localStorage.setItem("fondo_sistema", '');
-            localStorage.setItem("empresa_logo", '');
-    
+        }).done(() => {
+            limpiarLocalStorage();
             window.location.href = '/login';
-        }).fail((err) => {
+        }).fail(() => {
+            limpiarLocalStorage();
             window.location.href = '/login';
         });
     });
 }
 
+/* ============================================================
+   FORMATEO NÚMEROS / FECHAS
+   ============================================================ */
 function numberWithCommas(x) {
     x = x.toString();
     var pattern = /(-?\d+)(\d{3})/;
@@ -1010,200 +815,53 @@ function numberWithCommas(x) {
     return x;
 }
 
-function selectMenu(menu) {
-    var nombre = '';
-    var icono  = '';
-    var tipoMenu = '';
-
-    if (menu == 'facturacion') {
-        nombre = 'Facturación';
-        icono  = 'fas fa-file-invoice-dollar';
-        tipoMenu = 2;
-    } else if (menu == 'contabilidad') {
-        nombre = 'Contabilidad';
-        icono  = 'fas fa-calculator';
-        tipoMenu = 1;
-    } else if (menu == 'nomina') {
-        nombre = 'Nomina';
-        icono  = 'fas fa-users';
-        tipoMenu = 3;
-    }
-
-    // 🔒 Estado restringido: solo mostrar los menús que vienen del backend (Empresa + Suscripción)
-    if (typeof estadoRestringido !== 'undefined' && estadoRestringido) {
-        hideAllMenus();
-        showAllMenus(); // muestra TODO lo que esté en el DOM (solo vendrán los 2 del backend)
-        // Ocultamos el dropdown de tipos de menú porque no aplica
-        $('#dropdownTiposMenu').closest('.dropdown').hide();
-        return;
-    }
-
-    hideAllMenus();
-
-    var elements = document.getElementsByClassName('tipo_menu_' + tipoMenu);
-
-    if (elements.length) {
-        for (let index = 0; index < elements.length; index++) {
-            const element = elements[index];
-            element.style.display = 'block';
-        }
-    }
-    localStorage.setItem("item_active_menu", menu);
-
-    // 👇 Renderiza icono + texto en el botón
-    $('#dropdownTiposMenu').html(`<i class="${icono} me-1"></i>${nombre}`);
-}
-
-function showAllMenus() {
-    var menu1 = document.getElementsByClassName('tipo_menu_1');
-    if (menu1.length) { //HIDE ELEMENTS
-        for (let index = 0; index < menu1.length; index++) {
-            const element = menu1[index];
-            element.style.display = 'block';
-        }
-    }
-
-    var menu2 = document.getElementsByClassName('tipo_menu_2');
-    if (menu2.length) { //HIDE ELEMENTS
-        for (let index = 0; index < menu2.length; index++) {
-            const element = menu2[index];
-            element.style.display = 'block';
-        }
-    }
-
-    var menu3 = document.getElementsByClassName('tipo_menu_3');
-    if (menu3.length) { //HIDE ELEMENTS
-        for (let index = 0; index < menu3.length; index++) {
-            const element = menu3[index];
-            element.style.display = 'block';
-        }
-    }
-}
-
-function hideAllMenus() {
-    var menu1 = document.getElementsByClassName('tipo_menu_1');
-    if (menu1.length) { //HIDE ELEMENTS
-        for (let index = 0; index < menu1.length; index++) {
-            const element = menu1[index];
-            element.style.display = 'none';
-        }
-    }
-
-    var menu2 = document.getElementsByClassName('tipo_menu_2');
-    if (menu2.length) { //HIDE ELEMENTS
-        for (let index = 0; index < menu2.length; index++) {
-            const element = menu2[index];
-            element.style.display = 'none';
-        }
-    }
-
-    var menu3 = document.getElementsByClassName('tipo_menu_3');
-    if (menu3.length) { //HIDE ELEMENTS
-        for (let index = 0; index < menu3.length; index++) {
-            const element = menu3[index];
-            element.style.display = 'none';
-        }
-    }
-}
-
-// function showAllMenus() {
-//     ['tipo_menu_0', 'tipo_menu_1', 'tipo_menu_2', 'tipo_menu_3'].forEach(function (cls) {
-//         var items = document.getElementsByClassName(cls);
-//         for (let index = 0; index < items.length; index++) {
-//             // items[index].style.display = 'block';
-//         }
-//     });
-// }
-
-// function hideAllMenus() {
-//     ['tipo_menu_0', 'tipo_menu_1', 'tipo_menu_2', 'tipo_menu_3'].forEach(function (cls) {
-//         var items = document.getElementsByClassName(cls);
-//         for (let index = 0; index < items.length; index++) {
-//             // items[index].style.display = 'none';
-//         }
-//     });
-// }
-
 function formatNumber(n) {
-    // format number 1000000 to 1,234,567
-    return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-} 
+    return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
-function formatCurrencyValue (value) {
+function formatCurrencyValue(value) {
     if (value) {
         value = value + '';
-
-        if (value.indexOf(".") >= 0) {    
+        if (value.indexOf(".") >= 0) {
             var decimal_pos = value.indexOf(".");
-            
             var left_side = value.substring(0, decimal_pos);
             var right_side = value.substring(decimal_pos);
-        
             left_side = formatNumber(left_side);
             right_side = formatNumber(parseFloat(right_side).toFixed(2).slice(1));
             right_side = right_side.substring(0, 2);
-        
             valorFormato = left_side + "." + right_side;
-        
             return valorFormato;
         } else {
-            return formatNumber(value)+".00";
+            return formatNumber(value) + ".00";
         }
-
     } else {
         return '0.00';
     }
 }
- 
+
 function formatCurrency(input, blur) {
-    // appends $ to value, validates decimal side
-    // and puts cursor back in right position.
-    
-    // get input value
     var input_val = input.val();
     input_val = input_val.replace(',', '');
-    // don't validate empty input
-    if (input_val === "") { return; }
-    
-    // original length
+    if (input_val === "") return;
+
     var original_len = input_val.length;
-  
-    // initial caret position 
     var caret_pos = input.prop("selectionStart");
-      
-    // check for decimal
+
     if (input_val.indexOf(".") >= 0) {
-        // get position of first decimal
-        // this prevents multiple decimals from
-        // being entered
         var decimal_pos = input_val.indexOf(".");
-        // split number by decimal point
         var left_side = input_val.substring(0, decimal_pos);
         var right_side = input_val.substring(decimal_pos);
-        // add commas to left side of number
         left_side = formatNumber(left_side);
-        // validate right side
         right_side = formatNumber(right_side);
-        // On blur make sure 2 numbers after decimal
-        if (blur === "blur") {
-            right_side += "00";
-        }
-        // Limit decimal to only 2 digits
+        if (blur === "blur") right_side += "00";
         right_side = right_side.substring(0, 2);
-
         input_val = left_side + "." + right_side;
     } else {
         input_val = formatNumber(input_val);
-        if (blur === "blur") {
-            input_val += ".00";
-        }
-        input_val = input_val;
+        if (blur === "blur") input_val += ".00";
     }
-    
-    // send updated string to input
+
     input.val(input_val);
-    
-    // put caret back in the right position
     var updated_len = input_val.length;
     caret_pos = updated_len - original_len + caret_pos;
     input[0].setSelectionRange(caret_pos, caret_pos);
@@ -1211,15 +869,10 @@ function formatCurrency(input, blur) {
 
 function stringToNumberFloat(value) {
     if (!value && value !== 0) return 0;
-    
     value = value.toString();
-    // Eliminar comas y convertir
     const cleaned = value.replaceAll(',', '');
     const num = parseFloat(cleaned);
-    
-    // Verificar si es un número válido
     if (isNaN(num)) return 0;
-    
     return num;
 }
 
@@ -1231,13 +884,10 @@ function arreglarMensajeError(mensaje) {
             for (campo in errores) {
                 errorsMsg += `<b>${field}:</b> ${errores[campo]} <br>`;
             }
-        };
-    }
-
-    else if (typeof mensaje === 'string') {
+        }
+    } else if (typeof mensaje === 'string') {
         errorsMsg = mensaje;
     }
-
     return errorsMsg;
 }
 
@@ -1255,46 +905,30 @@ function redondear(valor, redondeo_valor = null) {
     if (redondeo_valor == '') redondeo_valor = null;
     if (!redondeo_valor && redondeo_valor != 0) return valor;
     redondeo_valor = parseFloat(redondeo_valor);
-    if (!valor) return valor; //Sin valor a redondear
-    if (redondeo_valor === null) return valor; // No redondear
-    if (redondeo_valor === 0) return Math.floor(valor); // Quitar decimales (redondear hacia abajo)
-    return Math.round(valor / redondeo_valor) * redondeo_valor; // Redondear al múltiplo más cercano
+    if (!valor) return valor;
+    if (redondeo_valor === null) return valor;
+    if (redondeo_valor === 0) return Math.floor(valor);
+    return Math.round(valor / redondeo_valor) * redondeo_valor;
 }
 
 function primeraFormaPago(formasPagos, nombreInput) {
     for (let index = 0; index < formasPagos.length; index++) {
-
         const formaPago = formasPagos[index];
         const input = document.getElementById(`${nombreInput}_${formaPago.id}`);
-
-        if (input.disabled) {
-            continue;
-        }
-
-        return formaPago.id
+        if (input && input.disabled) continue;
+        return formaPago.id;
     }
 }
 
 function getResponsabilidades(id_responsabilidades) {
-    if (id_responsabilidades) {
-        return id_responsabilidades.split(',');
-    }
+    if (id_responsabilidades) return id_responsabilidades.split(',');
     return [];
 }
 
+/* Normalizar fecha ÚNICA (la que agrega T00:00) */
 function normalizarFecha(fecha) {
-    // Si ya tiene hora (es decir, espacio y algo más), no tocamos nada
-    if (fecha.includes(' ')) {
-        return fecha;
-    }
-
-    // Si no tiene hora, le agregamos la hora actual
-    const ahora = new Date();
-    const hora = ahora.getHours().toString().padStart(2, '0');
-    const minutos = ahora.getMinutes().toString().padStart(2, '0');
-    const segundos = ahora.getSeconds().toString().padStart(2, '0');
-
-    return `${fecha} ${hora}:${minutos}:${segundos}`;
+    if (fecha && fecha.length === 10) return fecha + 'T00:00';
+    return fecha;
 }
 
 function focusNexInput(e, inputId, type = null) {
@@ -1309,21 +943,15 @@ function focusNexInput(e, inputId, type = null) {
 }
 
 function formatoFecha(start, end, input) {
-    // Verificar si las horas no han sido modificadas manualmente (00:00:00 y 23:59:59)
     var isStartTimeDefault = start.hours() === 0 && start.minutes() === 0 && start.seconds() === 0;
     var isEndTimeDefault = end.hours() === 23 && end.minutes() === 59 && end.seconds() === 59;
-    
-    // Si es una selección nueva (no edición manual de horas), ajustamos las horas
+
     if (isStartTimeDefault && isEndTimeDefault) {
-        start.startOf('day');    // 00:00:00
-        end.endOf('day');        // 23:59:59
+        start.startOf('day');
+        end.endOf('day');
     }
-    
-    // Formatear y mostrar las fechas
-    $("#"+input).html(start.format("MMMM D, YYYY HH:mm:ss") + " - " + end.format("MMMM D, YYYY HH:mm:ss"));
-    
-    // Aquí puedes agregar cualquier otra lógica que necesites con las fechas
-    // Por ejemplo, actualizar campos ocultos o hacer una llamada AJAX
+
+    $("#" + input).html(start.format("MMMM D, YYYY HH:mm:ss") + " - " + end.format("MMMM D, YYYY HH:mm:ss"));
 }
 
 function parseManualInput(value, input) {
@@ -1331,29 +959,14 @@ function parseManualInput(value, input) {
     if (parts.length === 2) {
         var start = moment(parts[0], "YYYY-MM-DD HH:mm:ss");
         var end = moment(parts[1], "YYYY-MM-DD HH:mm:ss");
-        
         if (start.isValid() && end.isValid()) {
-            // Si no se especificó hora, establecer valores por defecto
             if (parts[0].length <= 10) start.startOf('day');
             if (parts[1].length <= 10) end.endOf('day');
-            
-            // Actualizar el datepicker
-            $("#"+input).data('daterangepicker').setStartDate(start);
-            $("#"+input).data('daterangepicker').setEndDate(end);
-            
-            // Llamar a formatoFecha con los nuevos valores
+            $("#" + input).data('daterangepicker').setStartDate(start);
+            $("#" + input).data('daterangepicker').setEndDate(end);
             formatoFecha(start, end, input);
         }
     }
-}
-
-function normalizarFecha(fecha) {
-    // Si la fecha no tiene parte de hora, agregamos 'T00:00'
-    if (fecha && fecha.length === 10) {
-        return fecha + 'T00:00';
-    }
-    // Si ya tiene hora, la dejamos tal cual
-    return fecha;
 }
 
 function formatNumberWithSmallDecimals(number) {
@@ -1365,29 +978,13 @@ function formatNumberWithSmallDecimals(number) {
     return formatted;
 }
 
-$(document).on('shown.bs.popover', function() {
-    $('.popover b.titulo-popover').css({
-        'color': '#72ffff',
-        'font-weight': 'bold'
-    });
-
-    $('.popover b.titulo-popover-error').css({
-        'color': 'red',
-        'font-weight': 'bold'
-    });
-
-    $('.popover b.mensaje-blanco').css({
-        'color': '#FFF',
-        'font-weight': 'bold'
-    });
+$(document).on('shown.bs.popover', function () {
+    $('.popover b.titulo-popover').css({ 'color': '#72ffff', 'font-weight': 'bold' });
+    $('.popover b.titulo-popover-error').css({ 'color': 'red', 'font-weight': 'bold' });
+    $('.popover b.mensaje-blanco').css({ 'color': '#FFF', 'font-weight': 'bold' });
 });
 
-function cargasFechasGenerales(
-        input,
-        start = moment().startOf("month"),
-        end = moment().endOf("month"),
-        dates = rangoFechas) {
-    
+function cargasFechasGenerales(input, start = moment().startOf("month"), end = moment().endOf("month"), dates = rangoFechas) {
     $(`#${input}`).daterangepicker({
         startDate: start,
         endDate: end,
@@ -1417,24 +1014,42 @@ function abrirVistaDesdeBanner(id, nombre, icon) {
         generateView(id, nombre, icon);
     }
     seleccionarView(id, nombre);
-    // NO llamamos a sidenav-main-2.click() para no abrir el menú lateral
 }
 
-// Mostrar el banner al volver al dashboard (solo si aplica el estado restringido)
+/* ============================================================
+   SELECT MENU (facturación / contabilidad / nómina)
+   ============================================================ */
+function selectMenu(menu) {
+    const mapa = {
+        facturacion:  { nombre: 'Facturación',  icono: 'fas fa-file-invoice-dollar', tipo: 2 },
+        contabilidad: { nombre: 'Contabilidad', icono: 'fas fa-calculator',          tipo: 1 },
+        nomina:       { nombre: 'Nomina',       icono: 'fas fa-users',               tipo: 3 },
+    };
+    const cfg = mapa[menu];
+    if (!cfg) return;
+
+    // Estado restringido: no aplica selector de tipos
+    if (typeof estadoRestringido !== 'undefined' && estadoRestringido) {
+        document.getElementById('sidenav-collapse-main')?.removeAttribute('data-tipo');
+        $('#dropdownTiposMenu').closest('.dropdown').hide();
+        return;
+    }
+
+    const cont = document.getElementById('sidenav-collapse-main');
+    if (cont) cont.setAttribute('data-tipo', cfg.tipo);
+
+    localStorage.setItem('item_active_menu', menu);
+    $('#dropdownTiposMenu').html(`<i class="${cfg.icono} me-1"></i>${cfg.nombre}`);
+}
+
+/* ============================================================
+   LISTENER GLOBAL: banner estado restringido
+   ============================================================ */
 document.addEventListener('click', function (e) {
-    if (!estadoRestringido) return;
-
-    var banner = document.getElementById('banner-estado-restringido');
+    if (typeof estadoRestringido === 'undefined' || !estadoRestringido) return;
+    const banner = document.getElementById('banner-estado-restringido');
     if (!banner) return;
-
-    // Click en el tab de Inicio (footer-navigation)
     if (e.target.closest('#tab-dashboard')) {
         banner.style.display = '';
     }
 });
-
-// En tu archivo principal o en un lugar global
-// $(document).ajaxError(function(event, xhr, settings, error) {
-//     if (xhr.status === 401 || xhr.responseText.includes('Unauthenticated')) {
-//     }
-// });

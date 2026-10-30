@@ -63,16 +63,25 @@
         box-shadow: 0 0 8px rgba(13, 215, 246, 0.4);
     }
 
+    /* ====== NUEVO: ocultar tipos de menú por data-tipo (sin loops JS) ====== */
+    #sidenav-collapse-main[data-tipo="1"] .tipo_menu_2,
+    #sidenav-collapse-main[data-tipo="1"] .tipo_menu_3,
+    #sidenav-collapse-main[data-tipo="2"] .tipo_menu_1,
+    #sidenav-collapse-main[data-tipo="2"] .tipo_menu_3,
+    #sidenav-collapse-main[data-tipo="3"] .tipo_menu_1,
+    #sidenav-collapse-main[data-tipo="3"] .tipo_menu_2 {
+        display: none;
+    }
 </style>
+
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 side-nav-maximo-close" id="sidenav-main" style="z-index: 99 !important; border-radius: 0px 10px 10px 0px;">
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" style="color: white !important;" aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" target="_blank" style="text-align: -webkit-center;">
             <img src="" id="side_main_logo" class="navbar-brand-img" alt="main_logo" style="max-height: 4rem;"><br/>
-            <!-- <span class="ms-1 font-weight-bold" id="nombre-empresa" style="color: antiquewhite; text-wrap: balance;"></span> -->
         </a>
     </div>
-    
+
     <hr class="horizontal dark mt-0">
 
     <div class="dropdown" style="text-align-last: center;">
@@ -104,39 +113,40 @@
         </div>
     @endif
 
-    <ul class="collapse navbar-collapse navbar-nav" id="sidenav-collapse-main" style="height: 100%; width: auto; margin-left: 10px;">
+    {{-- data-tipo controla qué menús se muestran por CSS --}}
+    <ul class="collapse navbar-collapse navbar-nav" id="sidenav-collapse-main" data-tipo="1" style="height: 100%; width: auto; margin-left: 10px;">
 
-            @foreach ($menus as $menu)
+        @foreach ($menus as $menu)
 
-                <li class="nav-item">
-                    <div id="nav_{{ $menu[0]->padre->id }}" data-bs-toggle="collapse" href="#collapse{{ $menu[0]->padre->id }}" class="nav-link collapsed nav-padre" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;"
-                        onclick="closeAnotherItems('{{ $menu[0]->padre->id }}' )">
-                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="{{ $menu[0]->padre->icon }} text-sm" style="color: #0ce0ff !important; font-size: 0.9rem; opacity: 0.9;"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ $menu[0]->padre->nombre }}</span>
+            <li class="nav-item">
+                <div id="nav_{{ $menu[0]->padre->id }}" data-bs-toggle="collapse" href="#collapse{{ $menu[0]->padre->id }}" class="nav-link collapsed nav-padre" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;"
+                    onclick="closeAnotherItems('{{ $menu[0]->padre->id }}' )">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="{{ $menu[0]->padre->icon }} text-sm" style="color: #0ce0ff !important; font-size: 0.9rem; opacity: 0.9;"></i>
                     </div>
+                    <span class="nav-link-text ms-1">{{ $menu[0]->padre->nombre }}</span>
+                </div>
 
-                    <div class="collapse" id="collapse{{ $menu[0]->padre->id }}" >
-                        <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #0dd7f6; margin-left: 30px; width: auto;">
+                <div class="collapse" id="collapse{{ $menu[0]->padre->id }}" >
+                    <ul class="navbar-nav" style="border-left: solid 1px #0dd7f6; margin-left: 30px; width: auto;">
 
-                            @foreach ($menu as $item)
-                                <li class="nav-item tipo_menu_{{ $item->tipo_menu }}">
-                                    <a class="nav-link button-side-nav"
-                                    id="sidenav_{{ $item->url }}"
-                                    onclick="openNewItem('{{ $item->url }}', '{{ $item->nombre }}', '{{ $item->icon }}', '{{ $menu[0]->padre->id }}')"
-                                    style="margin-left: 10px; display: flex; align-items: center;">
-                                        <i class="{{ $item->icon }} text-sm me-2" style="color: #0ce0ff !important; font-size: 0.8rem; margin-right: 0px !important;"></i>
-                                        <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
-                                    </a>
-                                </li>
-                            @endforeach
+                        @foreach ($menu as $item)
+                            <li class="nav-item tipo_menu_{{ $item->tipo_menu }}">
+                                <a class="nav-link button-side-nav"
+                                id="sidenav_{{ $item->url }}"
+                                onclick="openNewItem('{{ $item->url }}', '{{ $item->nombre }}', '{{ $item->icon }}', '{{ $menu[0]->padre->id }}')"
+                                style="margin-left: 10px; display: flex; align-items: center;">
+                                    <i class="{{ $item->icon }} text-sm me-2" style="color: #0ce0ff !important; font-size: 0.8rem; margin-right: 0px !important;"></i>
+                                    <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
+                                </a>
+                            </li>
+                        @endforeach
 
-                        </ul>
-                    </div>
-                </li>
+                    </ul>
+                </div>
+            </li>
 
-            @endforeach
+        @endforeach
 
     </ul>
 </aside>
