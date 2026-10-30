@@ -17,6 +17,8 @@ class ComponentesSuscripcion extends Model
         'id_padre',
         'nombre',
         'tipo',
+        'descripcion',
+        'icono',
         'rango_desde',
         'rango_hasta',
         'precio',

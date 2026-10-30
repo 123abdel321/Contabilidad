@@ -204,26 +204,23 @@
         };
     }
 
-    // Íconos y textos comerciales por id de componente
+        // Íconos disponibles (el nombre va en la columna "icono" de la tabla)
     const ICO = {
         doc:   '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
         chart: '<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>',
         users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
         cart:  '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
         build: '<path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/>',
-        bolt:  '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'
+        bolt:  '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+        box:   '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>'
     };
-    const META = {
-        1:  { ico: 'chart', nombre: 'Contabilidad',            sub: 'Libros, balances e impuestos automáticos' },
-        2:  { ico: 'doc',   nombre: 'Facturación',             sub: 'Cotiza, factura y controla tu cartera' },
-        4:  { ico: 'users', nombre: 'Nómina',                  sub: 'Liquida y transmite nómina electrónica' },
-        5:  { ico: 'cart',  nombre: 'POS e inventario',        sub: 'Vende en mostrador y controla el stock' },
-        6:  { ico: 'build', nombre: 'Máximo PH',               sub: 'Administración de propiedad horizontal' },
-        14: { ico: 'bolt',  nombre: 'Facturación electrónica', sub: 'Emite y envía facturas a la DIAN' }
-    };
+
     function meta(c) {
-        const m = META[c.id] || {};
-        return { ico: ICO[m.ico] || ICO.doc, nombre: m.nombre || c.nombre, sub: m.sub || '' };
+        return {
+            ico: ICO[c.icono] || ICO.box,
+            nombre: c.nombre,
+            sub: c.descripcion || ''
+        };
     }
 
     // ------------------------------------------------------------

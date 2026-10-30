@@ -2002,6 +2002,8 @@ class SuscripcionController extends Controller
                     'nombre'      => $c->nombre,
                     'tipo'        => (int) $c->tipo,
                     'precio'      => (int) $c->precio,
+                    'icono'       => $c->icono,
+                    'descripcion' => $c->descripcion,
                     'rango_desde' => $c->rango_desde,
                     'rango_hasta' => $c->rango_hasta,
                     'hijos'       => [],
