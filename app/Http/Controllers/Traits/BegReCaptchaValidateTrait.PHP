@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Traits;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-
 trait BegReCaptchaValidateTrait
 {
     protected function validateReCaptcha(string $token, ?string $expectedAction = null, float $minScore = 0.5): array
@@ -34,7 +33,7 @@ trait BegReCaptchaValidateTrait
             $data = $response->json();
 
             if (empty($data['success'])) {
-                Log::info('reCAPTCHA: token inválido', ['errors' => $data['error-codes'] ?? []]);
+                Log::info('reCAPTCHA: token invalido', ['errors' => $data['error-codes'] ?? []]);
                 return ['success' => false, 'score' => null, 'action' => null, 'error' => 'invalid_token'];
             }
 
@@ -52,7 +51,7 @@ trait BegReCaptchaValidateTrait
             return ['success' => true, 'score' => $score, 'action' => $action, 'error' => null];
 
         } catch (\Throwable $e) {
-            Log::error('reCAPTCHA excepción', ['msg' => $e->getMessage()]);
+            Log::error('reCAPTCHA excepcion', ['msg' => $e->getMessage()]);
             return ['success' => false, 'score' => null, 'action' => null, 'error' => 'exception'];
         }
     }
