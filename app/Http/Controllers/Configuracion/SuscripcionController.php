@@ -1168,10 +1168,40 @@ class SuscripcionController extends Controller
             $user->codigo_verificacion = null;
             $user->save();
 
-            return response()->json([
+            // 🔑 Recalcular qué sigue
+            $needs = $this->resolverNeeds($user);
+
+            $respuesta = [
                 'success' => true,
+                'needs'   => $needs,
                 'message' => 'Cuenta verificada.',
-            ]);
+            ];
+
+            // Si ya está todo listo, devolver lo mismo que /login
+            if ($needs === null) {
+                $empresaSelect = Empresa::find($user->id_empresa);
+                if ($empresaSelect) {
+                    $user->id_empresa  = $empresaSelect->id;
+                    $user->has_empresa = $empresaSelect->token_db;
+                    $user->save();
+
+                    $respuesta['empresa']           = $empresaSelect;
+                    $respuesta['notificacion_code'] = $empresaSelect->token_db . '_' . $user->id;
+                    $respuesta['fondo_sistema']     = $user->fondo_sistema;
+
+                    // Sincronizar permisos (igual que login)
+                    $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', $user->id)
+                        ->where('id_empresa', $empresaSelect->id)
+                        ->first();
+
+                    if ($usuarioPermisosEmpresa && !empty($usuarioPermisosEmpresa->ids_permission)) {
+                        $ids = array_unique(array_map('intval', explode(',', $usuarioPermisosEmpresa->ids_permission)));
+                        $user->syncPermissions($ids);
+                    }
+                }
+            }
+
+            return response()->json($respuesta);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -1685,13 +1715,18 @@ class SuscripcionController extends Controller
                 ], 401);
             }
 
+            // ── Resolver needs (mismo orden que LoginController@login) ──
+            $needs = $this->resolverNeeds($user);
+
+            // Empresa en instalación (para precargar el paso 3 o 4)
             $empresa = Empresa::where('id_usuario_owner', $user->id)
                 ->where('estado', 5)
                 ->first();
 
-            return response()->json([
+            $respuesta = [
                 'success' => true,
-                'data' => [
+                'needs'   => $needs,
+                'data'    => [
                     'email_verificado' => (bool) $user->email_verified_at,
                     'empresa' => $empresa ? [
                         'id'                 => $empresa->id,
@@ -1708,7 +1743,19 @@ class SuscripcionController extends Controller
                         'telefono'           => $empresa->telefono,
                     ] : null,
                 ],
-            ]);
+            ];
+
+            // Si ya está todo listo, devolver lo mismo que /login para terminar sin pedir contraseña
+            if ($needs === null) {
+                $empresaSelect = Empresa::find($user->id_empresa);
+                $respuesta['empresa']           = $empresaSelect;
+                $respuesta['notificacion_code'] = $empresaSelect
+                    ? ($empresaSelect->token_db . '_' . $user->id)
+                    : '';
+                $respuesta['fondo_sistema']     = $user->fondo_sistema;
+            }
+
+            return response()->json($respuesta);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -2613,7 +2660,7 @@ class SuscripcionController extends Controller
             'reference'         => 'nullable|string',
             'payment_source_id' => 'nullable',
         ];
-            dd('aca');
+        
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
         if ($validator->fails()) {
@@ -2802,6 +2849,32 @@ class SuscripcionController extends Controller
                 'line'    => $e->getLine(),
             ], 422);
         }
+    }
+
+    private function resolverNeeds(User $user): ?string
+    {
+        // 1) Correo sin verificar
+        if (empty($user->email_verified_at)) {
+            return 'verify';
+        }
+
+        // 2) Empresa en instalación (estado 5)
+        $empresaEnInstalacion = Empresa::where('id_usuario_owner', $user->id)
+            ->where('estado', 5)
+            ->first();
+
+        // 3) Sin empresa asignada
+        $usuarioEmpresa = UsuarioEmpresa::where('id_usuario', $user->id)->first();
+
+        if (!$usuarioEmpresa && !$empresaEnInstalacion && !$user->id_empresa) {
+            return 'empresa';
+        }
+
+        if ($empresaEnInstalacion && !$usuarioEmpresa) {
+            return 'pago';
+        }
+
+        return null; // todo listo
     }
     
 }

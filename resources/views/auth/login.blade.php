@@ -168,9 +168,9 @@
                 {{-- ═══════════════════════════════════════════════ --}}
                 <div id="pe-screen-register" class="pe-login-panel" style="display: none;">
 
-                    <h2 class="pe-login-form-title">Crear cuenta</h2>
+                    <h2 class="pe-login-form-title" id="pe-register-title">Crear cuenta</h2>
 
-                    <div class="pe-login-stepper">
+                    <div class="pe-login-stepper" id="pe-stepper">
                         <div class="pe-login-step active" id="pe-step-indicator-1">
                             <div class="pe-login-step-circle">1</div>
                             <div class="pe-login-step-label">Cuenta</div>
@@ -263,6 +263,10 @@
 
                         <button class="pe-login-submit pe-login-submit-secondary" id="pe-btn-reenviar">
                             Reenviar código
+                        </button>
+
+                        <button type="button" class="pe-login-submit pe-login-submit-secondary" id="pe-btn-salir-verify" style="display:none; margin-top:.5rem;">
+                            Usar otra cuenta
                         </button>
                     </div>
 

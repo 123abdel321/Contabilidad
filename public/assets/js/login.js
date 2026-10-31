@@ -106,11 +106,82 @@ function peGoStep(n) {
 
 // Link "Regístrate" del login
 document.getElementById('pe-link-registro').addEventListener('click', function () {
+    peSetVerifyOnly(false);
     peGoStep(1);
 });
 
 // Link "Volver al login" del paso 1
 document.getElementById('pe-link-volver-login').addEventListener('click', function () {
+    peShowScreen('login');
+});
+
+// ============================================================
+// MODO "SOLO VERIFICAR" + RETOMAR PROGRESO
+// ============================================================
+var peVerifyOnly = false;
+
+function peSetVerifyOnly(on) {
+    peVerifyOnly = on;
+    document.getElementById('pe-register-title').textContent = on ? 'Verifica tu correo' : 'Crear cuenta';
+    document.getElementById('pe-stepper').style.display = on ? 'none' : '';
+    var salir = document.getElementById('pe-btn-salir-verify');
+    if (salir) salir.style.display = on ? 'block' : 'none';
+}
+
+function peFinalizarLogin(res) {
+    localStorage.setItem("empresa_nombre", (res.empresa && res.empresa.razon_social) || '');
+    localStorage.setItem("empresa_logo", (res.empresa && res.empresa.logo) || '');
+    localStorage.setItem("notificacion_code", res.notificacion_code || '');
+    localStorage.setItem("fondo_sistema", res.fondo_sistema || '');
+
+    var itemActiveIn = localStorage.getItem("item_active_menu");
+    if (!(itemActiveIn == 0 || itemActiveIn == 1 || itemActiveIn == 2 || itemActiveIn == 3)) {
+        localStorage.setItem("item_active_menu", 'contabilidad');
+    }
+    window.location.href = '/home';
+}
+
+function peAplicarNeeds(res) {
+    switch (res.needs) {
+        case 'verify':
+            peSetVerifyOnly(true);
+            peGoStep(2);
+            break;
+        case 'empresa':
+            peSetVerifyOnly(false);
+            peCargarProgresoYIrAlPaso3();
+            break;
+        case 'pago':
+            peSetVerifyOnly(false);
+            peGoStep(4);
+            cargarArbolComponentes();
+            break;
+        default:
+            peFinalizarLogin(res);
+    }
+}
+
+function peReanudarSesion() {
+    if (!localStorage.getItem('auth_token')) return;
+
+    $.ajax({
+        url: base_url + 'register-mi-progreso',
+        method: 'GET',
+        headers: peHeaders(),
+        global: false,   // evita el handler global de 401 → bucle de recarga
+    }).done(function (res) {
+        if (res.success && res.needs) {
+            peAplicarNeeds(res);
+        }
+    }).fail(function () {
+        localStorage.removeItem('auth_token');
+    });
+}
+
+// Salir de la verificación
+document.getElementById('pe-btn-salir-verify').addEventListener('click', function () {
+    localStorage.removeItem('auth_token');
+    peSetVerifyOnly(false);
     peShowScreen('login');
 });
 
@@ -153,7 +224,7 @@ function sendDataLogin() {
     }).done((res) => {
         $("#button-login-loading").hide();
         $("#button-login").show();
-        
+
         if (!res.success) {
             $('#error-login').show();
             return;
@@ -162,40 +233,9 @@ function sendDataLogin() {
         // 🔑 Guardar token
         localStorage.setItem("auth_token", res.token_type + ' ' + res.access_token);
 
-        // 🔑 Si el backend dice que falta verificar → paso 2
-        if (res.needs === 'verify') {
-            peGoStep(2);
-            return;
-        }
-
-        // 🔑 Si falta empresa → paso 3
-        if (res.needs === 'empresa') {
-            // Precargar datos si ya existen
-            peCargarProgresoYIrAlPaso3();
-            return;
-        }
-
-        // 🔑 Si falta pagar → paso 4
-        if (res.needs === 'pago') {
-            peGoStep(4);
-            cargarArbolComponentes();
-            return;
-        }
-
-        // 🔑 Login normal
-        localStorage.setItem("empresa_nombre", res.empresa.razon_social);
-        localStorage.setItem("empresa_logo", res.empresa.logo);
-        localStorage.setItem("notificacion_code", res.notificacion_code);
-        localStorage.setItem("fondo_sistema", res.fondo_sistema);
-
-        var itemActiveIn = localStorage.getItem("item_active_menu");
-        if (itemActiveIn == 0 || itemActiveIn == 1 || itemActiveIn == 2 || itemActiveIn == 3) {
-            // mantener
-        } else {
-            localStorage.setItem("item_active_menu", 'contabilidad');
-        }
-
-        window.location.href = '/home';
+        // 🔑 El backend dice qué falta (verify / empresa / pago / null)
+        //    peAplicarNeeds decide a dónde ir
+        peAplicarNeeds(res);
 
     }).fail((err) => {
         $("#button-login-loading").hide();
@@ -311,7 +351,7 @@ document.getElementById('pe-btn-verificar').addEventListener('click', function (
             return;
         }
         peOtpOk();
-        setTimeout(function () { peGoStep(3); }, 600);
+        setTimeout(function () { peAplicarNeeds(res); }, 600);
     })
     .fail(function (err) {
         btn.disabled = false;
@@ -944,6 +984,7 @@ function peReconciliarRegistro(pagoId, transaction, referencia, btn, textoOrigin
         peGoStep(PE_STEP || 1);
     } else {
         peShowScreen('login');
+        peReanudarSesion();   // ← NUEVO: si hay token, retoma donde quedó
     }
 
     if (PE_MODE === 'register' && PE_STEP === 3) {
