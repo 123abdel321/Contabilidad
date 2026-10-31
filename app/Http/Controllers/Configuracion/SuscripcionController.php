@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use App\Jobs\ProcessProvisionedDatabase;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
@@ -1079,6 +1080,7 @@ class SuscripcionController extends Controller
             'email'    => 'required|email|unique:clientes.users,email',
             'password' => 'required|string|min:6',
             'nombre'   => 'required|string|max:100',
+            'g-recaptcha-response' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -1087,6 +1089,27 @@ class SuscripcionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        // 2. 🔑 VALIDAR RECAPTCHA CON GOOGLE
+        $recaptchaToken = $request->get('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY'); // O config('services.recaptcha.secret_key')
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => $secretKey,
+            'response' => $recaptchaToken,
+            'remoteip' => $request->ip(),
+        ]);
+
+        $result = $response->json();
+
+        // Si Google dice que no es válido, o el score es muy bajo (ej. < 0.5)
+        if (!isset($result['success']) || !$result['success'] || ($result['score'] ?? 0) < 0.5) {
+            \Log::warning('reCAPTCHA falló en registro', ['result' => $result, 'ip' => $request->ip()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'La verificación de seguridad falló. Intenta de nuevo.',
             ], 422);
         }
 

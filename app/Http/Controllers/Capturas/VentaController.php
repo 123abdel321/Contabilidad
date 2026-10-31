@@ -693,7 +693,7 @@ class VentaController extends Controller
                 : Carbon::now()->format('Y-m-d');
 
             // Estado del documento (Pagada / Completada)
-            $estadoDocumento = 'APROVADO';
+            $estadoDocumento = 'APROBADO';
 
             // Nombre de la empresa emisora
             $nombreEmpresa = $empresa->razon_social ?: 'PORTAFOLIO ERP SAS';

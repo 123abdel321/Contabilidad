@@ -286,41 +286,64 @@ document.getElementById('pe-btn-crear-cuenta').addEventListener('click', functio
     var btn = this;
     if (btn.disabled) return;
 
+    // Validación básica antes de gastar un token de recaptcha
+    var nombre = document.getElementById('pe-nombre').value;
+    var email = document.getElementById('pe-email').value;
+    var password = document.getElementById('pe-password').value;
+    if (!nombre || !email || !password) {
+        peAlert(1, 'error', 'Completa todos los campos.');
+        return;
+    }
+
     var textoOriginal = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<span class="pe-login-spinner"></span> Creando cuenta...';
 
-    $.ajax({
-        url: base_url + 'register-crear-cuenta',
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-        },
-        data: JSON.stringify({
-            nombre:   document.getElementById('pe-nombre').value,
-            email:    document.getElementById('pe-email').value,
-            password: document.getElementById('pe-password').value,
-        }),
-    })
-    .done(function (res) {
-        if (!res.success) {
-            peAlert(1, 'error', res.message || 'Error al crear la cuenta');
+    // 🔑 OBTENER TOKEN DE RECAPTCHA V3
+    grecaptcha.ready(function() {
+        grecaptcha.execute(PE_RECAPTCHA_SITE_KEY, {action: 'register'}).then(function(token) {
+            
+            // Ahora sí, enviar al backend con el token
+            $.ajax({
+                url: base_url + 'register-crear-cuenta',
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: JSON.stringify({
+                    nombre:   nombre,
+                    email:    email,
+                    password: password,
+                    'g-recaptcha-response': token, // 👈 Enviamos el token
+                }),
+            })
+            .done(function (res) {
+                if (!res.success) {
+                    peAlert(1, 'error', res.message || 'Error al crear la cuenta');
+                    btn.disabled = false;
+                    btn.innerHTML = textoOriginal;
+                    return;
+                }
+                localStorage.setItem('auth_token', res.token_type + ' ' + res.access_token);
+                btn.disabled = false;
+                btn.innerHTML = textoOriginal;
+                peSetVerifyOnly(false);
+                peGoStep(2);
+            })
+            .fail(function (err) {
+                peAlert(1, 'error', err.responseJSON ? err.responseJSON.message : 'Error de conexión');
+                btn.disabled = false;
+                btn.innerHTML = textoOriginal;
+            });
+
+        }).catch(function(e) {
+            console.error('Error al obtener token de reCAPTCHA:', e);
+            peAlert(1, 'error', 'Error de verificación de seguridad. Recarga la página.');
             btn.disabled = false;
             btn.innerHTML = textoOriginal;
-            return;
-        }
-
-        localStorage.setItem('auth_token', res.token_type + ' ' + res.access_token);
-        btn.disabled = false;
-        btn.innerHTML = textoOriginal;
-        peGoStep(2);
-    })
-    .fail(function (err) {
-        peAlert(1, 'error', err.responseJSON ? err.responseJSON.message : 'Error de conexión');
-        btn.disabled = false;
-        btn.innerHTML = textoOriginal;
+        });
     });
 });
 

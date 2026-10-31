@@ -55,5 +55,8 @@ return [
         'id_familia'    => env('SUSCRIPCION_VENTA_ID_FAMILIA'),
         'id_usuario'    => env('SUSCRIPCION_VENTA_ID_USUARIO'),
     ],
+    'recaptcha' => [
+        'site_key'    => env('RECAPTCHA_SITE_KEY'),
+    ]
 
 ];

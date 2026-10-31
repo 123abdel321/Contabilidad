@@ -446,6 +446,7 @@
     var PE_DIRECT_EMAIL = '{{ $email ?? "" }}';
     var PE_DIRECT_CODE = '{{ $code_login ?? "" }}';
     var PP_WOMPI_PUBLIC_KEY = '{{ config("services.wompi.public_key") }}';
+    var PE_RECAPTCHA_SITE_KEY = '{{ config("services.recaptcha.site_key") }}';
 </script>
 
 <script>
@@ -642,5 +643,7 @@
         }
     })();
 </script>
+
+<script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
 
 @endsection
