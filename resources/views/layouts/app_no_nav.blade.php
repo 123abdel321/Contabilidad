@@ -79,6 +79,8 @@
 
     <!-- SISTEMA -->
     <script src="assets/js/login.js"></script>
+
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
     
 </body>
 </html>
