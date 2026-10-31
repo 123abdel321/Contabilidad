@@ -210,7 +210,7 @@ function cargarTablasVentas() {
                     }
 
                     // ── Enviar email (sin FE) ──
-                    else if (row.id && enviarEmailVentas) {
+                    else if (row.id) {
                         html += '<span id="enviaremail_' + row.id + '" ' +
                                 'class="btn badge bg-gradient-success enviar-email-venta" ' +
                                 'style="margin-bottom:0;color:#fff;background-color:#fff !important;margin-right:3px;" ' +
