@@ -78,7 +78,8 @@
     <script src="https://checkout.wompi.co/widget.js"></script>
 
     <!-- SISTEMA -->
-    <script src="assets/js/login.js"></script>
+    <script src="assets/js/login.js?v={{ config('app.version') }}"></script>
+
 
     <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
     
