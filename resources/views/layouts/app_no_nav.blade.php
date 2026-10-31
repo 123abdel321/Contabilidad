@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     
-    <title>Iniciar sesión · Portafolio ERP</title>
+    <title>Portafolio ERP</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
