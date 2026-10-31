@@ -200,6 +200,14 @@ function changePassWord(event) {
 }
 
 function sendDataLogin() {
+    var email = $('#email_login').val();
+    var password = $('#password_login').val();
+
+    if (!email || !password) {
+        $('#error-login').text('Completa todos los campos').show();
+        return;
+    }
+
     localStorage.removeItem("auth_token");
     localStorage.removeItem("empresa_nombre");
     localStorage.removeItem("empresa_logo");
@@ -210,37 +218,45 @@ function sendDataLogin() {
     $("#button-login-loading").show();
     $("#button-login").hide();
 
-    $.ajax({
-        url: base_web + 'login',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'POST',
-        data: {
-            "email": $('#email_login').val(),
-            "password": $('#password_login').val(),
-        },
-        dataType: 'json',
-    }).done((res) => {
-        $("#button-login-loading").hide();
-        $("#button-login").show();
+    grecaptcha.ready(function () {
+        grecaptcha.execute(PE_RECAPTCHA_SITE_KEY, { action: 'login' }).then(function (token) {
 
-        if (!res.success) {
-            $('#error-login').show();
-            return;
-        }
+            $.ajax({
+                url: base_web + 'login',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: 'POST',
+                data: {
+                    "email": email,
+                    "password": password,
+                    "g-recaptcha-response": token
+                },
+                dataType: 'json',
+            }).done((res) => {
+                $("#button-login-loading").hide();
+                $("#button-login").show();
 
-        // 🔑 Guardar token
-        localStorage.setItem("auth_token", res.token_type + ' ' + res.access_token);
+                if (!res.success) {
+                    $('#error-login').text(res.message || 'Usuario o contraseña incorrectos').show();
+                    return;
+                }
 
-        // 🔑 El backend dice qué falta (verify / empresa / pago / null)
-        //    peAplicarNeeds decide a dónde ir
-        peAplicarNeeds(res);
+                localStorage.setItem("auth_token", res.token_type + ' ' + res.access_token);
+                peAplicarNeeds(res);
 
-    }).fail((err) => {
-        $("#button-login-loading").hide();
-        $("#button-login").show();
-        $('#error-login').show();
+            }).fail((err) => {
+                $("#button-login-loading").hide();
+                $("#button-login").show();
+                $('#error-login').text('Usuario o contraseña incorrectos').show();
+            });
+
+        }).catch(function (e) {
+            console.error('Error reCAPTCHA:', e);
+            $("#button-login-loading").hide();
+            $("#button-login").show();
+            $('#error-login').text('Error de seguridad. Recarga la página.').show();
+        });
     });
 }
 

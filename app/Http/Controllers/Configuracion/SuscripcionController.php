@@ -7,10 +7,10 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;
 use App\Jobs\ProcessProvisionedDatabase;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
+use App\Http\Controllers\Traits\BegReCaptchaValidateTrait;
 // SERVICES
 use App\Http\Services\VentaSuscripcionService;
 use App\Http\Services\SuscripcionPagoLinkService;
@@ -30,6 +30,7 @@ use App\Models\Empresas\EmpresaComponentesSuscripcion;
 class SuscripcionController extends Controller
 {
     use BegDocumentHelpersTrait;
+    use BegReCaptchaValidateTrait;
     
     protected $messages = [
         'required' => 'El campo :attribute es requerido.',
@@ -1092,21 +1093,17 @@ class SuscripcionController extends Controller
             ], 422);
         }
 
-        // 2. 🔑 VALIDAR RECAPTCHA CON GOOGLE
+        // 2. 🔑 VALIDAR RECAPTCHA CON EL TRAIT
         $recaptchaToken = $request->get('g-recaptcha-response');
-        $secretKey = env('RECAPTCHA_SECRET_KEY'); // O config('services.recaptcha.secret_key')
 
-        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret'   => $secretKey,
-            'response' => $recaptchaToken,
-            'remoteip' => $request->ip(),
-        ]);
+        $captcha = $this->validateReCaptcha($recaptchaToken, 'register', 0.5);
 
-        $result = $response->json();
-
-        // Si Google dice que no es válido, o el score es muy bajo (ej. < 0.5)
-        if (!isset($result['success']) || !$result['success'] || ($result['score'] ?? 0) < 0.5) {
-            \Log::warning('reCAPTCHA falló en registro', ['result' => $result, 'ip' => $request->ip()]);
+        if (!$captcha['success']) {
+            \Log::warning('reCAPTCHA falló en registro', [
+                'ip'     => $request->ip(),
+                'reason' => $captcha['error'],
+                'score'  => $captcha['score'],
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'La verificación de seguridad falló. Intenta de nuevo.',

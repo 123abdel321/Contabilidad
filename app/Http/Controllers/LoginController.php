@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
+use App\Http\Controllers\Traits\BegReCaptchaValidateTrait;
 //MODELS
 use App\Models\User;
 use App\Models\Empresas\Empresa;
@@ -14,6 +15,8 @@ use App\Models\Empresas\UsuarioPermisos;
 
 class LoginController extends Controller
 {
+    use BegReCaptchaValidateTrait;
+    
     /**
      * Display login page.
      *
@@ -40,8 +43,49 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
+    
+
+    public function loginDirectoGet(Request $request)
+    {
+        return view('auth.login', [
+            'mode'       => 'login-direct',
+            'email'      => $request->get('email'),
+            'code_login' => $request->get('code_login'),
+        ]);
+    }
+
     public function login(Request $request)
     {
+        // ═══════════════════════════════════════════════════════
+        // 🔑 VALIDAR reCAPTCHA (antes que nada)
+        // ═══════════════════════════════════════════════════════
+        $captcha_token = $request->get('g-recaptcha-response');
+
+        if (!$captcha_token) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario o contraseña incorrectos',
+            ], 422);
+        }
+
+        $captcha = $this->validateReCaptcha($captcha_token, 'login', 0.5);
+
+        if (!$captcha['success']) {
+            \Log::warning('Login reCAPTCHA inválido', [
+                'ip'     => $request->ip(),
+                'email'  => $request->email,
+                'reason' => $captcha['error'],
+                'score'  => $captcha['score'],
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario o contraseña incorrectos',
+            ], 422);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // 🔑 A partir de aquí, tu código actual SIN CAMBIOS
+        // ═══════════════════════════════════════════════════════
         $credenciales1 = ['email' => $request->email, 'password' => $request->password];
         $credenciales2 = ['username' => $request->email, 'password' => $request->password];
 
@@ -173,113 +217,6 @@ class LoginController extends Controller
             'data'    => '',
             'message' => 'The provided credentials do not match our records.'
         ], 422);
-    }
-
-    public function loginDirectoGet(Request $request)
-    {
-        return view('auth.login', [
-            'mode'       => 'login-direct',
-            'email'      => $request->get('email'),
-            'code_login' => $request->get('code_login'),
-        ]);
-    }
-
-    public function loginDirectoPost(Request $request)
-    {
-        $user =  User::where('email', $request->get('email'))
-            ->where('about', base64_decode($request->get('code_login')))
-            ->first();
-        
-        if ($user) {
-
-            $user->tokens()->delete();
-            Auth::login($user);
-
-            if (Auth::user()) {
-
-                if($user->tokens()->where('tokenable_id', $user->id)
-                    ->where('name', 'web_token')
-                    ->exists()) {
-                    // $user->tokens()->delete();
-                }
-
-                $plainTextToken = '';
-                if ($user->remember_token) {
-                    $token = $user->createToken("web_token");
-                    $plainTextToken = $token->plainTextToken;
-                    $user->remember_token = $plainTextToken;
-                } else {
-                    $token = $user->createToken("web_token");
-                    $plainTextToken = $token->plainTextToken;
-                    $user->remember_token = $plainTextToken;
-                }
-
-                $idEmpresa = $user->id_empresa;
-
-                if (!$idEmpresa) {
-                    $empresa = UsuarioEmpresa::where('id_usuario', $user->id)
-                        ->orderBy('created_at', 'desc')
-                        ->first();
-
-                    if (!$empresa){
-                        return response()->json([
-                            'success'=>	true,
-                            'access_token' => $plainTextToken,
-                            'token_type' => 'Bearer',
-                            'empresa' => '',
-                            'notificacion_code' => '',
-                            'message'=> 'Usuario logeado con exito!'
-                        ], 200);
-                    }
-
-                    $idEmpresa = $empresa->id;
-                }
-
-                $notificacionCode =  null;
-                $empresaSelect = Empresa::where('id', $idEmpresa)->first();
-
-                $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
-                $user->id_empresa = $empresaSelect->id;
-                $user->has_empresa = $empresaSelect->token_db;
-                // $user->about = '';
-                $user->save();
-
-                $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', $user->id)
-                    ->where('id_empresa', $empresaSelect->id)
-                    ->first();
-
-                if (!$usuarioPermisosEmpresa) {
-                    $usuarioPermisosEmpresa = UsuarioPermisos::updateOrCreate([
-                        'id_user' => $user->id,
-                        'id_empresa' => $empresaSelect->id
-                    ],[
-                        'ids_permission' => UsuarioPermisos::where('id_empresa', $empresaSelect->id)->first()->ids_permission,
-                        'ids_bodegas_responsable' => '1',
-                        'ids_resolucion_responsable' => '1'
-                    ]);
-                }
-
-                $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
-
-                return response()->json([
-                    'success'=>	true,
-                    'access_token' => $plainTextToken,
-                    'token_type' => 'Bearer',
-                    'empresa' => $empresaSelect,
-                    'notificacion_code' => $notificacionCode,
-                    'fondo_sistema' => $user->fondo_sistema,
-                    'nombre_usuario' => $this->nombreUsuario($user),
-                    'avatar_usuario' => $user->avatar,
-                    'message'=> 'Usuario logeado con exito!'
-                ], 200);
-            }
-        }
-
-        return response()->json([
-    		'success'=>	false,
-    		'data' => $request->all(),
-    		'message'=> 'Datos incorrectos'
-    	], 200);
     }
 
     public function logout(Request $request)
