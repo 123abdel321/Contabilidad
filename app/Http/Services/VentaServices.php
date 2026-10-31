@@ -173,7 +173,7 @@ class VentaServices
         try {
             $venta = $this->createFacturaVenta($contexto, $productos, $consecutivo, $empresa);
 
-            $enviarFacturaElectronica = false;
+            $enviarFacturaEmail = $this->nit->notificacion_email ? true : false;
 
             $documentoGeneral = new Documento(
                 $this->resolucion->comprobante->id,
@@ -428,7 +428,7 @@ class VentaServices
                         $venta->save();
 
                         if ($venta->cliente && $venta->cliente->email) {
-                            $enviarFacturaElectronica = true;
+                            $enviarFacturaEmail = true;
                         }
                     }
                 }
@@ -437,7 +437,7 @@ class VentaServices
             DB::connection('sam')->commit();
 
             // ── Email (fuera de la transacción) ──
-            if ($enviarFacturaElectronica) {
+            if ($enviarFacturaEmail) {
                 try {
                     $claveUrl = $this->generarClavePDF(
                         $empresa->id,
