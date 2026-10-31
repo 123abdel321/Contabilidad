@@ -354,28 +354,21 @@
                   @if ($empresa->logo)
                       @php
                           // Función para normalizar la URL del logo
-                          function normalizeLogoUrl($logo) {
-                              // Si ya es una URL completa, retornarla tal cual
-                              if (filter_var($logo, FILTER_VALIDATE_URL)) {
-                                  return $logo;
+                          if (!function_exists('normalizeLogoUrl')) {
+                              function normalizeLogoUrl($logo) {
+                                  if (filter_var($logo, FILTER_VALIDATE_URL)) {
+                                      return $logo;
+                                  }
+                                  if (strpos($logo, 'http://') === 0 || strpos($logo, 'https://') === 0) {
+                                      return $logo;
+                                  }
+                                  $baseUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
+                                  if (strpos($logo, '/') === 0) {
+                                      $logo = substr($logo, 1);
+                                  }
+                                  return $baseUrl . $logo;
                               }
-                              
-                              // Si empieza con http pero no tiene https://, agregarlo
-                              if (strpos($logo, 'http://') === 0 || strpos($logo, 'https://') === 0) {
-                                  return $logo;
-                              }
-                              
-                              // Si es una ruta relativa (como logos_empresas/...), agregar la base URL
-                              $baseUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
-                              
-                              // Eliminar slash inicial si existe para evitar doble slash
-                              if (strpos($logo, '/') === 0) {
-                                  $logo = substr($logo, 1);
-                              }
-                              
-                              return $baseUrl . $logo;
                           }
-                          
                           $logoUrl = normalizeLogoUrl($empresa->logo);
                       @endphp
                       
