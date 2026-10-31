@@ -1118,6 +1118,8 @@ class SuscripcionController extends Controller
             $user->remember_token = $token;
             $user->save();
 
+            \Log::info('Usuario registrado naturalmente con exito ' . $user->id);
+
             DB::connection('clientes')->commit();
 
             return response()->json([
