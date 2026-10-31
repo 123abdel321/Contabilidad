@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessProvisionedDatabase;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
-use App\Http\Controllers\Traits\BegReCaptchaValidateTrait;
+use App\Http\Controllers\Traits\BegReCaptchaValidate2Trait;
 // SERVICES
 use App\Http\Services\VentaSuscripcionService;
 use App\Http\Services\SuscripcionPagoLinkService;
@@ -30,7 +30,7 @@ use App\Models\Empresas\EmpresaComponentesSuscripcion;
 class SuscripcionController extends Controller
 {
     use BegDocumentHelpersTrait;
-    use BegReCaptchaValidateTrait;
+    use BegReCaptchaValidate2Trait;
     
     protected $messages = [
         'required' => 'El campo :attribute es requerido.',

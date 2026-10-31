@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
-use App\Http\Controllers\Traits\BegReCaptchaValidateTrait;
+use App\Http\Controllers\Traits\BegReCaptchaValidate2Trait;
 //MODELS
 use App\Models\User;
 use App\Models\Empresas\Empresa;
@@ -15,7 +15,7 @@ use App\Models\Empresas\UsuarioPermisos;
 
 class LoginController extends Controller
 {
-    use BegReCaptchaValidateTrait;
+    use BegReCaptchaValidate2Trait;
     
     /**
      * Display login page.

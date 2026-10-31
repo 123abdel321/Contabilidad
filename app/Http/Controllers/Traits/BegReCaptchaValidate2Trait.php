@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Traits;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-trait BegReCaptchaValidateTrait
+trait BegReCaptchaValidate2Trait
 {
     protected function validateReCaptcha(string $token, ?string $expectedAction = null, float $minScore = 0.5): array
     {
