@@ -140,9 +140,11 @@ class DocumentoController extends Controller
                 abort(404, 'El enlace no es válido o ha expirado.');
             }
 
+            $fechaNormalizada = \Carbon\Carbon::parse($fecha_manual)->format('Y-m-d');
+
             $documento = DocumentosGeneral::with('comprobante')
                 ->where('id_comprobante', $id_comprobante)
-                ->where('fecha_manual', 'LIKE', $fecha_manual.'%')
+                ->whereDate('fecha_manual', $fechaNormalizada)
                 ->where('consecutivo', $consecutivo)
                 ->first();
 

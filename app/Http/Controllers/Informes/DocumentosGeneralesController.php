@@ -815,6 +815,10 @@ class DocumentosGeneralesController extends Controller
             $consecutivo    = $request->get('consecutivo');
             $fecha_manual   = $request->get('fecha_manual');
 
+            // 🔑 Normalizar la fecha: solo año-mes-día (sin hora)
+            // Acepta "2026-10-31", "2026-10-31 10:45:07", "2026-10-31T10:45:07", etc.
+            $fechaNormalizada = \Carbon\Carbon::parse($fecha_manual)->format('Y-m-d');
+
             // Buscar el documento
             $comprobante = Comprobantes::where('id', $id_comprobante)->first();
 
@@ -823,12 +827,18 @@ class DocumentosGeneralesController extends Controller
             }
 
             $documento = DocumentosGeneral::where('id_comprobante', $id_comprobante)
-                ->where('fecha_manual', 'LIKE', $fecha_manual . '%')
+                ->whereDate('fecha_manual', $fechaNormalizada)   // 👈 whereDate compara solo la fecha
                 ->where('consecutivo', $consecutivo)
                 ->first();
 
             if (!$documento) {
-                throw new \Exception('El documento no tiene cabezas para imprimir.');
+                throw new \Exception(
+                    'El documento no tiene cabezas para imprimir. ' .
+                    'Buscado con: ' .
+                    'id_comprobante=' . $id_comprobante . ', ' .
+                    'consecutivo=' . $consecutivo . ', ' .
+                    'fecha_manual=' . $fecha_manual . ' (normalizada: ' . $fechaNormalizada . ')'
+                );
             }
 
             // ─── Datos del cliente ───

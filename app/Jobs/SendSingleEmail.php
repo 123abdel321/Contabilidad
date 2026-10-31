@@ -21,9 +21,9 @@ class SendSingleEmail implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 1;
-    public $timeout = 300;
-    public $maxExceptions = 1;
+    public $tries = 3;
+    public $timeout = 120;
+    public $backoff = 60;
 
     public function __construct(
         public ?Empresa $empresa,
@@ -38,6 +38,13 @@ class SendSingleEmail implements ShouldQueue
     public function handle()
     {
         try {
+            Log::info('SendSingleEmail: iniciando', [
+                'email'     => $this->email,
+                'view'      => $this->view,
+                'filePath'  => $this->filePath,
+                'empresa'   => $this->empresa?->id,
+            ]);
+
             if ($this->empresa) {
                 copyDBConnection('sam', 'sam');
                 setDBInConnection('sam', $this->empresa->token_db);
