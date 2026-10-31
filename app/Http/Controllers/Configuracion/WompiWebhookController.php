@@ -293,6 +293,24 @@ class WompiWebhookController extends Controller
                 }
             }
 
+            // ═══════════════════════════════════════════════════════
+            // 🔑 GENERAR VENTA EN LA BD DEL EMISOR
+            // ═══════════════════════════════════════════════════════
+            try {
+                app(\App\Http\Services\VentaSuscripcionService::class)->generarVentaDesdePago($pago);
+
+                \Log::info('[Wompi Webhook] Venta suscripción generada', [
+                    'pago_id' => $pago->id,
+                ]);
+            } catch (\Throwable $e) {
+                \Log::error('[Wompi Webhook] Error generando venta suscripción', [
+                    'pago_id' => $pago->id,
+                    'error'   => $e->getMessage(),
+                ]);
+                // No hacemos rollback: la venta es secundaria.
+                // Si falla, el pago queda aprobado y la suscripción activa.
+            }
+
         } catch (Exception $e) {
             DB::connection('clientes')->rollback();
             \Log::error('[Wompi Webhook] Error aplicando pago: ' . $e->getMessage());
