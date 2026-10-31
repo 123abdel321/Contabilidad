@@ -88,6 +88,7 @@ abstract class AbstractMakePdf
         $nameFile = "export/{$this->name}.pdf";
         Storage::disk('do_spaces')->put($nameFile, $this->pdf_binary_content, 'public');
 
-        return $nameFile;
+        // 🔑 Devolver la URL pública completa
+        return Storage::disk('do_spaces')->url($nameFile);
     }
 }
