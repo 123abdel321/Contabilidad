@@ -99,6 +99,8 @@ function peGoStep(n) {
         document.getElementById('pe-step-indicator-' + i).classList.add('done');
     }
 
+    if (n === 2 && window.peOtpClear) setTimeout(peOtpClear, 150);
+
     peShowScreen('register');
 }
 
@@ -305,14 +307,17 @@ document.getElementById('pe-btn-verificar').addEventListener('click', function (
         btn.innerHTML = textoOriginal;
         if (!res.success) {
             peAlert(2, 'error', res.message || 'Código incorrecto');
+            peOtpError();
             return;
         }
-        peGoStep(3);
+        peOtpOk();
+        setTimeout(function () { peGoStep(3); }, 600);
     })
     .fail(function (err) {
         btn.disabled = false;
         btn.innerHTML = textoOriginal;
         peAlert(2, 'error', err.responseJSON ? err.responseJSON.message : 'Error de conexión');
+        peOtpError();
     });
 });
 
@@ -1009,3 +1014,59 @@ function peDirectError(msg) {
         '<div class="pe-login-alert error">' + msg + '</div>' +
         '<a href="/login" class="pe-login-submit pe-login-submit-secondary" style="text-align:center;display:block;margin-top:1rem;">Ir al login</a>';
 }
+
+// ============================================================
+// OTP 6 CASILLAS
+// ============================================================
+(function () {
+    var wrap  = document.getElementById('pe-otp');
+    var input = document.getElementById('pe-codigo');
+    if (!wrap || !input) return;
+
+    var boxes = wrap.querySelectorAll('.pe-otp-box');
+
+    function paint() {
+        var v = input.value;
+        boxes.forEach(function (b, i) {
+            b.textContent = v[i] || '';
+            b.classList.toggle('is-filled', i < v.length);
+            b.classList.toggle('is-active',
+                document.activeElement === input && i === Math.min(v.length, boxes.length - 1));
+        });
+    }
+
+    input.addEventListener('input', function () {
+        input.value = input.value.replace(/\D/g, '').slice(0, 6);
+        wrap.classList.remove('is-error');
+        paint();
+    });
+    input.addEventListener('focus', function () {
+        setTimeout(function () { input.setSelectionRange(input.value.length, input.value.length); }, 0);
+        paint();
+    });
+    input.addEventListener('blur', paint);
+    input.addEventListener('click', function () {
+        input.setSelectionRange(input.value.length, input.value.length);
+    });
+    input.addEventListener('paste', function (e) {
+        var texto = (e.clipboardData || window.clipboardData).getData('text') || '';
+        var digitos = texto.replace(/\D/g, '').slice(0, 6);   // quita espacios, saltos de línea y todo lo que no sea número
+        e.preventDefault();
+        input.value = digitos;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    wrap.addEventListener('click', function () { input.focus(); });
+
+    window.peOtpClear = function () {
+        input.value = '';
+        wrap.classList.remove('is-error', 'is-ok');
+        paint();
+        input.focus();
+    };
+    window.peOtpError = function () {
+        wrap.classList.remove('is-error'); void wrap.offsetWidth; wrap.classList.add('is-error');
+    };
+    window.peOtpOk = function () { wrap.classList.add('is-ok'); };
+
+    paint();
+})();

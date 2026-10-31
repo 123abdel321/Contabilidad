@@ -235,8 +235,20 @@
 
                         <div class="pe-login-field">
                             <label for="pe-codigo">Código de verificación</label>
-                            <div class="pe-login-input-wrap">
-                                <input type="text" id="pe-codigo" placeholder="000000" maxlength="6">
+                        
+                            <div class="pe-otp" id="pe-otp">
+                                <div class="pe-otp-box"></div>
+                                <div class="pe-otp-box"></div>
+                                <div class="pe-otp-box"></div>
+                                <div class="pe-otp-box"></div>
+                                <div class="pe-otp-box"></div>
+                                <div class="pe-otp-box"></div>
+                        
+                                <!-- El input REAL sigue siendo #pe-codigo, así tu JS no cambia.
+                                    Va encima de las casillas, invisible, y recibe todo lo que se escriba/pegue. -->
+                                <input type="text" id="pe-codigo" class="pe-otp-input"
+                                    inputmode="numeric" pattern="[0-9]*"
+                                    autocomplete="one-time-code" aria-label="Código de 6 dígitos">
                             </div>
                         </div>
 
