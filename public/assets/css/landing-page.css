@@ -545,3 +545,31 @@ p { text-wrap: pretty; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   html { scroll-behavior: auto; }
 }
+
+.hero-title .highlight {
+  display: inline-block;
+  position: relative;
+  padding-right: .05em;
+  background-image: linear-gradient(110deg, #4f46e5 0%, #818cf8 30%, #22d3ee 55%, #818cf8 80%, #4f46e5 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradFlow 6s linear infinite;
+}
+@keyframes gradFlow {
+  from { background-position: 0% 50%; }
+  to   { background-position: 250% 50%; }
+}
+
+/* Subrayado que se dibuja bajo "que conecta" */
+.hero-title .highlight::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: .02em;
+  height: .08em; border-radius: 99px;
+  background: var(--grad-cyan);
+  transform: scaleX(0); transform-origin: 0 50%;
+  animation: underlineDraw 1s cubic-bezier(.2,.8,.2,1) 1.2s forwards;
+}
+@keyframes underlineDraw { to { transform: scaleX(1); } }

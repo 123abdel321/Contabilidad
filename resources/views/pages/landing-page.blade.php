@@ -4055,6 +4055,17 @@
 
             /* Split de palabras */
             function splitWords(el) {
+                const makeWrap = () => {
+                    const w = document.createElement('span');
+                    w.className = 'w';
+                    w.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:0.14em;margin-bottom:-0.14em;';
+                    const i = document.createElement('span');
+                    i.className = 'wi';
+                    i.style.cssText = 'display:inline-block;will-change:transform;';
+                    w.appendChild(i);
+                    return { w, i };
+                };
+
                 const walk = (node) => {
                     Array.from(node.childNodes).forEach((ch) => {
                         if (ch.nodeType === 3) {
@@ -4064,20 +4075,21 @@
                                 if (/^\s+$/.test(p)) {
                                     frag.appendChild(document.createTextNode(' '));
                                 } else {
-                                    const w = document.createElement('span');
-                                    w.className = 'w';
-                                    w.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:0.14em;margin-bottom:-0.14em;';
-                                    const i = document.createElement('span');
-                                    i.className = 'wi';
-                                    i.style.cssText = 'display:inline-block;will-change:transform;';
+                                    const { w, i } = makeWrap();
                                     i.textContent = p;
-                                    w.appendChild(i);
                                     frag.appendChild(w);
                                 }
                             });
                             ch.replaceWith(frag);
                         } else if (ch.nodeType === 1) {
-                            walk(ch);
+                            if (ch.classList.contains('highlight')) {
+                                // NO se parte por dentro: se anima el bloque entero
+                                const { w, i } = makeWrap();
+                                ch.replaceWith(w);
+                                i.appendChild(ch);
+                            } else {
+                                walk(ch);
+                            }
                         }
                     });
                 };
@@ -4094,9 +4106,11 @@
                     onView(el, () => {
                         animate(words, {
                             translateY: ['110%', '0%'],
-                            duration: 1000,
-                            delay: stagger(60),
-                            ease: 'outExpo'
+                            rotate: ['6deg', '0deg'],
+                            opacity: [0, 1],
+                            duration: 1100,
+                            delay: stagger(90, { start: 150 }),
+                            ease: 'outBack(1.4)'
                         });
                     }, 0.3);
                 });
