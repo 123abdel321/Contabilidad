@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Database\Eloquent\Relations\Relation;
-//NOTIFICACION
-use App\Notifications\DiscordHorizonNotification;
 //MODELS FAC
 use App\Models\Sistema\FacMovimientoInventarios;
 use App\Models\Sistema\FacDocumentos;
@@ -55,8 +53,9 @@ class AppServiceProvider extends ServiceProvider
             $message = "❌ Job failed: `{$event->job->resolveName()}`\n"
                     . "Exception: {$event->exception->getMessage()}";
 
-            Notification::route('discord', env('LOG_DISCORD_WEBHOOK_URL'))
-                ->notify(new DiscordHorizonNotification($message));
+            \Illuminate\Support\Facades\Http::post(env('LOG_DISCORD_WEBHOOK_URL'), [
+                'content' => $message,
+            ]);
         });
     }
 }
