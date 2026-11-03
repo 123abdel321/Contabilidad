@@ -80,8 +80,6 @@ abstract class AbstractFESender
 
 		$data = (object) $response->json();
 
-		info(json_encode($data), $params);
-
 		// ============================================================
 		// 0) (NUEVO) Errores de validación Laravel: {message, errors}
 		//    Normalmente llegan con HTTP 422 y sin 'status' en el body.
@@ -182,7 +180,7 @@ abstract class AbstractFESender
 		if (property_exists($data, 'status') && $data->status >= 500) {
 			return [
 				"status"         => 500,
-				"message_object" => ["Error interno: https://fe.portafolioerp.com"],
+				"message_object" => ["Error interno: https://fe2.portafolioerp.com"],
 			];
 		}
 
