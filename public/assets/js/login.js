@@ -186,11 +186,14 @@ function peReanudarSesion() {
 }
 
 // Salir de la verificación
-document.getElementById('pe-btn-salir-verify').addEventListener('click', function () {
-    localStorage.removeItem('auth_token');
-    peSetVerifyOnly(false);
-    peShowScreen('login');
-});
+const btnSalirVerify = document.getElementById('pe-btn-salir-verify');
+if (btnSalirVerify) {
+    btnSalirVerify.addEventListener('click', function () {
+        localStorage.removeItem('auth_token');
+        peSetVerifyOnly(false);
+        peShowScreen('login');
+    });
+}
 
 // ============================================================
 // LOGIN
