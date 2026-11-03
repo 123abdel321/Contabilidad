@@ -105,15 +105,22 @@ function peGoStep(n) {
 }
 
 // Link "Regístrate" del login
-document.getElementById('pe-link-registro').addEventListener('click', function () {
-    peSetVerifyOnly(false);
-    peGoStep(1);
-});
+const linkRegistro = document.getElementById('pe-link-registro');
 
-// Link "Volver al login" del paso 1
-document.getElementById('pe-link-volver-login').addEventListener('click', function () {
-    peShowScreen('login');
-});
+if (linkRegistro) {
+    linkRegistro.addEventListener('click', function () {
+        peSetVerifyOnly(false);
+        peGoStep(1);
+    });
+}
+
+const linkVolverLogin = document.getElementById('pe-link-volver-login');
+
+if (linkVolverLogin) {
+    linkVolverLogin.addEventListener('click', function () {
+        peShowScreen('login');
+    });
+}
 
 // ============================================================
 // MODO "SOLO VERIFICAR" + RETOMAR PROGRESO
