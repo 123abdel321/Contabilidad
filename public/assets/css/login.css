@@ -1113,3 +1113,39 @@
     .pe-otp { gap: 6px; }
     .pe-otp-box { width: 42px; height: 54px; font-size: 24px; }
 }
+
+/* ── Descuento visible en /pagar ── */
+.pp-chip-desc {
+    display: inline-block;
+    margin-left: .4rem;
+    padding: .05rem .45rem;
+    border-radius: 999px;
+    background: rgba(52, 211, 153, .15);
+    color: #34d399;
+    font-size: .68rem;
+    font-weight: 800;
+    vertical-align: middle;
+}
+
+.pp-precio-lista {
+    text-decoration: line-through;
+    opacity: .55;
+    font-weight: 500;
+    font-size: .8em;
+    margin-left: .35rem;
+}
+
+.pp-descuento-mes {
+    margin: .55rem 0 0;
+    padding: .5rem .75rem;
+    background: rgba(52, 211, 153, .1);
+    border: 1px solid rgba(52, 211, 153, .3);
+    border-radius: 10px;
+    color: #34d399;
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+.pp-descuento-mes strong {
+    color: #6ee7b7;
+}

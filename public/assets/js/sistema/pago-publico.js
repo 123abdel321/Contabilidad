@@ -329,14 +329,45 @@
             html = '<p class="pp-muted pp-center-sm">No tienes componentes aún.</p>';
         } else {
             comp.forEach(c => {
+                const lista = parseFloat(c.precio_lista) || 0;
+                const pct   = parseFloat(c.descuento_pct) || 0;
+                const neto  = parseFloat(c.precio_neto ?? c.precio_mensual) || 0;
+                const cant  = parseInt(c.cantidad) || 1;
+
+                const chip = pct > 0
+                    ? ' <span class="pp-chip-desc">−' + pct + '%</span>'
+                    : '';
+
+                const tachado = (pct > 0 && lista > 0)
+                    ? ' <s class="pp-precio-lista">' + fmt(lista * cant) + '</s>'
+                    : '';
+
                 html += '<div class="pp-actual-item">' +
                     '<svg class="pp-actual-ok" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>' +
-                    '<span class="pp-actual-nombre">' + c.nombre + (c.cantidad > 1 ? ' <em>×' + c.cantidad + '</em>' : '') + '</span>' +
-                    '<span class="pp-precio">' + fmt(c.precio_mensual) + '<small> / mes</small></span>' +
+                    '<span class="pp-actual-nombre">' + c.nombre +
+                        (cant > 1 ? ' <em>×' + cant + '</em>' : '') + chip +
+                    '</span>' +
+                    '<span class="pp-precio">' + fmt(neto) +
+                        '<small> / mes</small>' + tachado +
+                    '</span>' +
                 '</div>';
             });
         }
         document.getElementById('pp-componentes-actuales').innerHTML = html;
+
+        // Línea "Tu descuento actual: $X / mes"
+        const existente = document.getElementById('pp-descuento-mes');
+        if (existente) existente.remove();
+
+        const descMes = parseFloat(ppInfo.descuento_mensual_total) || 0;
+        if (descMes > 0 && ppInfo.tiene_suscripcion) {
+            document.getElementById('pp-bloque-actual').insertAdjacentHTML(
+                'beforeend',
+                '<p class="pp-descuento-mes" id="pp-descuento-mes">' +
+                    '🎉 Tu descuento actual: <strong>' + fmt(descMes) + ' / mes</strong>' +
+                '</p>'
+            );
+        }
     }
 
     function cargarArbolComponentes() {

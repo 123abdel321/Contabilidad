@@ -2398,9 +2398,11 @@ class SuscripcionController extends Controller
                             'id_componente'         => $c->id_componente,
                             'nombre'                => $c->componente->nombre ?? 'N/A',
                             'cantidad'              => $cant,
-                            'precio'                => (float) $c->precio,
-                            'descuento'             => $desc,
-                            'precio_mensual'        => (($c->precio - $desc) * $cant),
+                            'precio_lista'          => (float) $c->precio,                                        // bruto por unidad
+                            'descuento'             => $desc,                                                     // por unidad
+                            'descuento_pct'         => $c->precio > 0 ? round(($desc / $c->precio) * 100, 2) : 0, // máx 2 dec
+                            'precio_neto'           => round((($c->precio - $desc) * $cant), 2),                  // total línea
+                            'precio_mensual'        => round((($c->precio - $desc) * $cant), 2),                  // compat
                             'fecha_siguiente_cobro' => $c->fecha_siguiente_cobro,
                         ];
                     });
@@ -2459,6 +2461,9 @@ class SuscripcionController extends Controller
                     'fecha_proximo_cobro'  => $fechaProximoCobro,
                     'dias_restantes'       => $diasRestantes,
                     'precio_mensual'       => round($precioMensual, 2),
+                    'descuento_mensual_total' => round(
+                        collect($componentesActuales)->sum(fn($c) => $c['descuento'] * $c['cantidad']), 2
+                    ),
                 ],
             ]);
 

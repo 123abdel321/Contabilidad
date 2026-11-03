@@ -388,6 +388,7 @@ class VentaServices
             }
 
             if (!$documentoGeneral->save()) {
+                dd($documentoGeneral->getErrors());
                 throw new Exception(json_encode($documentoGeneral->getErrors()));
             }
 
@@ -525,11 +526,24 @@ class VentaServices
         $resultado = [];
 
         foreach ($productos as $item) {
-            $nombre = $item['nombre_producto'] ?? null;
-            $precio = (float) ($item['costo'] ?? 0);
-            $cantidad = max(1, (int) ($item['cantidad'] ?? 1));
+            $nombre    = $item['nombre_producto'] ?? null;
+            $precio    = (float) ($item['costo'] ?? 0);            // costo BRUTO
+            $cantidad  = max(1, (int) ($item['cantidad'] ?? 1));
 
             if (!$nombre || $precio <= 0) continue;
+
+            $descValor = (float) ($item['descuento_valor'] ?? 0);
+            $descPct   = (float) ($item['descuento_porcentaje'] ?? 0);
+            $ivaPct    = (float) ($item['iva_porcentaje'] ?? 0);
+            $ivaValor  = (float) ($item['iva_valor'] ?? 0);
+
+            $subtotal = round($precio * $cantidad, 2);
+            $total    = round($subtotal - $descValor + $ivaValor, 2);
+
+            // Si el % no vino pero sí el valor, lo calculamos (2 decimales)
+            if ($descPct == 0 && $descValor > 0 && $subtotal > 0) {
+                $descPct = round($descValor / $subtotal * 100, 2);
+            }
 
             $producto = FacProductos::where('nombre', $nombre)->first();
 
@@ -540,14 +554,14 @@ class VentaServices
             $resultado[] = [
                 'id_producto'          => $producto->id,
                 'cantidad'             => $cantidad,
-                'costo'                => $precio,
+                'costo'                => $precio,        // BRUTO (VentaServices resta descuento)
                 'costo_total'          => 0,
-                'subtotal'             => $precio * $cantidad,
-                'descuento_porcentaje' => 0,
-                'descuento_valor'      => 0,
-                'iva_porcentaje'       => 0,
-                'iva_valor'            => 0,
-                'total'                => $precio * $cantidad,
+                'subtotal'             => $subtotal,
+                'descuento_porcentaje' => $descPct,
+                'descuento_valor'      => $descValor,
+                'iva_porcentaje'       => $ivaPct,
+                'iva_valor'            => $ivaValor,
+                'total'                => $total,
                 'concepto'             => $item['concepto'] ?? null,
             ];
         }
@@ -897,7 +911,7 @@ class VentaServices
                     );
                 }
 
-                $concepto = "VENTA: {$venta->cliente->nombre_completo} - {$venta->documento_referencia}";
+                $concepto = "VENTA: {$productoDb->codigo} {$productoDb->nombre} - {$venta->documento_referencia}";
                 if (!empty($producto['concepto'])) {
                     $concepto .= " - {$producto['concepto']}";
                 }
