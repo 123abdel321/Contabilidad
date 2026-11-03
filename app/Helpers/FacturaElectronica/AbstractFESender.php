@@ -72,7 +72,6 @@ abstract class AbstractFESender
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
 		$url    = $this->getUrl() . $setTestId;
-
 		$response = Http::withHeaders([
 			'Content-Type'     => 'application/json',
 			'X-Requested-With' => 'XMLHttpRequest',
@@ -82,6 +81,20 @@ abstract class AbstractFESender
 		$data = (object) $response->json();
 
 		info(json_encode($data), $params);
+
+		// ============================================================
+		// 0) (NUEVO) Errores de validación Laravel: {message, errors}
+		//    Normalmente llegan con HTTP 422 y sin 'status' en el body.
+		// ============================================================
+		if (property_exists($data, 'errors') && !empty((array) $data->errors)) {
+			return [
+				"status"         => $response->status() ?: 422,
+				"message_object" => $data->message ?? 'Errores de validación',
+				"error_message"  => (array) $data->errors,
+				"json_response"  => json_encode($params),
+				"zip_key"        => null,
+			];
+		}
 
 		// ============================================================
 		// 1) RESPUESTA 200 → ÉXITO
@@ -260,7 +273,7 @@ abstract class AbstractFESender
 		return [
 			"status"         => 500,
 			"message_object" => "Respuesta de la API con formato desconocido",
-			"error_message"  => ["detalle" => "No contiene 'data' ni estructura compatible."],
+			"error_message"  => "No contiene data ni estructura compatible.",
 			"json_response"  => json_encode($data),
 			"zip_key"        => null,
 		];
@@ -501,33 +514,40 @@ abstract class AbstractFESender
 	protected function invoiceLines()
 	{
 		$invoiceLines = [];
-		
+
 		foreach ($this->detalles as $key => $detalle) {
 
-		 	$line_extension_amount = $this->iva_inluido ?
-				$detalle->subtotal :
-				($detalle->costo * $detalle->cantidad) - $detalle->descuento_valor;
+			$line_extension_amount = $this->iva_inluido
+				? ($detalle->subtotal - $detalle->descuento_valor)
+				: (($detalle->costo * $detalle->cantidad) - $detalle->descuento_valor);
 
-			$price_amount = $this->iva_inluido ? 
-				number_format($detalle->subtotal / $detalle->cantidad, 2, '.', '') :
-				(intval($detalle->iva_porcentaje)
+			$price_amount = $this->iva_inluido
+				? number_format($detalle->subtotal / $detalle->cantidad, 2, '.', '')
+				: (intval($detalle->iva_porcentaje)
 					? number_format($detalle->costo * (1 + ($detalle->iva_porcentaje / 100)), 2, '.', '')
-					: $detalle->costo);// Con IVA calculado
+					: $detalle->costo);
 
-			$invoiceLines[] = [
-				"unit_measure_id" => 642, // Unidad de medida que se maneja
-				"invoiced_quantity" => $detalle->cantidad, // Cantidad de productos
-				"line_extension_amount" => number_format($line_extension_amount, 2, '.', ''), // Total producto incluyento impuestos
-				"free_of_charge_indicator" => false, // Indica si el producto es una muestra gratis
-				// "allowance_charges" => $this->totalDescuento($detalle),
+			$linea = [
+				"unit_measure_id" => 642,
+				"invoiced_quantity" => $detalle->cantidad,
+				"line_extension_amount" => number_format($line_extension_amount, 2, '.', ''),
+				"free_of_charge_indicator" => false,
 				"tax_totals" => $this->taxTotalsDetalle($detalle, [1, 5]),
-				"description" => $detalle->producto->nombre, // Descripcion del producto
-				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
-				"type_item_identification_id" => 1, //
-				"price_amount" => $price_amount, // Precio total del producto incluyendo impuestos
-				"base_quantity" => 1 // unidad base
+				"description" => $detalle->producto->nombre,
+				"code" => $detalle->producto->codigo,
+				"type_item_identification_id" => 1,
+				"price_amount" => $price_amount,
+				"base_quantity" => 1
 			];
+
+			// Solo las líneas que realmente tengan descuento llevan allowance_charges
+			if ($detalle->descuento_valor > 0) {
+				$linea["allowance_charges"] = $this->totalDescuento($detalle);
+			}
+
+			$invoiceLines[] = $linea;
 		}
+
 		return $invoiceLines;
 	}
 	/**
@@ -558,9 +578,9 @@ abstract class AbstractFESender
 	{
 		$descuento[] = [
 			"charge_indicator" => false,
-			"allowance_charge_reason" => $detalle->valor_descuento,
-			"amount" => $detalle->valor_descuento,
-			"base_amount" => $detalle->valor_bruto
+			"allowance_charge_reason" => $detalle->descuento_valor,
+			"amount" => $detalle->descuento_valor,
+			"base_amount" => $detalle->subtotal
 		];
 		return $descuento;
 	}
@@ -568,8 +588,8 @@ abstract class AbstractFESender
 	private function impuesto($detalle)
 	{
 		// Calcular base correcta según si IVA está incluido o no
-		$base_iva = $detalle->subtotal;
-		$base_retefuente = $detalle->subtotal;
+		$base_iva = $detalle->subtotal - $detalle->descuento_valor;
+		$base_retefuente = $detalle->subtotal - $detalle->descuento_valor;
 		$base_reteiva = $detalle->iva_valor;
 
 		$impuestos = [

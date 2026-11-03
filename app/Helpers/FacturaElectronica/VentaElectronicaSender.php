@@ -46,18 +46,20 @@ class VentaElectronicaSender extends AbstractFESender
 	}
 
 	protected function legalMonetaryTotals()
-    {
-        $subtotal_sin_iva = $this->factura->subtotal;
-		$line_extension_amount = $this->iva_inluido ? $subtotal_sin_iva : $this->factura->total_iva + $this->factura->total_rete_fuente + $this->factura->subtotal;
-        
-        return [
-			'line_extension_amount' => number_format($line_extension_amount, 2, '.', ''), // Suma de los valores de todas las líneas SIN impuestos (base gravable)
-			'tax_exclusive_amount' => number_format($this->factura->subtotal, 2, '.', ''), // Total sin impuestos (igual al subtotal cuando no hay otros impuestos)
-			'tax_inclusive_amount' => number_format($this->factura->total_factura, 2, '.', ''), // Total CON impuestos incluidos (subtotal + IVA + otros impuestos)
-			'allowance_total_amount' => number_format($this->factura->total_descuento ?? 0, 2, '.', ''), // Total de descuentos aplicados a la factura
-			'charge_total_amount' => "0.00", // Total de cargos adicionales (fletes, recargos, etc.)
-			'payable_amount' => number_format($this->factura->total_factura, 2, '.', ''), // Valor final a pagar por el cliente (normalmente igual a tax_inclusive_amount)
+	{
+		$subtotal_sin_iva = $this->factura->subtotal;
+		$line_extension_amount = $this->iva_inluido
+			? $subtotal_sin_iva
+			: $this->factura->total_iva + $this->factura->total_rete_fuente + $this->factura->subtotal;
+
+		return [
+			'line_extension_amount'  => number_format($line_extension_amount, 2, '.', ''),
+			'tax_exclusive_amount'   => number_format($this->factura->subtotal, 2, '.', ''),  // ← SIN restar descuento
+			'tax_inclusive_amount'   => number_format($this->factura->total_factura, 2, '.', ''),
+			'allowance_total_amount' => "0.00",   // ← se queda en 0.00 (esto sí lo cambiaste bien)
+			'charge_total_amount'    => "0.00",
+			'payable_amount'         => number_format($this->factura->total_factura, 2, '.', ''),
 		];
-    }
+	}
 
 }
