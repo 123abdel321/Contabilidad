@@ -388,7 +388,6 @@ class VentaServices
             }
 
             if (!$documentoGeneral->save()) {
-                dd($documentoGeneral->getErrors());
                 throw new Exception(json_encode($documentoGeneral->getErrors()));
             }
 
