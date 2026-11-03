@@ -51,7 +51,6 @@ class VentaSuscripcionService
             // ── 1.5. Cambiar la conexión 'sam' al emisor ANTES de cualquier query ──
             copyDBConnection('sam', 'sam');
             setDBInConnection('sam', $tokenDbEmisor);
-            
 
             // ── 2. Empresa compradora ──
             $empresaCompradora = Empresa::where('id', $pago->id_empresa)->first();
