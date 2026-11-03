@@ -26,12 +26,20 @@ if (host.includes("app.portafolioerp.com")) {
 }
 
 // ============================================================
-// HELPERS
+// HELPERS (safe DOM)
 // ============================================================
+const $id = (id) => document.getElementById(id);
+
+const on = (id, ev, fn) => {
+    const el = $id(id);
+    if (el) el.addEventListener(ev, fn);
+    return el;
+};
 
 function peTogglePass() {
-    var input = document.getElementById('password_login');
-    var icon = document.getElementById('pe-eye-icon');
+    var input = $id('password_login');
+    var icon = $id('pe-eye-icon');
+    if (!input || !icon) return;
 
     if (input.type === 'password') {
         input.type = 'text';
@@ -43,7 +51,7 @@ function peTogglePass() {
 }
 
 function peAlert(panel, tipo, mensaje) {
-    var el = document.getElementById('pe-alert-' + panel);
+    var el = $id('pe-alert-' + panel);
     if (!el) return;
     el.innerHTML = '<div class="pe-login-alert ' + tipo + '">' + mensaje + '</div>';
 }
@@ -69,34 +77,37 @@ function formatearMoneda(valor) {
 // ============================================================
 
 function peShowScreen(screen) {
-    document.getElementById('pe-screen-login').style.display = 'none';
-    document.getElementById('pe-screen-register').style.display = 'none';
+    var elLogin = $id('pe-screen-login');
+    var elReg   = $id('pe-screen-register');
 
-    if (screen === 'login') {
-        document.getElementById('pe-screen-login').style.display = 'block';
-        document.getElementById('pe-screen-login').classList.add('active');
-    } else {
-        document.getElementById('pe-screen-register').style.display = 'block';
-        document.getElementById('pe-screen-register').classList.add('active');
+    if (elLogin) { elLogin.style.display = 'none'; elLogin.classList.remove('active'); }
+    if (elReg)   { elReg.style.display = 'none';   elReg.classList.remove('active'); }
+
+    var target = screen === 'login' ? elLogin : elReg;
+    if (target) {
+        target.style.display = 'block';
+        target.classList.add('active');
     }
 }
 
 function peGoStep(n) {
-    // Ocultar todos los paneles
     document.querySelectorAll('#pe-screen-register .pe-login-panel').forEach(function (p) {
         p.classList.remove('active');
     });
 
-    // Ocultar steppers done
     document.querySelectorAll('#pe-screen-register .pe-login-step').forEach(function (s) {
         s.classList.remove('active', 'done');
     });
 
-    document.getElementById('pe-panel-' + n).classList.add('active');
-    document.getElementById('pe-step-indicator-' + n).classList.add('active');
+    var panel = $id('pe-panel-' + n);
+    if (panel) panel.classList.add('active');
+
+    var ind = $id('pe-step-indicator-' + n);
+    if (ind) ind.classList.add('active');
 
     for (var i = 1; i < n; i++) {
-        document.getElementById('pe-step-indicator-' + i).classList.add('done');
+        var el = $id('pe-step-indicator-' + i);
+        if (el) el.classList.add('done');
     }
 
     if (n === 2 && window.peOtpClear) setTimeout(peOtpClear, 150);
@@ -105,34 +116,31 @@ function peGoStep(n) {
 }
 
 // Link "Regístrate" del login
-const linkRegistro = document.getElementById('pe-link-registro');
+on('pe-link-registro', 'click', function () {
+    peSetVerifyOnly(false);
+    peGoStep(1);
+});
 
-if (linkRegistro) {
-    linkRegistro.addEventListener('click', function () {
-        peSetVerifyOnly(false);
-        peGoStep(1);
-    });
-}
-
-const linkVolverLogin = document.getElementById('pe-link-volver-login');
-
-if (linkVolverLogin) {
-    linkVolverLogin.addEventListener('click', function () {
-        peShowScreen('login');
-    });
-}
+on('pe-link-volver-login', 'click', function () {
+    peShowScreen('login');
+});
 
 // ============================================================
 // MODO "SOLO VERIFICAR" + RETOMAR PROGRESO
 // ============================================================
 var peVerifyOnly = false;
 
-function peSetVerifyOnly(on) {
-    peVerifyOnly = on;
-    document.getElementById('pe-register-title').textContent = on ? 'Verifica tu correo' : 'Crear cuenta';
-    document.getElementById('pe-stepper').style.display = on ? 'none' : '';
-    var salir = document.getElementById('pe-btn-salir-verify');
-    if (salir) salir.style.display = on ? 'block' : 'none';
+function peSetVerifyOnly(on_) {
+    peVerifyOnly = on_;
+
+    var title = $id('pe-register-title');
+    if (title) title.textContent = on_ ? 'Verifica tu correo' : 'Crear cuenta';
+
+    var stepper = $id('pe-stepper');
+    if (stepper) stepper.style.display = on_ ? 'none' : '';
+
+    var salir = $id('pe-btn-salir-verify');
+    if (salir) salir.style.display = on_ ? 'block' : 'none';
 }
 
 function peFinalizarLogin(res) {
@@ -175,7 +183,7 @@ function peReanudarSesion() {
         url: base_url + 'register-mi-progreso',
         method: 'GET',
         headers: peHeaders(),
-        global: false,   // evita el handler global de 401 → bucle de recarga
+        global: false,
     }).done(function (res) {
         if (res.success && res.needs) {
             peAplicarNeeds(res);
@@ -186,14 +194,11 @@ function peReanudarSesion() {
 }
 
 // Salir de la verificación
-const btnSalirVerify = document.getElementById('pe-btn-salir-verify');
-if (btnSalirVerify) {
-    btnSalirVerify.addEventListener('click', function () {
-        localStorage.removeItem('auth_token');
-        peSetVerifyOnly(false);
-        peShowScreen('login');
-    });
-}
+on('pe-btn-salir-verify', 'click', function () {
+    localStorage.removeItem('auth_token');
+    peSetVerifyOnly(false);
+    peShowScreen('login');
+});
 
 // ============================================================
 // LOGIN
@@ -230,12 +235,9 @@ function sendDataLogin() {
 
     grecaptcha.ready(function () {
         grecaptcha.execute(PE_RECAPTCHA_SITE_KEY, { action: 'login' }).then(function (token) {
-
             $.ajax({
                 url: base_web + 'login',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 method: 'POST',
                 data: {
                     "email": email,
@@ -260,7 +262,6 @@ function sendDataLogin() {
                 $("#button-login").show();
                 $('#error-login').text('Usuario o contraseña incorrectos').show();
             });
-
         }).catch(function (e) {
             console.error('Error reCAPTCHA:', e);
             $("#button-login-loading").hide();
@@ -271,10 +272,12 @@ function sendDataLogin() {
 }
 
 function peCargarProgresoYIrAlPaso3() {
-
-    document.getElementById('pe-rut-label').style.display = 'block';
-    document.getElementById('pe-btn-omitir-rut').style.display = 'block';
-    document.getElementById('pe-rut-datos').style.display = 'none';
+    var rutLabel = $id('pe-rut-label');
+    var btnOmitir = $id('pe-btn-omitir-rut');
+    var rutDatos = $id('pe-rut-datos');
+    if (rutLabel) rutLabel.style.display = 'block';
+    if (btnOmitir) btnOmitir.style.display = 'block';
+    if (rutDatos) rutDatos.style.display = 'none';
 
     $.ajax({
         url: base_url + 'register-mi-progreso',
@@ -283,19 +286,20 @@ function peCargarProgresoYIrAlPaso3() {
     }).done(function (res) {
         if (res.success && res.data.empresa) {
             var emp = res.data.empresa;
-            document.getElementById('pe-nit').value              = emp.nit || '';
-            document.getElementById('pe-dv').value               = emp.dv || '';
-            document.getElementById('pe-tipo-contribuyente').value = emp.tipo_contribuyente || '';
-            document.getElementById('pe-razon-social').value     = emp.razon_social || '';
-            document.getElementById('pe-primer-apellido').value  = emp.primer_apellido || '';
-            document.getElementById('pe-segundo-apellido').value = emp.segundo_apellido || '';
-            document.getElementById('pe-primer-nombre').value    = emp.primer_nombre || '';
-            document.getElementById('pe-otros-nombres').value    = emp.otros_nombres || '';
-            document.getElementById('pe-direccion').value        = emp.direccion || '';
-            document.getElementById('pe-email-empresa').value    = emp.email || '';
-            document.getElementById('pe-telefono').value         = emp.telefono || '';
+            var setVal = function (id, v) { var el = $id(id); if (el) el.value = v || ''; };
+            setVal('pe-nit', emp.nit);
+            setVal('pe-dv', emp.dv);
+            setVal('pe-tipo-contribuyente', emp.tipo_contribuyente);
+            setVal('pe-razon-social', emp.razon_social);
+            setVal('pe-primer-apellido', emp.primer_apellido);
+            setVal('pe-segundo-apellido', emp.segundo_apellido);
+            setVal('pe-primer-nombre', emp.primer_nombre);
+            setVal('pe-otros-nombres', emp.otros_nombres);
+            setVal('pe-direccion', emp.direccion);
+            setVal('pe-email-empresa', emp.email);
+            setVal('pe-telefono', emp.telefono);
 
-            document.getElementById('pe-rut-datos').style.display = 'block';
+            if (rutDatos) rutDatos.style.display = 'block';
             peTogglePersonaNatural();
         }
         peGoStep(3);
@@ -308,14 +312,14 @@ function peCargarProgresoYIrAlPaso3() {
 // REGISTRO — PASO 1: Crear cuenta
 // ============================================================
 
-document.getElementById('pe-btn-crear-cuenta').addEventListener('click', function () {
+on('pe-btn-crear-cuenta', 'click', function () {
     var btn = this;
     if (btn.disabled) return;
 
-    // Validación básica antes de gastar un token de recaptcha
-    var nombre = document.getElementById('pe-nombre').value;
-    var email = document.getElementById('pe-email').value;
-    var password = document.getElementById('pe-password').value;
+    var nombre   = ($id('pe-nombre')   || {}).value || '';
+    var email    = ($id('pe-email')    || {}).value || '';
+    var password = ($id('pe-password') || {}).value || '';
+
     if (!nombre || !email || !password) {
         peAlert(1, 'error', 'Completa todos los campos.');
         return;
@@ -325,11 +329,8 @@ document.getElementById('pe-btn-crear-cuenta').addEventListener('click', functio
     btn.disabled = true;
     btn.innerHTML = '<span class="pe-login-spinner"></span> Creando cuenta...';
 
-    // 🔑 OBTENER TOKEN DE RECAPTCHA V3
-    grecaptcha.ready(function() {
-        grecaptcha.execute(PE_RECAPTCHA_SITE_KEY, {action: 'register'}).then(function(token) {
-            
-            // Ahora sí, enviar al backend con el token
+    grecaptcha.ready(function () {
+        grecaptcha.execute(PE_RECAPTCHA_SITE_KEY, { action: 'register' }).then(function (token) {
             $.ajax({
                 url: base_url + 'register-crear-cuenta',
                 method: 'POST',
@@ -342,7 +343,7 @@ document.getElementById('pe-btn-crear-cuenta').addEventListener('click', functio
                     nombre:   nombre,
                     email:    email,
                     password: password,
-                    'g-recaptcha-response': token, // 👈 Enviamos el token
+                    'g-recaptcha-response': token,
                 }),
             })
             .done(function (res) {
@@ -364,7 +365,7 @@ document.getElementById('pe-btn-crear-cuenta').addEventListener('click', functio
                 btn.innerHTML = textoOriginal;
             });
 
-        }).catch(function(e) {
+        }).catch(function (e) {
             console.error('Error al obtener token de reCAPTCHA:', e);
             peAlert(1, 'error', 'Error de verificación de seguridad. Recarga la página.');
             btn.disabled = false;
@@ -377,7 +378,7 @@ document.getElementById('pe-btn-crear-cuenta').addEventListener('click', functio
 // REGISTRO — PASO 2: Verificar código
 // ============================================================
 
-document.getElementById('pe-btn-verificar').addEventListener('click', function () {
+on('pe-btn-verificar', 'click', function () {
     var btn = this;
     if (btn.disabled) return;
 
@@ -385,32 +386,35 @@ document.getElementById('pe-btn-verificar').addEventListener('click', function (
     btn.disabled = true;
     btn.innerHTML = '<span class="pe-login-spinner"></span> Verificando...';
 
+    var codigoEl = $id('pe-codigo');
+    var codigo = codigoEl ? codigoEl.value : '';
+
     $.ajax({
         url: base_url + 'register-verificar-codigo',
         method: 'POST',
         headers: peHeaders(),
-        data: JSON.stringify({ codigo: document.getElementById('pe-codigo').value }),
+        data: JSON.stringify({ codigo: codigo }),
     })
     .done(function (res) {
         btn.disabled = false;
         btn.innerHTML = textoOriginal;
         if (!res.success) {
             peAlert(2, 'error', res.message || 'Código incorrecto');
-            peOtpError();
+            if (window.peOtpError) peOtpError();
             return;
         }
-        peOtpOk();
+        if (window.peOtpOk) peOtpOk();
         setTimeout(function () { peAplicarNeeds(res); }, 600);
     })
     .fail(function (err) {
         btn.disabled = false;
         btn.innerHTML = textoOriginal;
         peAlert(2, 'error', err.responseJSON ? err.responseJSON.message : 'Error de conexión');
-        peOtpError();
+        if (window.peOtpError) peOtpError();
     });
 });
 
-document.getElementById('pe-btn-reenviar').addEventListener('click', function () {
+on('pe-btn-reenviar', 'click', function () {
     var btn = this;
     if (btn.disabled) return;
 
@@ -439,7 +443,7 @@ document.getElementById('pe-btn-reenviar').addEventListener('click', function ()
 // REGISTRO — PASO 3: RUT + Empresa
 // ============================================================
 
-document.getElementById('pe-rut-input').addEventListener('change', function () {
+on('pe-rut-input', 'change', function () {
     var input = this;
     var file = input.files[0];
     if (!file) return;
@@ -447,9 +451,10 @@ document.getElementById('pe-rut-input').addEventListener('change', function () {
     var formData = new FormData();
     formData.append('rut', file);
 
-    var labelRut = document.getElementById('pe-rut-label');
-    var htmlOriginal = '<div>📄 Arrastra tu RUT aquí o haz clic para subir</div><small>PDF · Máximo 10 MB</small>';
+    var labelRut = $id('pe-rut-label');
+    if (!labelRut) return;
 
+    var htmlOriginal = '<div>📄 Arrastra tu RUT aquí o haz clic para subir</div><small>PDF · Máximo 10 MB</small>';
     labelRut.innerHTML = '<div>⏳ Procesando RUT...</div>';
 
     $.ajax({
@@ -466,7 +471,8 @@ document.getElementById('pe-rut-input').addEventListener('change', function () {
     })
     .done(function (res) {
         input.value = '';
-        labelRut.querySelector('input') && (labelRut.querySelector('input').value = '');
+        var inner = labelRut.querySelector('input');
+        if (inner) inner.value = '';
 
         if (!res.success) {
             labelRut.innerHTML = htmlOriginal;
@@ -475,26 +481,26 @@ document.getElementById('pe-rut-input').addEventListener('change', function () {
         }
 
         labelRut.innerHTML = '<div>✅ RUT cargado — clic para reemplazar</div><small>PDF · Máximo 10 MB</small>';
-        document.getElementById('pe-rut-datos').style.display = 'block';
 
-        // 🔑 Ocultar el botón "Omitir RUT" después de cargar
-        var btnOmitir = document.getElementById('pe-btn-omitir-rut');
-        if (btnOmitir) {
-            btnOmitir.style.display = 'none';
-        }
+        var rutDatos = $id('pe-rut-datos');
+        if (rutDatos) rutDatos.style.display = 'block';
 
-        var d = res.datos;
-        document.getElementById('pe-nit').value              = d.nit || '';
-        document.getElementById('pe-dv').value               = d.dv || '';
-        document.getElementById('pe-tipo-contribuyente').value = d.tipo_contribuyente || '';
-        document.getElementById('pe-razon-social').value     = d.razon_social || '';
-        document.getElementById('pe-primer-apellido').value  = d.primer_apellido || '';
-        document.getElementById('pe-segundo-apellido').value = d.segundo_apellido || '';
-        document.getElementById('pe-primer-nombre').value    = d.primer_nombre || '';
-        document.getElementById('pe-otros-nombres').value    = d.otros_nombres || '';
-        document.getElementById('pe-direccion').value        = d.direccion || '';
-        document.getElementById('pe-email-empresa').value    = d.email || '';
-        document.getElementById('pe-telefono').value         = d.telefono_1 || '';
+        var btnOmitir = $id('pe-btn-omitir-rut');
+        if (btnOmitir) btnOmitir.style.display = 'none';
+
+        var d = res.datos || {};
+        var setVal = function (id, v) { var el = $id(id); if (el) el.value = v || ''; };
+        setVal('pe-nit', d.nit);
+        setVal('pe-dv', d.dv);
+        setVal('pe-tipo-contribuyente', d.tipo_contribuyente);
+        setVal('pe-razon-social', d.razon_social);
+        setVal('pe-primer-apellido', d.primer_apellido);
+        setVal('pe-segundo-apellido', d.segundo_apellido);
+        setVal('pe-primer-nombre', d.primer_nombre);
+        setVal('pe-otros-nombres', d.otros_nombres);
+        setVal('pe-direccion', d.direccion);
+        setVal('pe-email-empresa', d.email);
+        setVal('pe-telefono', d.telefono_1);
 
         peTogglePersonaNatural();
     })
@@ -505,98 +511,100 @@ document.getElementById('pe-rut-input').addEventListener('change', function () {
     });
 });
 
-document.getElementById('pe-tipo-contribuyente').addEventListener('change', peTogglePersonaNatural);
+on('pe-tipo-contribuyente', 'change', peTogglePersonaNatural);
 
 function peTogglePersonaNatural() {
-    var tipo = document.getElementById('pe-tipo-contribuyente').value;
+    var tipoEl = $id('pe-tipo-contribuyente');
+    if (!tipoEl) return;
+    var tipo = tipoEl.value;
+
+    var fieldRazon = $id('pe-field-razon-social');
+    var fieldNat   = $id('pe-field-persona-natural');
+
     if (tipo === '2') {
-        document.getElementById('pe-field-razon-social').style.display = 'none';
-        document.getElementById('pe-field-persona-natural').style.display = 'block';
+        if (fieldRazon) fieldRazon.style.display = 'none';
+        if (fieldNat)   fieldNat.style.display = 'block';
     } else {
-        document.getElementById('pe-field-razon-social').style.display = 'block';
-        document.getElementById('pe-field-persona-natural').style.display = 'none';
+        if (fieldRazon) fieldRazon.style.display = 'block';
+        if (fieldNat)   fieldNat.style.display = 'none';
     }
 }
 
-document.getElementById('pe-btn-omitir-rut').addEventListener('click', function () {
-    document.getElementById('pe-rut-label').style.display = 'none';
-    document.getElementById('pe-btn-omitir-rut').style.display = 'none';
-    document.getElementById('pe-rut-datos').style.display = 'block';
-    document.getElementById('pe-tipo-contribuyente').value = '1';
+on('pe-btn-omitir-rut', 'click', function () {
+    var rutLabel = $id('pe-rut-label');
+    var btnOmitir = $id('pe-btn-omitir-rut');
+    var rutDatos = $id('pe-rut-datos');
+    var tipo = $id('pe-tipo-contribuyente');
+
+    if (rutLabel) rutLabel.style.display = 'none';
+    if (btnOmitir) btnOmitir.style.display = 'none';
+    if (rutDatos) rutDatos.style.display = 'block';
+    if (tipo) tipo.value = '1';
     peTogglePersonaNatural();
 });
 
 // ============================================================
-// REGISTRO — PASO 3 → PASO 4: Solo validar, no crear todavía
+// REGISTRO — PASO 3 → PASO 4
 // ============================================================
 
-document.getElementById('pe-btn-continuar-paso4').addEventListener('click', function () {
-    // Validar campos mínimos
-    var nit = document.getElementById('pe-nit').value.trim();
-    var dv  = document.getElementById('pe-dv').value.trim();
-    var tipo = document.getElementById('pe-tipo-contribuyente').value;
-    var razonSocial = document.getElementById('pe-razon-social').value.trim();
-    var primerNombre = document.getElementById('pe-primer-nombre').value.trim();
-    var primerApellido = document.getElementById('pe-primer-apellido').value.trim();
+on('pe-btn-continuar-paso4', 'click', function () {
+    var getVal = function (id) { var el = $id(id); return el ? el.value.trim() : ''; };
 
-    if (!nit) {
-        peAlert(3, 'error', 'El NIT es requerido.');
-        return;
-    }
-    if (!dv) {
-        peAlert(3, 'error', 'El DV es requerido.');
-        return;
-    }
-    if (!tipo) {
-        peAlert(3, 'error', 'Selecciona el tipo de contribuyente.');
-        return;
-    }
-    if (tipo === '1' && !razonSocial) {
-        peAlert(3, 'error', 'La razón social es requerida.');
-        return;
-    }
+    var nit            = getVal('pe-nit');
+    var dv             = getVal('pe-dv');
+    var tipo           = getVal('pe-tipo-contribuyente');
+    var razonSocial    = getVal('pe-razon-social');
+    var primerNombre   = getVal('pe-primer-nombre');
+    var primerApellido = getVal('pe-primer-apellido');
+
+    if (!nit) { peAlert(3, 'error', 'El NIT es requerido.'); return; }
+    if (!dv)  { peAlert(3, 'error', 'El DV es requerido.'); return; }
+    if (!tipo){ peAlert(3, 'error', 'Selecciona el tipo de contribuyente.'); return; }
+    if (tipo === '1' && !razonSocial) { peAlert(3, 'error', 'La razón social es requerida.'); return; }
     if (tipo === '2' && (!primerNombre || !primerApellido)) {
         peAlert(3, 'error', 'El nombre y apellido son requeridos para persona natural.');
         return;
     }
 
-    // Limpiar alerta
-    document.getElementById('pe-alert-3').innerHTML = '';
+    var alert3 = $id('pe-alert-3');
+    if (alert3) alert3.innerHTML = '';
 
-    // Cargar árbol de componentes y avanzar al paso 4
     cargarArbolComponentes();
     peGoStep(4);
 });
 
 // Drag & drop RUT
-var rutLabel = document.getElementById('pe-rut-label');
-
-['dragenter', 'dragover'].forEach(function (eventName) {
-    rutLabel.addEventListener(eventName, function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        rutLabel.style.borderColor = '#818cf8';
-        rutLabel.style.background = 'rgba(79, 70, 229, 0.1)';
+var rutLabelDrop = $id('pe-rut-label');
+if (rutLabelDrop) {
+    ['dragenter', 'dragover'].forEach(function (eventName) {
+        rutLabelDrop.addEventListener(eventName, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            rutLabelDrop.style.borderColor = '#818cf8';
+            rutLabelDrop.style.background = 'rgba(79, 70, 229, 0.1)';
+        });
     });
-});
 
-['dragleave', 'drop'].forEach(function (eventName) {
-    rutLabel.addEventListener(eventName, function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        rutLabel.style.borderColor = '';
-        rutLabel.style.background = '';
+    ['dragleave', 'drop'].forEach(function (eventName) {
+        rutLabelDrop.addEventListener(eventName, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            rutLabelDrop.style.borderColor = '';
+            rutLabelDrop.style.background = '';
+        });
     });
-});
 
-rutLabel.addEventListener('drop', function (e) {
-    var files = e.dataTransfer.files;
-    if (!files || files.length === 0) return;
+    rutLabelDrop.addEventListener('drop', function (e) {
+        var files = e.dataTransfer.files;
+        if (!files || files.length === 0) return;
 
-    document.getElementById('pe-rut-input').files = files;
-    var event = new Event('change', { bubbles: true });
-    document.getElementById('pe-rut-input').dispatchEvent(event);
-});
+        var inp = $id('pe-rut-input');
+        if (!inp) return;
+
+        inp.files = files;
+        inp.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+}
 
 // ============================================================
 // REGISTRO — PASO 4: Componentes y pago
@@ -634,7 +642,6 @@ var PE_ICO = {
     bolt: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'
 };
 
-// meta por id de componente (nombre y subtítulo que ve el cliente)
 var PE_COMP_META = {
     1:  { ico: 'chart', nombre: 'Contabilidad',           sub: 'Libros, balances e impuestos automáticos' },
     2:  { ico: 'doc',   nombre: 'Facturación',            sub: 'Cotiza, factura y controla tu cartera' },
@@ -707,40 +714,30 @@ $(document).on('change', '.pe-check-componente', peActualizarTotales);
 $(document).on('change', '.pe-radio-hijo', peActualizarTotales);
 
 function peActualizarTotales() {
-    // Recolectar componentes seleccionados
     var componentes = [];
 
     $('.pe-check-componente:checked').each(function () {
-        componentes.push({
-            id: $(this).data('id'),
-            precio: parseFloat($(this).data('precio')) || 0,
-        });
+        componentes.push({ id: $(this).data('id'), precio: parseFloat($(this).data('precio')) || 0 });
     });
 
     $('.pe-check-padre:checked').each(function () {
         var id = $(this).data('id');
         var $hijo = $('input[name="pe-rad-' + id + '"]:checked');
         if ($hijo.length) {
-            componentes.push({
-                id: $hijo.data('id'),
-                precio: parseFloat($hijo.data('precio')) || 0,
-            });
+            componentes.push({ id: $hijo.data('id'), precio: parseFloat($hijo.data('precio')) || 0 });
         }
     });
 
-    // Total mensual (suma simple, para mostrar el card)
     var totalMensual = 0;
     componentes.forEach(function (c) { totalMensual += c.precio; });
     $('#pe-total-mensual strong').text(formatearMoneda(totalMensual));
 
-    // Si no hay componentes → mostrar $0
     if (componentes.length === 0) {
         $('#pe-monto-total').text('$ 0');
         peDesgloseActual = null;
         return;
     }
 
-    // Debounce para no saturar el backend
     clearTimeout(pePreviewTimeout);
     pePreviewTimeout = setTimeout(function () {
         pePedirPreviewPago(componentes);
@@ -752,10 +749,7 @@ function pePedirPreviewPago(componentes) {
         url: base_url + 'suscripcion/registro/preview-pago',
         method: 'POST',
         headers: peHeaders(),
-        data: JSON.stringify({
-            meses: peMeses,
-            componentes: componentes,
-        }),
+        data: JSON.stringify({ meses: peMeses, componentes: componentes }),
     }).done(function (res) {
         if (!res.success) {
             $('#pe-monto-total').text('—');
@@ -764,13 +758,9 @@ function pePedirPreviewPago(componentes) {
         }
 
         peDesgloseActual = res.data;
-
-        // Total a pagar (con proporcional + descuento)
         $('#pe-monto-total').text(formatearMoneda(res.data.total));
 
-        // Mostrar desglose detallado
         var html = '';
-
         res.data.detalle_meses.forEach(function (item) {
             if (item.monto > 0) {
                 html += '<div class="pe-line"><span>' + item.label + '</span><span>' + formatearMoneda(item.monto) + '</span></div>';
@@ -788,7 +778,6 @@ function pePedirPreviewPago(componentes) {
             $desglose = $('<div id="pe-desglose-pago" class="pe-desglose"></div>');
             $('#pe-total-mensual').after($desglose);
         }
-
         $desglose.html(html);
 
     }).fail(function () {
@@ -820,67 +809,45 @@ $(document).on('change', '#pe-meses', function () {
 $(document).on('click', '#pe-btn-pagar', function () {
     if (pePagosProcesando) return;
 
-    // 1. Validar desglose del backend
     if (!peDesgloseActual || peDesgloseActual.total <= 0) {
         peAlert(4, 'error', 'Espera un momento mientras se calcula el total...');
         return;
     }
 
-    // 2. Recolectar componentes
     var componentes = [];
-
     $('.pe-check-componente:checked').each(function () {
-        componentes.push({
-            id: $(this).data('id'),
-            precio: parseFloat($(this).data('precio')) || 0,
-        });
+        componentes.push({ id: $(this).data('id'), precio: parseFloat($(this).data('precio')) || 0 });
     });
 
     var padreSinHijo = false;
-
     $('.pe-check-padre:checked').each(function () {
         var id = $(this).data('id');
         var $hijo = $('input[name="pe-rad-' + id + '"]:checked');
-        if (!$hijo.length) {
-            padreSinHijo = true;
-            return false;
-        }
-        componentes.push({
-            id: $hijo.data('id'),
-            precio: parseFloat($hijo.data('precio')) || 0,
-        });
+        if (!$hijo.length) { padreSinHijo = true; return false; }
+        componentes.push({ id: $hijo.data('id'), precio: parseFloat($hijo.data('precio')) || 0 });
     });
 
-    if (padreSinHijo) {
-        peAlert(4, 'error', 'Debes seleccionar una opción en cada módulo padre.');
-        return;
-    }
-
-    if (componentes.length === 0) {
-        peAlert(4, 'error', 'Debes seleccionar al menos un componente.');
-        return;
-    }
+    if (padreSinHijo) { peAlert(4, 'error', 'Debes seleccionar una opción en cada módulo padre.'); return; }
+    if (componentes.length === 0) { peAlert(4, 'error', 'Debes seleccionar al menos un componente.'); return; }
 
     var btn = $(this);
     var textoOriginal = btn.html();
     btn.prop('disabled', true).html('<span class="pe-login-spinner"></span> Procesando...');
     pePagosProcesando = true;
 
-    // ═══════════════════════════════════════════════════════════
-    // PASO A: Crear la empresa (estado = 5 = instalación)
-    // ═══════════════════════════════════════════════════════════
+    var getVal = function (id) { var el = $id(id); return el ? el.value : ''; };
     var empresaPayload = {
-        nit:                document.getElementById('pe-nit').value,
-        dv:                 document.getElementById('pe-dv').value,
-        tipo_contribuyente: document.getElementById('pe-tipo-contribuyente').value,
-        razon_social:       document.getElementById('pe-razon-social').value,
-        primer_apellido:    document.getElementById('pe-primer-apellido').value,
-        segundo_apellido:   document.getElementById('pe-segundo-apellido').value,
-        primer_nombre:      document.getElementById('pe-primer-nombre').value,
-        otros_nombres:      document.getElementById('pe-otros-nombres').value,
-        direccion:          document.getElementById('pe-direccion').value,
-        email:              document.getElementById('pe-email-empresa').value,
-        telefono:           document.getElementById('pe-telefono').value,
+        nit:                getVal('pe-nit'),
+        dv:                 getVal('pe-dv'),
+        tipo_contribuyente: getVal('pe-tipo-contribuyente'),
+        razon_social:       getVal('pe-razon-social'),
+        primer_apellido:    getVal('pe-primer-apellido'),
+        segundo_apellido:   getVal('pe-segundo-apellido'),
+        primer_nombre:      getVal('pe-primer-nombre'),
+        otros_nombres:      getVal('pe-otros-nombres'),
+        direccion:          getVal('pe-direccion'),
+        email:              getVal('pe-email-empresa'),
+        telefono:           getVal('pe-telefono'),
     };
 
     $.ajax({
@@ -896,8 +863,6 @@ $(document).on('click', '#pe-btn-pagar', function () {
             return;
         }
 
-        // 🔑 Guardar datos de la empresa en localStorage (para que el login
-        //    los tenga listos cuando el pago se apruebe y recargue la página)
         if (resEmpresa.empresa) {
             localStorage.setItem("empresa_nombre", resEmpresa.empresa.razon_social || '');
             localStorage.setItem("empresa_logo",   resEmpresa.empresa.logo || '');
@@ -906,17 +871,11 @@ $(document).on('click', '#pe-btn-pagar', function () {
             localStorage.setItem("empresa_id",     resEmpresa.empresa.id || '');
         }
 
-        // ═══════════════════════════════════════════════════════
-        // PASO B: Confirmar (crear suscripción + componentes + pago)
-        // ═══════════════════════════════════════════════════════
         $.ajax({
             url: base_url + 'suscripcion/registro/confirmar',
             method: 'POST',
             headers: peHeaders(),
-            data: JSON.stringify({
-                meses: peMeses,
-                componentes: componentes,
-            }),
+            data: JSON.stringify({ meses: peMeses, componentes: componentes }),
         }).done(function (res) {
             if (!res.success) {
                 peAlert(4, 'error', res.message || 'Error al procesar el pago');
@@ -924,12 +883,7 @@ $(document).on('click', '#pe-btn-pagar', function () {
                 pePagosProcesando = false;
                 return;
             }
-
-            // ═══════════════════════════════════════════════════
-            // PASO C: Abrir widget Wompi con monto del backend
-            // ═══════════════════════════════════════════════════
             peAbrirWidgetRegistro(res.pago_id, res.reference, res.monto, btn, textoOriginal);
-
         }).fail(function (err) {
             peAlert(4, 'error', err.responseJSON ? err.responseJSON.message : 'Error de conexión');
             btn.prop('disabled', false).html(textoOriginal);
@@ -950,10 +904,7 @@ function peAbrirWidgetRegistro(pagoId, referencia, monto, btn, textoOriginal) {
         url: base_url + 'suscripcion/wompi/firma-integridad',
         method: 'POST',
         headers: peHeaders(),
-        data: JSON.stringify({
-            reference: referencia,
-            amount_in_cents: montoCents,
-        }),
+        data: JSON.stringify({ reference: referencia, amount_in_cents: montoCents }),
     }).done(function (resFirma) {
         if (!resFirma.success) {
             peAlert(4, 'error', 'No se pudo generar la firma');
@@ -973,7 +924,6 @@ function peAbrirWidgetRegistro(pagoId, referencia, monto, btn, textoOriginal) {
 
             checkout.open(function (result) {
                 var transaction = result.transaction;
-
                 if (transaction.status === 'APPROVED') {
                     peReconciliarRegistro(pagoId, transaction, referencia, btn, textoOriginal);
                 } else {
@@ -1004,9 +954,7 @@ function peReconciliarRegistro(pagoId, transaction, referencia, btn, textoOrigin
     }).done(function (res) {
         if (res.success && res.estado === 1) {
             peAlert(4, 'success', '¡Pago exitoso! Activando empresa...');
-            setTimeout(function () {
-                window.location.href = '/home';
-            }, 1500);
+            setTimeout(function () { window.location.href = '/home'; }, 1500);
         } else {
             peAlert(4, 'error', res.message || 'Pago no confirmado');
             btn.prop('disabled', false).html(textoOriginal);
@@ -1024,16 +972,15 @@ function peReconciliarRegistro(pagoId, transaction, referencia, btn, textoOrigin
 // ============================================================
 
 (function peInit() {
-    // 🔑 Login directo se maneja aparte (no tocar)
-    if (PE_MODE === 'login-direct') {
-        return;
-    }
+    if (typeof PE_MODE === 'undefined') return;
+
+    if (PE_MODE === 'login-direct') return;
 
     if (PE_MODE === 'register') {
         peGoStep(PE_STEP || 1);
     } else {
         peShowScreen('login');
-        peReanudarSesion();   // ← NUEVO: si hay token, retoma donde quedó
+        peReanudarSesion();
     }
 
     if (PE_MODE === 'register' && PE_STEP === 3) {
@@ -1047,22 +994,23 @@ function peReconciliarRegistro(pagoId, transaction, referencia, btn, textoOrigin
 })();
 
 document.addEventListener('DOMContentLoaded', function () {
-    if (PE_MODE === 'login-direct' && PE_DIRECT_EMAIL && PE_DIRECT_CODE) {
+    if (typeof PE_MODE !== 'undefined' && PE_MODE === 'login-direct' && PE_DIRECT_EMAIL && PE_DIRECT_CODE) {
         peLoginDirecto();
     }
 });
 
 // ============================================================
-// LOGIN DIRECTO — bypass de email/contraseña
+// LOGIN DIRECTO
 // ============================================================
 
 function peLoginDirecto() {
-    // Ocultar pantallas normales
-    document.getElementById('pe-screen-login').style.display = 'none';
-    document.getElementById('pe-screen-register').style.display = 'none';
+    var elLogin = $id('pe-screen-login');
+    var elReg   = $id('pe-screen-register');
+    var elCarga = $id('pe-direct-loading');
 
-    // Mostrar pantalla de carga
-    document.getElementById('pe-direct-loading').style.display = 'block';
+    if (elLogin) elLogin.style.display = 'none';
+    if (elReg)   elReg.style.display = 'none';
+    if (elCarga) elCarga.style.display = 'block';
 
     $.ajax({
         url: base_web + 'login-direct',
@@ -1071,10 +1019,7 @@ function peLoginDirecto() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
             'Accept': 'application/json',
         },
-        data: {
-            email:      PE_DIRECT_EMAIL,
-            code_login: PE_DIRECT_CODE,
-        },
+        data: { email: PE_DIRECT_EMAIL, code_login: PE_DIRECT_CODE },
         dataType: 'json',
     }).done(function (res) {
         if (!res.success) {
@@ -1082,7 +1027,6 @@ function peLoginDirecto() {
             return;
         }
 
-        // Guardar token y datos
         localStorage.setItem('auth_token', res.token_type + ' ' + res.access_token);
         localStorage.setItem('empresa_nombre', res.empresa?.razon_social || '');
         localStorage.setItem('empresa_logo', res.empresa?.logo || '');
@@ -1096,9 +1040,12 @@ function peLoginDirecto() {
 }
 
 function peDirectError(msg) {
-    document.getElementById('pe-direct-loading').style.display = 'none';
+    var elCarga = $id('pe-direct-loading');
+    if (elCarga) elCarga.style.display = 'none';
 
-    var errorEl = document.getElementById('pe-direct-error');
+    var errorEl = $id('pe-direct-error');
+    if (!errorEl) return;
+
     errorEl.style.display = 'block';
     errorEl.innerHTML =
         '<div class="pe-login-alert error">' + msg + '</div>' +
@@ -1109,8 +1056,8 @@ function peDirectError(msg) {
 // OTP 6 CASILLAS
 // ============================================================
 (function () {
-    var wrap  = document.getElementById('pe-otp');
-    var input = document.getElementById('pe-codigo');
+    var wrap  = $id('pe-otp');
+    var input = $id('pe-codigo');
     if (!wrap || !input) return;
 
     var boxes = wrap.querySelectorAll('.pe-otp-box');
@@ -1140,7 +1087,7 @@ function peDirectError(msg) {
     });
     input.addEventListener('paste', function (e) {
         var texto = (e.clipboardData || window.clipboardData).getData('text') || '';
-        var digitos = texto.replace(/\D/g, '').slice(0, 6);   // quita espacios, saltos de línea y todo lo que no sea número
+        var digitos = texto.replace(/\D/g, '').slice(0, 6);
         e.preventDefault();
         input.value = digitos;
         input.dispatchEvent(new Event('input', { bubbles: true }));
