@@ -215,7 +215,7 @@ class VentaController extends Controller
             return response()->json([
                 "success" => false,
                 'data'    => [],
-                "message" => $e->getMessage()
+                "message" => json_decode($e->getMessage())
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }

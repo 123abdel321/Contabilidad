@@ -810,7 +810,7 @@ class VentaServices
 
         if (
             $calcula_retencion &&
-            $this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] &&
+            $this->totalesFactura['subtotal'] >= $this->totalesFactura['tope_retencion'] &&
             $this->totalesFactura['porcentaje_rete_fuente'] > 0
         ) {
             $base_retencion    = $this->totalesFactura['subtotal_sin_iva'];
