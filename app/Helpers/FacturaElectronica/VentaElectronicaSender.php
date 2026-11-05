@@ -24,7 +24,7 @@ class VentaElectronicaSender extends AbstractFESender
 	public function getRelationShips(): array
 	{
 		return [
-			'cliente',
+			'cliente.tipo_documento',
 			'pagos.forma_pago',
 			'resolucion',
 			'detalles.cuenta_iva',
@@ -35,13 +35,19 @@ class VentaElectronicaSender extends AbstractFESender
 
 	protected function customer()
 	{
+		// type_organization_id: 1 = Persona Jurídica, 2 = Persona Natural
+		// tipo_contribuyente: 1 = Persona jurídica, 2 = Persona natural
+		$typeOrganizationId = $this->cliente->tipo_contribuyente == 1 ? 1 : 2;
+
 		return [
 			'identification_number' => $this->cliente->numero_documento,
 			'name' => $this->cliente->nombre_completo,
 			'email' => $this->cliente->email,
-			'phone' => $this->cliente->telefono_1 ? $this->cliente->telefono_1 : $this->cliente->telefono_2,
+			'phone' => $this->cliente->telefono_1 ?: $this->cliente->telefono_2,
 			'address' => $this->cliente->direccion,
 			'merchant_registration' => "0000000-00",
+			'type_document_identification_id' => $this->cliente->id_tipo_documento,
+			'type_organization_id' => $typeOrganizationId,
 		];
 	}
 
