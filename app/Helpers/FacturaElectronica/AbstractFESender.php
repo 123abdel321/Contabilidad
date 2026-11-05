@@ -2,9 +2,11 @@
 
 namespace App\Helpers\FacturaElectronica;
 
-use App\Models\Sistema\VariablesEntorno;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Carbon;
+//MODELS
+use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\PlanCuentasTipo;
 
 abstract class AbstractFESender
 {
@@ -71,6 +73,7 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
+		// dd(json_encode($params));
 		$url    = $this->getUrl() . $setTestId;
 		$response = Http::withHeaders([
 			'Content-Type'     => 'application/json',
@@ -647,37 +650,58 @@ abstract class AbstractFESender
 	{
 		$paymentForm = [];
 
-		foreach ($this->pagos as $pago) {
+		// Si no hay pagos, forzar contado
+		if (empty($this->pagos) || count($this->pagos) === 0) {
+			return [[
+				'payment_form_id'   => 1,        // 1 = contado
+				'payment_method_id' => '1',      // instrumento no definido
+			]];
+		}
 
-			// 1. DETERMINAR payment_form_id (1=Contado, 2=Crédito)
+		foreach ($this->pagos as $pago) {
+			// ------------------------------------------------------------
+			// Determinar si es CRÉDITO: la cuenta contable del pago debe ser CxC
+			// ------------------------------------------------------------
 			$esCredito = false;
-			
-			// Si la venta tiene fecha de vencimiento (campo que debes agregar o calcular)
-			if (property_exists($this->factura, 'fecha_vencimiento') && $this->factura->fecha_vencimiento) {
-				$esCredito = $this->factura->fecha_vencimiento > $this->factura->fecha_manual;
+
+			$cuenta = $pago->forma_pago->cuenta ?? null;
+			if ($cuenta) {
+				// PlanCuentas::tipos_cuenta() devuelve colección de PlanCuentasTipo
+				$tiposCuenta = $cuenta->tipos_cuenta ?? collect();
+
+				foreach ($tiposCuenta as $tipoCuenta) {
+					if ((int) $tipoCuenta->id_tipo_cuenta === PlanCuentasTipo::TIPO_CUENTA_CXC) {
+						$esCredito = true;
+						break;
+					}
+				}
 			}
-			
-			// O también podrías revisar si el tipo de forma de pago es "Crédito" (código 1 en fac_tipo_formas_pagos)
-			$tipoCodigo = $pago->forma_pago->tipoFormaPago->codigo ?? '';
-			if ($tipoCodigo == '1') {
-				$esCredito = true; // "Instrumento no definido" suele usarse para crédito
-			}
-			
+
+			// ------------------------------------------------------------
+			// payment_form_id: 1 = contado, 2 = crédito
+			// ------------------------------------------------------------
 			$payment_form_id = $esCredito ? 2 : 1;
 
-			// 2. OBTENER payment_method_id desde fac_tipo_formas_pagos.codigo
-			$payment_method_id = $tipoCodigo ?: 'ZZZ'; // 'ZZZ' = Acuerdo mutuo (fallback)
+			// ------------------------------------------------------------
+			// payment_method_id (medio de pago DIAN)
+			//   Se toma del código de FacTipoFormasPago, con fallback 'ZZZ'
+			//   (acuerdo mutuo) cuando no está definido.
+			// ------------------------------------------------------------
+			$tipoPagoCodigo   = $pago->forma_pago->tipoFormaPago->codigo ?? null;
+			$payment_method_id = $tipoPagoCodigo ?: 'ZZZ';
 
 			$item = [
-				'payment_form_id' => $payment_form_id,
+				'payment_form_id'   => $payment_form_id,
 				'payment_method_id' => $payment_method_id,
 			];
 
-			// Solo enviar payment_due_date si es crédito
-			if ($payment_form_id == 2) {
-				// Usar la fecha de vencimiento de la venta, o la del pago, o calcular +30 días
-				$dueDate = $this->factura->fecha_vencimiento ?? 
-						date('Y-m-d', strtotime($this->factura->fecha_manual . ' + 30 days'));
+			// ------------------------------------------------------------
+			// Solo las facturas a CRÉDITO llevan payment_due_date
+			// ------------------------------------------------------------
+			if ($payment_form_id === 2) {
+				$dueDate = $this->factura->fecha_vencimiento
+					?? date('Y-m-d', strtotime($this->factura->fecha_manual . ' + 30 days'));
+
 				$item['payment_due_date'] = $dueDate;
 			}
 
