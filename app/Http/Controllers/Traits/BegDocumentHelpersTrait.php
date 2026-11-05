@@ -99,9 +99,17 @@ trait BegDocumentHelpersTrait
             $factura->fecha_manual
         );
 
+		// $urlGeneral = "http://localhost:8000";
+		$urlGeneral = "https://app.portafolioerp.com";		
+
 		$tokenAcuse = Crypt::encryptString($empresa->id . '|' . $factura->id);
-		$urlAcuse = "https://app.portafolioerp.com/ventas-acuse-recibo?token={$tokenAcuse}";
-		$urlPdf = "https://app.portafolioerp.com/documentos-generales-pdf?code={$claveUrl}";
+		
+		$urlAcuse = null;
+		$urlPdf = "{$urlGeneral}/documentos-generales-pdf?code={$claveUrl}";
+
+		if ($estado == "pendiente") {
+			$urlAcuse = "{$urlGeneral}/ventas-acuse-recibo?token={$tokenAcuse}";
+		}
 
 		$emailData = [
 			'cliente' => $factura->cliente,

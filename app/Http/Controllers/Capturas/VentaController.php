@@ -556,9 +556,13 @@ class VentaController extends Controller
             // $urlGeneral = "http://localhost:8000";
             $urlGeneral = "https://app.portafolioerp.com";
             $tokenAcuse = Crypt::encryptString($empresa->id . '|' . $venta->id);
-
-            $urlAcuse = "{$urlGeneral}/ventas-acuse-recibo?token={$tokenAcuse}";
+            
+            $urlAcuse = null;
             $urlPdf = "{$urlGeneral}/documentos-generales-pdf?code={$claveUrl}";
+
+            if ($estado == "pendiente") {
+                $urlAcuse = "{$urlGeneral}/ventas-acuse-recibo?token={$tokenAcuse}";
+            }
 
             $facturaPdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
             
