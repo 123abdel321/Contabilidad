@@ -557,6 +557,13 @@ class VentaController extends Controller
             $urlAcuse = "http://localhost:8000/ventas-acuse-recibo?token={$tokenAcuse}";
             $urlPdf = "http://localhost:8000/documentos-generales-pdf?code={$claveUrl}";
 
+            \Log::info('[acuse] generando token', [
+                'app_key_hash' => substr(hash('sha256', config('app.key')), 0, 16),
+                'empresa_id'   => $empresa->id,
+                'venta_id'     => $venta->id,
+                'token_start'  => substr($tokenAcuse, 0, 40),
+            ]);
+
             $facturaPdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
             
             $emailData  = [
@@ -1067,6 +1074,12 @@ class VentaController extends Controller
     public function acuseReciboVista(Request $request)
     {
         $token = (string) $request->get('token');
+
+        \Log::info('[acuse] intentando decrypt', [
+            'app_key_hash' => substr(hash('sha256', config('app.key')), 0, 16),
+            'token_len'    => strlen($token),
+            'token_start'  => substr($token, 0, 40),
+        ]);
 
         try {
             Crypt::decryptString($token);
