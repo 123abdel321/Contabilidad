@@ -17,16 +17,24 @@ class Extracto
     public $documento_referencia;
     public $sin_documento_referencia;
 
-    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null, $id_cuenta = null, $consecutivo = null, $hora = null)
-    {
+    public function __construct(
+        $id_nit = null,
+        $id_tipo_cuenta = null,
+        $documento_referencia = null,
+        $fecha = null,
+        $id_cuenta = null,
+        $consecutivo = null,
+        $hora = null
+    ) {
         $this->id_nit = $id_nit;
-        $this->id_cuenta = $id_cuenta;
         $this->id_tipo_cuenta = $id_tipo_cuenta;
         $this->documento_referencia = $documento_referencia;
-        $this->fecha_dias = $fecha ?: Carbon::now();
         $this->fecha = $fecha;
-        $this->hora = $hora;
+        $this->id_cuenta = $id_cuenta;
         $this->consecutivo = $consecutivo;
+        
+        $this->fecha_dias = $fecha ?: Carbon::now();
+        $this->hora = $hora;
     }
 
     public function actual()

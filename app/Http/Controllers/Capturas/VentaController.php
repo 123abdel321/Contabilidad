@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 // SERVICES
 use App\Http\Services\VentaServices;
@@ -14,26 +16,30 @@ use App\Http\Services\VentaServices;
 use App\Jobs\SendSingleEmail;
 use App\Jobs\ProcessConsultarFE;
 // HELPERS
+use App\Helpers\Extracto;
 use App\Helpers\Printers\VentasPdf;
 use App\Helpers\Printers\VentasPos;
 use App\Helpers\Eco\SendEcoWhatsApp;
 use App\Helpers\Printers\VentasInformeZ;
 use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
+use App\Helpers\FacturaElectronica\AcuseReciboElectronicaSender;
 // TRAITS
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 use App\Http\Controllers\Traits\BegFacturacionElectronica;
 // MODELS
-use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
+use App\Models\Empresas\UsuarioPermisos;
+
+use App\Models\Sistema\Nits;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacResoluciones;
+use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\VariablesEntorno;
-use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacVentaDetalles;
 
 class VentaController extends Controller
@@ -497,7 +503,7 @@ class VentaController extends Controller
                 "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
+        
         try {
             $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
 
@@ -514,6 +520,25 @@ class VentaController extends Controller
 
             $venta = FacVentas::with('cliente')->where('id', $request->id_venta)->first();
 
+            $extractos = (new Extracto(
+                $venta->cliente->id_nit,
+                [
+                    PlanCuentasTipo::TIPO_CUENTA_CXC,//3
+                    PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC//7
+                ],
+                $venta->documento_referencia
+            ))->actual()->get();
+
+            $estado = "pagado";
+            if (count($extractos)) {
+                foreach ($extractos as $extracto) {
+                    if ($extracto->saldo > 0) {
+                        $estado = "pendiente";
+                        break;
+                    }
+                }
+            }
+
             $claveUrl = $this->generarClavePDF(
                 $empresa->id,
                 $venta->comprobante->id,
@@ -528,11 +553,19 @@ class VentaController extends Controller
                 'email'            => $venta->cliente->email,
             ];
 
+            $tokenAcuse = Crypt::encryptString($empresa->id . '|' . $venta->id);
+            $urlAcuse = "http://localhost:8000/ventas-acuse-recibo?token={$tokenAcuse}";
+            $urlPdf = "http://localhost:8000/documentos-generales-pdf?code={$claveUrl}";
+
             $facturaPdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
+            
             $emailData  = [
                 'cliente'  => $venta->cliente,
                 'factura'  => $venta,
-                'empresa'  => $empresa
+                'empresa'  => $empresa,
+                'estado'   => $estado,
+                'urlAcuse' => $urlAcuse,
+                'urlPdf'   => $urlPdf
             ];
 
             if ($facturaPdf) {
@@ -1025,5 +1058,164 @@ class VentaController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * GET: solo renderiza la vista. Si ya hay resultado en sesión lo muestra,
+     * si no, muestra el loader y el JS se encarga de llamar al POST.
+     */
+    public function acuseReciboVista(Request $request)
+    {
+        $token = (string) $request->get('token');
+
+        try {
+            Crypt::decryptString($token);
+        } catch (DecryptException $e) {
+            return response()->view('emails.acuse-result', [
+                'ok'      => false,
+                'mensaje' => 'El enlace no es válido o ha expirado.',
+                'detalle' => [],
+                'token'   => null,
+                'factura' => null,
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $factura = $this->resumenFactura($token);
+
+        $sessionKey = 'acuse_resultado_' . md5($token);
+        $resultado  = session()->pull($sessionKey);
+
+        return response()->view('emails.acuse-result', [
+            'ok'      => $resultado['ok'] ?? null,          // null = procesando
+            'mensaje' => $resultado['mensaje'] ?? '',
+            'detalle' => $resultado['detalle'] ?? [],
+            'token'   => $token,
+            'factura' => $factura,
+        ]);
+    }
+
+    /**
+     * Datos para mostrar al cliente qué factura está aceptando.
+     */
+    private function resumenFactura(string $token): ?array
+    {
+        try {
+            [$empresaId, $ventaId] = explode('|', Crypt::decryptString($token));
+
+            $empresa = Empresa::find($empresaId);
+            if (!$empresa) return null;
+
+            Config::set('database.connections.sam.database', $empresa->token_db);
+            DB::purge('sam');
+            DB::reconnect('sam');
+
+            $venta = FacVentas::with('resolucion')->find($ventaId);
+            if (!$venta) return null;
+
+            return [
+                'empresa'   => $empresa->razon_social ?: $empresa->nombre,
+                'nit'       => $empresa->nit . ($empresa->dv !== null && $empresa->dv !== '' ? '-' . $empresa->dv : ''),
+                'documento' => $venta->documento_referencia,   // PREFIJO-CONSECUTIVO
+                'fecha'     => $venta->fecha_manual ? date('d/m/Y', strtotime($venta->fecha_manual)) : null,
+                'total'     => '$' . number_format((float) $venta->total_factura, 0, ',', '.'),
+            ];
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * POST: ejecuta el acuse, guarda el resultado en sesión y devuelve JSON.
+     * La vista hace fetch() a este método y luego recarga.
+     */
+    public function acuseReciboProcesar(Request $request)
+    {
+        // Aumentar límites por si la DIAN tarda
+        @set_time_limit(120);
+        @ini_set('max_execution_time', 120);
+        @ini_set('default_socket_timeout', 90);
+
+        $token = $request->post('token');
+
+        try {
+            // 1) Decrypt token
+            $payload = Crypt::decryptString($token);
+            [$empresaId, $ventaId] = explode('|', $payload);
+
+            // 2) Cambiar conexión al tenant
+            $empresa = Empresa::find($empresaId);
+            if (!$empresa) {
+                return $this->acuseJson(false, 'Empresa no encontrada.');
+            }
+
+            Config::set('database.connections.sam.database', $empresa->token_db);
+            DB::purge('sam');
+            DB::reconnect('sam');
+
+            // 3) Buscar venta
+            $venta = FacVentas::with('cliente')->find($ventaId);
+            if (!$venta) {
+                return $this->acuseJson(false, 'La factura no existe.');
+            }
+
+            // 4) Idempotencia
+            if (!empty($venta->fe_estado_acuse)) {
+                return $this->acuseJson(true, 'El acuse ya había sido registrado anteriormente.');
+            }
+
+            // 5) CUFE
+            $cufe = $venta->fe_codigo_identificador;
+            if (!$cufe) {
+                return $this->acuseJson(false, 'La factura no tiene CUFE (aún no ha sido aceptada por la DIAN).');
+            }
+
+            // 6) Enviar evento
+            $sender = new AcuseReciboElectronicaSender($venta, $cufe, '1');
+            $result = $sender->sendEvent();
+
+            if (!$result['success']) {
+                return $this->acuseJson(
+                    false,
+                    'No se pudo registrar el acuse: ' . ($result['message'] ?? 'Error desconocido'),
+                    $result
+                );
+            }
+
+            // 7) Guardar
+            $venta->fe_estado_acuse = 1;
+            $venta->save();
+
+            return $this->acuseJson(
+                true,
+                '¡Gracias! Tu acuse de recibo fue registrado correctamente.',
+                $result
+            );
+
+        } catch (DecryptException $e) {
+            return $this->acuseJson(false, 'Token inválido o expirado.');
+        } catch (\Throwable $e) {
+            return $this->acuseJson(false, 'Error inesperado: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Guarda el resultado en sesión (para que la vista lo muestre al recargar)
+     * y devuelve JSON.
+     */
+    private function acuseJson(bool $ok, string $mensaje, array $detalle = [])
+    {
+        $token = request()->post('token');
+        $resultado = [
+            'ok'      => $ok,
+            'mensaje' => $mensaje,
+            'detalle' => $detalle,
+        ];
+
+        if ($token) {
+            session()->put('acuse_resultado_' . md5($token), $resultado);
+            session()->save();
+        }
+
+        return response()->json($resultado);
     }
 }

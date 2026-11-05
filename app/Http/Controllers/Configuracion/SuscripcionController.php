@@ -20,6 +20,7 @@ use App\Helpers\Wompi;
 use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\UsuarioEmpresa;
+use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Empresas\PagosSuscripcion;
 use App\Models\Empresas\EmpresaSuscripcion;
 use App\Models\Empresas\SuscripcionPagoLink;
@@ -2333,7 +2334,7 @@ class SuscripcionController extends Controller
                 ->toArray();
 
             if (!empty($idsPermisos)) {
-                \App\Models\Empresas\UsuarioPermisos::updateOrCreate(
+                UsuarioPermisos::updateOrCreate(
                     [
                         'id_user'    => $user->id,
                         'id_empresa' => $empresa->id,

@@ -277,6 +277,91 @@ abstract class AbstractFESender
 		];
 	}
 
+	/**
+	 * Envía un evento (acuse, aceptación, etc.) al API de FE.
+	 * Usa getExtraParams() como body del request y no arma el payload de factura.
+	 *
+	 * @return array [
+	 *   'success'  => bool,
+	 *   'status'   => int|null,
+	 *   'message'  => string|null,
+	 *   'error'    => string|null,
+	 *   'raw'      => object|null,
+	 * ]
+	 */
+	public function sendEvent(): array
+	{
+		[$bearerToken, $setTestId] = $this->getConfigApiFe();
+		$params = $this->getExtraParams();
+		$url    = $this->getUrl() . $setTestId;
+
+		try {
+			$response = \Illuminate\Support\Facades\Http::withHeaders([
+				'Content-Type'     => 'application/json',
+				'X-Requested-With' => 'XMLHttpRequest',
+				'Authorization'    => 'Bearer ' . $bearerToken,
+			])->post($url, $params);
+
+			$data = (object) $response->json();
+
+			// ---------------------------------------------------------
+			// 1) Error explícito en el BODY (aunque el HTTP sea 200)
+			// ---------------------------------------------------------
+			$bodySuccess = property_exists($data, 'success') ? (bool) $data->success : null;
+
+			if ($bodySuccess === false) {
+				return [
+					'success' => false,
+					'status'  => $response->status(),
+					'message' => $data->message ?? 'El API rechazó el evento',
+					'error'   => $data->errors
+						?? ($data->response['mensajesValidacion']
+							?? ($data->response['unexpected'] ?? $data->message)),
+					'raw'     => $data,
+				];
+			}
+
+			// ---------------------------------------------------------
+			// 2) Error HTTP real (4xx / 5xx)
+			// ---------------------------------------------------------
+			if (!$response->successful()) {
+				$errorDetail = $data->message
+					?? ($data->response['mensajesValidacion']
+						?? ($data->response['unexpected']
+							?? ($data->errors ?? null)));
+
+				return [
+					'success' => false,
+					'status'  => $response->status(),
+					'message' => $data->message ?? 'Error HTTP al enviar el evento',
+					'error'   => $errorDetail,
+					'raw'     => $data,
+				];
+			}
+
+			// ---------------------------------------------------------
+			// 3) Éxito real: HTTP 2xx + body sin success:false
+			// ---------------------------------------------------------
+			return [
+				'success' => true,
+				'status'  => $response->status(),
+				'message' => $data->message
+					?? ($data->response['StatusDescription'] ?? 'Evento enviado con éxito'),
+				'error'   => null,
+				'raw'     => $data,
+			];
+
+		} catch (\Throwable $e) {
+			return [
+				'success' => false,
+				'status'  => null,
+				'message' => 'Excepción al enviar el evento',
+				'error'   => $e->getMessage(),
+				'raw'     => null,
+			];
+		}
+	}
+
 	public function getParams(): array
 	{
 		$fechaManual = $this->factura->fecha_manual ? Carbon::parse($this->factura->fecha_manual) : null;

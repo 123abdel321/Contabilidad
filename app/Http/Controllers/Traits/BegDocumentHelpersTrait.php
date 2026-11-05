@@ -6,16 +6,21 @@ use ZipArchive;
 use Carbon\Carbon;
 use DateTimeImmutable;
 use App\Mail\GeneralEmail;
-use App\Helpers\BegEmailSender;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+//HELPER
+use App\Helpers\Extracto;
+use App\Helpers\BegEmailSender;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\envioEmail;
 use App\Models\Sistema\FacResoluciones;
+use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
 //JOBS
@@ -68,10 +73,43 @@ trait BegDocumentHelpersTrait
 			'email' => $factura->cliente->email,
 		];
 
+		$extractos = (new Extracto(
+			$factura->cliente->id_nit,
+			[
+				PlanCuentasTipo::TIPO_CUENTA_CXC,//3
+				PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC//7
+			],
+			$factura->documento_referencia
+		))->actual()->get();
+
+		$estado = "pagado";
+		if (count($extractos)) {
+			foreach ($extractos as $extracto) {
+				if ($extracto->saldo > 0) {
+					$estado = "pendiente";
+					break;
+				}
+			}
+		}
+
+		$claveUrl = $this->generarClavePDF(
+            $empresa->id,
+            $factura->comprobante->id,
+            $factura->consecutivo,
+            $factura->fecha_manual
+        );
+
+		$tokenAcuse = Crypt::encryptString($empresa->id . '|' . $factura->id);
+		$urlAcuse = "http://localhost:8000/ventas-acuse-recibo?token={$tokenAcuse}";
+		$urlPdf = "http://localhost:8000/documentos-generales-pdf?code={$claveUrl}";
+
 		$emailData = [
 			'cliente' => $factura->cliente,
 			'factura' => $factura,
-			'empresa' => $empresa
+			'empresa' => $empresa,
+			'estado'   => $estado,
+			'urlAcuse' => $urlAcuse,
+			'urlPdf'   => $urlPdf
 		];
 
 		SendSingleEmail::dispatch(

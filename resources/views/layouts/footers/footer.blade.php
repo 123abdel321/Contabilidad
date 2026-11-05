@@ -19,7 +19,7 @@
             <div class="nav-link col active seleccionar-view"
                  id="tab-dashboard"
                  onclick="seleccionarView('dashboard')">
-                <i class="fas fa-home"></i>&nbsp;Inicios
+                <i class="fas fa-home"></i>&nbsp;Inicio
             </div>
         </li>
     </ul>
