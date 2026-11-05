@@ -300,13 +300,33 @@ abstract class AbstractFESender
 				'Content-Type'     => 'application/json',
 				'X-Requested-With' => 'XMLHttpRequest',
 				'Authorization'    => 'Bearer ' . $bearerToken,
-			])->post($url, $params);
+			])
+				->timeout(90)
+				->connectTimeout(15)
+				->post($url, $params);
 
-			$data = (object) $response->json();
+			// Sanitizar UTF-8 antes de parsear (por el bug del API de FE)
+			$bodyRaw   = $response->body();
+			$bodyClean = mb_convert_encoding($bodyRaw, 'UTF-8', 'UTF-8');
+			if (!mb_check_encoding($bodyClean, 'UTF-8')) {
+				$bodyClean = preg_replace('/[^\x09\x0A\x0D\x20-\x7E\xC2-\xF4][\x80-\xBF]*/', '?', $bodyClean);
+			}
 
-			// ---------------------------------------------------------
-			// 1) Error explícito en el BODY (aunque el HTTP sea 200)
-			// ---------------------------------------------------------
+			$data = json_decode($bodyClean);
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				return [
+					'success' => false,
+					'status'  => $response->status(),
+					'message' => 'El API de FE devolvió un response no parseable: ' . json_last_error_msg(),
+					'error'   => 'json_decode: ' . json_last_error_msg(),
+					'raw'     => ['body_head' => mb_substr($bodyClean, 0, 1000)],
+				];
+			}
+			$data = (object) $data;
+
+			// ============================================================
+			// 1) Error explícito del API (success:false en la raíz)
+			// ============================================================
 			$bodySuccess = property_exists($data, 'success') ? (bool) $data->success : null;
 
 			if ($bodySuccess === false) {
@@ -321,9 +341,9 @@ abstract class AbstractFESender
 				];
 			}
 
-			// ---------------------------------------------------------
+			// ============================================================
 			// 2) Error HTTP real (4xx / 5xx)
-			// ---------------------------------------------------------
+			// ============================================================
 			if (!$response->successful()) {
 				$errorDetail = $data->message
 					?? ($data->response['mensajesValidacion']
@@ -339,9 +359,62 @@ abstract class AbstractFESender
 				];
 			}
 
-			// ---------------------------------------------------------
-			// 3) Éxito real: HTTP 2xx + body sin success:false
-			// ---------------------------------------------------------
+			// ============================================================
+			// 3) NUEVO: revisar la respuesta interna de la DIAN
+			//    Aunque el API diga success:true, la DIAN puede rechazar.
+			// ============================================================
+			$resultDian = $data->ResponseDian
+							->Envelope
+							->Body
+							->SendEventUpdateStatusResponse
+							->SendEventUpdateStatusResult
+							?? null;
+
+			if ($resultDian) {
+				$isValid     = (string) ($resultDian->IsValid ?? '');
+				$statusCode  = (string) ($resultDian->StatusCode ?? '');
+				$statusDesc  = (string) ($resultDian->StatusDescription ?? '');
+				$statusMsg   = (string) ($resultDian->StatusMessage ?? '');
+				$errorDian   = $resultDian->ErrorMessage->string ?? null;
+				$cude        = $data->cude ?? null;
+
+				// 3.1) Rechazado por la DIAN (IsValid = false o StatusCode = 99)
+				if ($isValid === 'false' || $statusCode === '99') {
+					$detalleError = is_array($errorDian)
+						? implode(' | ', $errorDian)
+						: (string) $errorDian;
+
+					return [
+						'success' => false,
+						'status'  => 422,
+						'message' => 'La DIAN rechazó el acuse: ' . ($detalleError ?: $statusDesc ?: 'sin detalle'),
+						'error'   => [
+							'IsValid'           => $isValid,
+							'StatusCode'        => $statusCode,
+							'StatusDescription' => $statusDesc,
+							'StatusMessage'     => $statusMsg,
+							'ErrorMessage'      => $detalleError,
+						],
+						'cude'    => $cude,
+						'raw'     => $data,
+					];
+				}
+
+				// 3.2) Aceptado por la DIAN
+				return [
+					'success' => true,
+					'status'  => $response->status(),
+					'message' => $data->message
+						?? ($statusDesc ?: 'Evento aceptado por la DIAN'),
+					'error'   => null,
+					'cude'    => $cude,
+					'raw'     => $data,
+				];
+			}
+
+			// ============================================================
+			// 4) Fallback: API dice success:true pero sin estructura DIAN reconocible
+			// ============================================================
 			return [
 				'success' => true,
 				'status'  => $response->status(),
@@ -351,7 +424,27 @@ abstract class AbstractFESender
 				'raw'     => $data,
 			];
 
+		} catch (\Illuminate\Http\Client\ConnectionException $e) {
+			\Log::error('[FE sendEvent] timeout/conexión', [
+				'url'   => $url,
+				'error' => $e->getMessage(),
+			]);
+
+			return [
+				'success' => false,
+				'status'  => null,
+				'message' => 'La DIAN tardó demasiado en responder. Intenta nuevamente en unos minutos.',
+				'error'   => $e->getMessage(),
+				'raw'     => null,
+			];
 		} catch (\Throwable $e) {
+			\Log::error('[FE sendEvent] excepción', [
+				'url'   => $url,
+				'error' => $e->getMessage(),
+				'file'  => $e->getFile(),
+				'line'  => $e->getLine(),
+			]);
+
 			return [
 				'success' => false,
 				'status'  => null,

@@ -553,16 +553,12 @@ class VentaController extends Controller
                 'email'            => $venta->cliente->email,
             ];
 
+            // $urlGeneral = "http://localhost:8000";
+            $urlGeneral = "https://app.portafolioerp.com";
             $tokenAcuse = Crypt::encryptString($empresa->id . '|' . $venta->id);
-            $urlAcuse = "https://app.portafolioerp.com/ventas-acuse-recibo?token={$tokenAcuse}";
-            $urlPdf = "https://app.portafolioerp.com/documentos-generales-pdf?code={$claveUrl}";
 
-            \Log::info('[acuse] generando token', [
-                'app_key_hash' => substr(hash('sha256', config('app.key')), 0, 16),
-                'empresa_id'   => $empresa->id,
-                'venta_id'     => $venta->id,
-                'token_start'  => substr($tokenAcuse, 0, 40),
-            ]);
+            $urlAcuse = "{$urlGeneral}/ventas-acuse-recibo?token={$tokenAcuse}";
+            $urlPdf = "{$urlGeneral}/documentos-generales-pdf?code={$claveUrl}";
 
             $facturaPdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
             
@@ -1074,12 +1070,6 @@ class VentaController extends Controller
     public function acuseReciboVista(Request $request)
     {
         $token = (string) $request->get('token');
-
-        \Log::info('[acuse] intentando decrypt', [
-            'app_key_hash' => substr(hash('sha256', config('app.key')), 0, 16),
-            'token_len'    => strlen($token),
-            'token_start'  => substr($token, 0, 40),
-        ]);
 
         try {
             Crypt::decryptString($token);
