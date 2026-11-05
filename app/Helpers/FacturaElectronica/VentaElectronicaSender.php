@@ -35,9 +35,25 @@ class VentaElectronicaSender extends AbstractFESender
 
 	protected function customer()
 	{
-		// type_organization_id: 1 = Persona Jurídica, 2 = Persona Natural
-		// tipo_contribuyente: 1 = Persona jurídica, 2 = Persona natural
-		$typeOrganizationId = $this->cliente->tipo_contribuyente == 1 ? 1 : 2;
+		// Obtener el tipo de documento desde la relación o por código
+		// Ajusta según cómo tengas la relación en tu modelo Cliente
+		$tipoDocumento = $this->cliente->tipo_documento; // o el nombre de tu relación
+		$codigoTipoDoc = $tipoDocumento->codigo ?? null;
+
+		// Determinar si es persona natural o jurídica
+		// Códigos DIAN: 11,12,13,21,22,41,42,43,91,99 → Persona Natural
+		// 31, 50 → Persona Jurídica (NIT)
+		$codigosPersonaNatural = ['11', '12', '13', '21', '22', '41', '42', '43', '91', '99'];
+		
+		if (in_array($codigoTipoDoc, $codigosPersonaNatural)) {
+			$typeOrganizationId = 2; // Persona Natural
+		} elseif (in_array($codigoTipoDoc, ['31', '50'])) {
+			$typeOrganizationId = 1; // Persona Jurídica
+		} else {
+			// Fallback usando el campo tipo_contribuyente de la tabla nits
+			// 1 = Persona jurídica, 2 = Persona natural
+			$typeOrganizationId = $this->cliente->tipo_contribuyente == 1 ? 1 : 2;
+		}
 
 		return [
 			'identification_number' => $this->cliente->numero_documento,
@@ -46,7 +62,7 @@ class VentaElectronicaSender extends AbstractFESender
 			'phone' => $this->cliente->telefono_1 ?: $this->cliente->telefono_2,
 			'address' => $this->cliente->direccion,
 			'merchant_registration' => "0000000-00",
-			'type_document_identification_id' => $this->cliente->id_tipo_documento,
+			'type_document_identification_id' => $tipoDocumento->id ?? null,
 			'type_organization_id' => $typeOrganizationId,
 		];
 	}
