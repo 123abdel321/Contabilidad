@@ -100,8 +100,8 @@ trait BegDocumentHelpersTrait
         );
 
 		$tokenAcuse = Crypt::encryptString($empresa->id . '|' . $factura->id);
-		$urlAcuse = "http://localhost:8000/ventas-acuse-recibo?token={$tokenAcuse}";
-		$urlPdf = "http://localhost:8000/documentos-generales-pdf?code={$claveUrl}";
+		$urlAcuse = "https://app.portafolioerp.com/ventas-acuse-recibo?token={$tokenAcuse}";
+		$urlPdf = "https://app.portafolioerp.com/documentos-generales-pdf?code={$claveUrl}";
 
 		$emailData = [
 			'cliente' => $factura->cliente,

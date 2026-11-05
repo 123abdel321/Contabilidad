@@ -554,8 +554,8 @@ class VentaController extends Controller
             ];
 
             $tokenAcuse = Crypt::encryptString($empresa->id . '|' . $venta->id);
-            $urlAcuse = "http://localhost:8000/ventas-acuse-recibo?token={$tokenAcuse}";
-            $urlPdf = "http://localhost:8000/documentos-generales-pdf?code={$claveUrl}";
+            $urlAcuse = "https://app.portafolioerp.com/ventas-acuse-recibo?token={$tokenAcuse}";
+            $urlPdf = "https://app.portafolioerp.com/documentos-generales-pdf?code={$claveUrl}";
 
             \Log::info('[acuse] generando token', [
                 'app_key_hash' => substr(hash('sha256', config('app.key')), 0, 16),
