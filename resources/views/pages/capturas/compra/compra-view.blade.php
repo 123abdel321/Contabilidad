@@ -156,7 +156,7 @@
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="compra_total_iva">0.00</h6></td>
                             </tr>
-                            <tr id="totales_descuento" style="display: none;">
+                            <tr id="totales_descuento-compra" style="display: none;">
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="compra_total_descuento">0.00</h6></td>
                             </tr>
@@ -226,7 +226,7 @@
                         </div>
                     </div>
 
-                    <div id="cambio-totals" class="row" style="display: none;">
+                    <div id="cambio-totals-compra" class="row" style="display: none;">
                         <div class="col-6">
                             <h6 style="margin-bottom: 0px; font-weight: bold; margin-left: 4px; color: blue;">CAMBIO: </h6>
                         </div>

@@ -1,2022 +1,1667 @@
-var fecha = null;
-var venta_table = null;
-var idVentaProducto = 0;
-var guardarVenta = false;
-var $comboCliente = null;
-var createNewNit = false;
-var $comboVendedor = null;
-var retencionesVentas = [];
-var topeRetencionVenta = 0;
-var guardandoVenta = false;
-var $comboResolucionVentas = null;
-var $comboBodegaVenta = null;
-var key13PressNewRow = false;
-var redondearFactura = false;
-var venta_table_pagos = null;
-var totalAnticiposVenta = null;
-var validarFacturaVenta = null;
-var porcentajeRetencionVenta = 0;
-var responsabilidadesVenta = [];
-var calculaRetencionVenta = false;
-var abrirFormasPagoVentas = false;
-var totalAnticiposDisponibles = 0;
-var totalAnticiposVentaCuenta = null;
-var validarExistenciasProducto = null;
+/**
+ * ventas.js  (versión refactorizada)
+ *
+ * Cambios principales respecto a la versión anterior:
+ *  - Todo encapsulado en un IIFE ('use strict'); solo se exponen las funciones que el HTML necesita.
+ *  - Estado en memoria (state.lineas) como fuente de verdad: el DOM solo muestra.
+ *  - Cálculos en funciones puras (calcularLinea / calcularTotales); un único refrescar() pinta.
+ *  - Grilla de productos sin DataTables (tbody simple): agregar filas es instantáneo.
+ *  - Eventos delegados (sin onclick/onchange inline) y registrados una sola vez.
+ *  - Datos escapados antes de insertarlos en HTML.
+ *  - Sin CountUp en cada cálculo, sin popovers recreados en cada tecla.
+ *  - Bugs corregidos: .lengt, descuento por %, retenciones duplicadas, pagos bloqueados tras error,
+ *    responseJSON undefined, globales accidentales, HTML mal formado, etc.
+ *
+ * Dependencias globales que se asumen (las mismas del archivo original):
+ *  headers, base_url, bucketUrl, lenguajeDatatable, multiplesPrecios, ventaExistencias, ventaDescuento,
+ *  ventaFecha, ventaNegativa, ventaRapida, vendedoresVentas, ivaIncluidoVentas, primeraResolucionVenta,
+ *  primeraBodegaVenta, primeraNit, cuentaPropina, porcentajePropina, valor_uvt, getResponsabilidades,
+ *  formatCurrency, formatCurrencyValue, stringToNumberFloat, arreglarMensajeError, agregarToast,
+ *  abrirNitGeneral, abrirNitDetalle, Swal, select2, DataTables (solo para formas de pago), popover.
+ *
+ *  Opcional: window.redondearFactura (si otro script lo activa).
+ */
+(function (window, $) {
+    'use strict';
 
-function ventaInit () {
+    // ------------------------------------------------------------------
+    // Constantes
+    // ------------------------------------------------------------------
+    const ID_FORMA_PAGO_EFECTIVO = 1;
+    const ID_TIPO_CUENTA_ANTICIPO = 8;
+    // El código original redondeaba a 10 pesos (toFixed(2) * 1000 sobre total/1000).
+    // Cambia a 100 o 1000 si tu regla real es otra.
+    const REDONDEO_PASO = 10;
+    const LOCALE_NUM = 'en-US'; // mismo estilo de miles/decimales que CountUp y ja-JP
 
-    cargarchangesVenta();
-    cargarFechasVentas();
-    cargarTablasVenta();
-    cargarCombosVenta();
-    cargarPopoverVenta();
-    loadFormasPagoVenta();
-    actualizarInfoPropinaVentas();
+    const fmt2 = new Intl.NumberFormat(LOCALE_NUM, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt0 = new Intl.NumberFormat(LOCALE_NUM, { maximumFractionDigits: 0 });
 
-    $('.water').hide();
-}
+    const LANG = {
+        noResults: () => 'No hay resultado',
+        searching: () => 'Buscando..',
+        inputTooShort: () => 'Por favor introduce 1 o más caracteres'
+    };
 
-function cargarTablasVenta() {
-    venta_table = $('#ventaTable').DataTable({
-        dom: '',
-        pageLength: 200,
-        responsive: false,
-        processing: true,
-        serverSide: false,
-        deferLoading: 0,
-        initialLoad: false,
-        autoWidth: true,
-        language: lenguajeDatatable,
-        ordering: false,
-        columns: [
-            {//BORRAR
-                "data": function (row, type, set, col){
-                    return `<span class="btn badge bg-gradient-danger drop-row-grid" onclick="deleteProductoVenta(${idVentaProducto})" id="delete-producto-venta_${idVentaProducto}"><i class="fas fa-trash-alt"></i></span>`;
-                }
-            },
-            {//PRODUCTO
-                "data": function (row, type, set, col){
-                    return `<select
-                            class="form-control form-control-sm venta_producto combo-grid"
-                            id="venta_producto_${idVentaProducto}"
-                            onchange="changeProductoVenta(${idVentaProducto})"
-                            onfocusout="calcularProductoVenta(${idVentaProducto})"
-                            inert
-                        ></select>`;
-                },
-            },
-            {//EXISTENCIAS
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 30px; text-align: right;" id="venta_existencia_${idVentaProducto}" disabled>`;
-                }
-            },
-            {//CANTIDAD
-                "data": function (row, type, set, col){
-                    return `
-                        <div class="input-group" style="height: 30px;">
-                            <input type="number" class="form-control form-control-sm" style="min-width: 80px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: right;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocus="focusCantidadVenta(${idVentaProducto})" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
-                            <i class="fa fa-spinner fa-spin fa-fw venta_producto_load" id="venta_producto_load_${idVentaProducto}" style="display: none;"></i>
-                            <div id="venta_cantidad_text_${idVentaProducto}" style="position: absolute; margin-top: 30px; z-index: 9;" class="invalid-feedback">
-                            </div>
-                        </div>
-                    `;
-                }
-            },
-            {//COSTO
-                "data": function (row, type, set, col){
-                    if (multiplesPrecios) {
-                        return `
-                            <div class="input-group" style="width: 180px; height: 30px;">
-                                <input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right; height: 30px;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusCostoVenta(${idVentaProducto})" disabled>
-                                <div id="texto_extracto_${idVentaProducto}" class="valid-feedback info-factura">Nueva factura</div>
-                                    <div class="input-group-append button-group">
-                                        <span href="javascript:void(0)" id="button_preciosventas_${idVentaProducto}" class="btn badge bg-gradient-light btn-group btn-precios-ventas" style="min-width: 30px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 30px;">
-                                            <i class="fa-solid fa-money-bill" style="font-size: 17px; margin-top: 1px;"></i>
-                                            <b style="vertical-align: text-top;"></b>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }
+    // ------------------------------------------------------------------
+    // Estado
+    // ------------------------------------------------------------------
+    const state = {
+        nextId: 0,
+        lineas: new Map(),            // id -> línea
+        capturando: false,
+        guardando: false,
+        abrirFormasPago: false,
+        createNewNit: false,
+        calculaRetencion: false,
+        responsabilidades: [],
+        anticiposTotal: 0,
+        anticiposPorCuenta: {},       // idCuenta -> saldo
+        ultimosTotales: null,
+        idempotencyKey: null,
+        reqExistencias: null,
+        inited: false,
+        $cliente: null,
+        $vendedor: null,
+        $resolucion: null,
+        $bodega: null,
+        tablaPagos: null
+    };
 
-                    return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusCostoVenta(${idVentaProducto})" disabled>`;
-                }
-            },
-            {//% DESCUENTO
-                "data": function (row, type, set, col){
-                    return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="venta_descuento_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusPDescuentoVenta(${idVentaProducto})" disabled>`;
-                }
-            },
-            {//VALOR DESCUENTO
-                "data": function (row, type, set, col){
-                    return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_descuento_valor_${idVentaProducto}" value="0" onkeydown="DescuentoTotalVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusVDescuentoVenta(${idVentaProducto})" disabled>`;
-                }
-            },
-            {//VALOR IVA
-                "data": function (row, type, set, col){
-                    return `<div class="form-group mb-3" style="min-width: 85px;">
-                        <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
-                            <span id="venta_iva_porcentaje_text_${idVentaProducto}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
-                            <input style="height: 30px; text-align: right; min-width: 80px;" type="text" class="form-control form-control-sm" value="0" id="venta_iva_valor_${idVentaProducto}" value="0" disabled>
-                        </div>
-                    </div>
-                    <input type="number" class="form-control form-control-sm" style="min-width: 110px; display: none;" id="venta_iva_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})">`;
-                }
-            },
-            {//TOTAL
-                "data": function (row, type, set, col){
-                    return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_total_${idVentaProducto}" value="0" disabled>`;
-                }
-            },
-            {//CONCEPTO
-                "data": function (row, type, set, col){
-                    return `<input type="text" class="form-control form-control-sm" id="venta_concepto_${row.id}" onkeypress="changeObservacionGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeObservacionGasto(${row.id})" style="width: 180px !important;" value="${row.concepto}" disabled>`;
-                }
-            },
-        ],
-        columnDefs: [{
-            'orderable': false
-        }],
-        initComplete: function () {
-            $('#ventaTable').on('draw.dt', function() {
-                $('.venta_producto').select2({
-                    theme: 'bootstrap-5',
-                    dropdownCssClass: 'custom-venta_producto',
-                    delay: 250,
-                    minimumInputLength: 2,
-                    language: {
-                        noResults: function() {
-                            return "No hay resultado";        
-                        },
-                        searching: function() {
-                            return "Buscando..";
-                        },
-                        inputTooShort: function () {
-                            return "Por favor introduce 2 o más caracteres";
-                        }
-                    },
-                    ajax: {
-                        url: 'api/producto/combo-producto',
-                        headers: headers,
-                        data: function (params) {
-                            var query = {
-                                q: params.term,
-                                id_bodega: $("#id_bodega_venta").val(),
-                                id_cliente: $("#id_cliente_venta").val(),
-                                captura: 'venta',
-                                _type: 'query'
-                            }
-                            return query;
-                        },
-                        dataType: 'json',
-                        processResults: function (data) {
-                            return {
-                                results: data.data
-                            };
-                        }
-                    },
-                    templateResult: formatProducto,
-                    templateSelection: formatRepoSelection
-                });
-                
-                $("input[data-type='currency']").on({
-                    keyup: function(event) {
-                        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
-                            formatCurrency($(this));
-                        }
-                    },
-                    blur: function() {
-                        formatCurrency($(this), "blur");
-                    }
-                });
-            });
+    // ------------------------------------------------------------------
+    // Utilidades
+    // ------------------------------------------------------------------
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
 
-            function formatProducto (producto) {
-                if (producto.loading) return producto.text;
+    const num = (v) => {
+        const n = stringToNumberFloat(v);
+        return Number.isFinite(n) ? n : 0;
+    };
 
-                var urlImagen = producto.imagen ?
-                    bucketUrl+producto.imagen :
-                    '/img/sin_imagen.png';
+    const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
 
-                var inventario = producto.inventarios.length > 0 ? 
-                    producto.inventarios[0].cantidad+' Existencias' :
-                    'Sin inventario';
-
-                var color = producto.inventarios.length > 0 ?
-                    producto.inventarios[0].cantidad <= 0 ? 
-                    '#a30000' : '#1c4587' :
-                    '#838383';
-
-                var $container = '';
-
-                if (producto.familia.inventario && ventaExistencias) {
-                    var $container = $(`
-                    <div class="row">
-                        <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
-                            <img
-                                style="width: 40px; border-radius: 10%;"
-                                    src="${urlImagen}" />
-                            </div>
-                            <div class="col-9" style="padding-left: 0px !important">
-                                <div class="row" style="margin-left: 5px;">
-                                    <div class="col-12" style="padding-left: 0px !important">
-                                        <h6 style="font-size: 12px; margin-bottom: 0px; color: black;">${producto.text}</h6>
-                                    </div>
-                                    <div class="col-12" style="padding-left: 0px !important">
-                                        <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
-                                        ${inventario}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `);
-                } else {
-                    var $container = $(`
-                        <div class="row">
-                            <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
-                                <img
-                                    style="width: 40px; border-radius: 10%;"
-                                    src="${urlImagen}" />
-                            </div>
-                            <div class="col-9">
-                                <div class="row">
-                                    <div class="col-12" style="padding-left: 0px !important">
-                                        <h6 style="font-size: 12px; margin-bottom: 0px; color: black; margin-left: 10px;">${producto.text}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `);
-                }
-
-
-                return $container;
-            }
-
-            function formatRepoSelection (producto) {
-                return producto.full_name || producto.text;
-            }
-        }
-    });
-
-    venta_table_pagos = $('#ventaFormaPago').DataTable({
-        dom: '',
-        paging: false,
-        responsive: false,
-        processing: true,
-        serverSide: true,
-        deferLoading: 0,
-        initialLoad: false,
-        language: lenguajeDatatable,
-        sScrollX: "100%",
-        scrollX: true,
-        ordering: false,
-        ajax:  {
-            type: "GET",
-            headers: headers,
-            data: {
-                type: 'ventas'
-            },
-            url: base_url + 'forma-pago/combo-forma-pago',
-        },
-        columns: [
-            {"data": function (row, type, set){
-                let styles = "margin-bottom: 0px; font-size: 13px;";
-                let stylesInfo = null;
-                let naturaleza = 'Dedito - Ventas';
-                if (row.cuenta.naturaleza_ventas) {
-                    naturaleza = 'Error de naturaleza en ventas';
-                    stylesInfo = "border: solid 1px red !important; color: red !important;"
-                }
-                let dataContent = `<b class='titulo-popover'>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
-                if (row.cuenta.tipos_cuenta.length > 0) {
-                    var tiposCuentas = row.cuenta.tipos_cuenta;
-                    for (let index = 0; index < tiposCuentas.length; index++) {
-                        const tipoCuenta = tiposCuentas[index];
-                        if (tipoCuenta.id_tipo_cuenta == 8) {
-                            styles+= " color: #0bb19e; font-weight: 600;"
-                            dataContent = `<b class='titulo-popover'>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
-                        }
-                    }
-                }
-                return `<p style="${styles}">
-                            <i
-                                class="fas fa-info icon-info"
-                                style="${stylesInfo}";
-                                title="${dataContent}"
-                                data-toggle="popover"
-                                data-html="true"
-                            >
-                        </i> ${row.nombre}
-                    </p>`;
-            }},
-            {"data": function (row, type, set){
-                var anticipos = false;
-                let id_cuenta = row.cuenta.id;
-                var className = '';
-                if (row.cuenta.tipos_cuenta.length > 0) {
-                    var tiposCuentas = row.cuenta.tipos_cuenta;
-                    for (let index = 0; index < tiposCuentas.length; index++) {
-                        const tipoCuenta = tiposCuentas[index];
-                        if (tipoCuenta.id_tipo_cuenta == 8) {
-                            anticipos = true;
-                            className = 'anticipos'
-                        }
-                    }
-                }
-                return `<input type="text" data-type="currency" class="form-control form-control-sm ${className}" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoVenta(${row.id}, ${anticipos}, ${id_cuenta})" onfocusout="calcularVentaPagos(${row.id}, ${anticipos})" onkeypress="changeFormaPago(${row.id}, ${anticipos}, event,  ${id_cuenta})" id="venta_forma_pago_${row.id}">`;
-            }},
-        ],
-        initComplete: function () {
-            $('#ventaFormaPago').on('draw.dt', function() {
-                $("input[data-type='currency']").on({
-                    keyup: function(event) {
-                        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
-                            formatCurrency($(this));
-                        }
-                    },
-                    blur: function() {
-                        formatCurrency($(this), "blur");
-                    }
-                });
-                $('[data-toggle="popover"]').popover({
-                    trigger: 'hover',
-                    html: true,
-                    placement: 'top',
-                    container: 'body',
-                    customClass: 'popover-formas-pagos'
-                });
-            });
-        }
-    });
-
-    var column2 = venta_table.column(2);
-    var column5 = venta_table.column(5);
-    var column6 = venta_table.column(6);
-
-    if (ventaDescuento){
-        column5.visible(true);
-        column6.visible(true);
-    } else {
-        column5.visible(false);
-        column6.visible(false);
-    }
-
-    if (ventaExistencias) column2.visible(true);
-    else column2.visible(false);
-}
-
-function cargarFechasVentas() {
-    var dateNow = new Date();
-
-    var fechaHoraVenta = dateNow.getFullYear() + '-' + 
-        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
-        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
-        ("0" + dateNow.getHours()).slice(-2) + ':' + 
-        ("0" + dateNow.getMinutes()).slice(-2);
-    $('#fecha_manual_venta').val(fechaHoraVenta);
-
-    if (ventaFecha) $("#fecha_manual_venta").prop('disabled', false);
-    else $("#fecha_manual_venta").prop('disabled', true);
-}
-
-function cargarPopoverVenta() {
-    $('[data-toggle="popover"]').popover({
-        trigger: 'hover',
-        html: true,
-        placement: 'top',
-        container: 'body',
-        customClass: 'popover-formas-pagos'
-    });
-}
-
-function cargarCombosVenta() {
-    $comboCliente = $('#id_cliente_venta').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        dropdownCssClass: 'custom-id_cliente_venta',
-        language: {
-            noResults: function() {
-                createNewNit = true;
-                return "No hay resultado";        
-            },
-            searching: function() {
-                createNewNit = false;
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
-            }
-        },
-        ajax: {
-            url: 'api/nit/combo-nit',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $comboVendedor = $('#id_vendedor_venta').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        allowClear: true,
-        language: {
-            noResults: function() {
-                return "No hay resultado";        
-            },
-            searching: function() {
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
-            }
-        },
-        ajax: {
-            url: 'api/vendedores/combo',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                var data_modified = $.map(data.data, function (obj) {
-                    obj.text = obj.nit.nombre_completo;
-                    return obj;
-                });
-                return {
-                    results: data_modified
-                };
-            },
-        }
-    });
-
-    $comboResolucionVentas = $('#id_resolucion_venta').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        language: {
-            noResults: function() {
-                return "No hay resultado";        
-            },
-            searching: function() {
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
-            }
-        },
-        ajax: {
-            url: 'api/resoluciones/combo-resoluciones',
-            headers: headers,
-            data: function (params) {
-                var query = {
-                    q: params.term,
-                    tipo_resoluciones: [0, 1],
-                    _type: 'query'
-                }
-                return query;
-            },
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $comboBodegaVenta = $('#id_bodega_venta').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        language: {
-            noResults: function() {
-                return "No hay resultado";        
-            },
-            searching: function() {
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
-            }
-        },
-        ajax: {
-            url: 'api/bodega/combo-bodega',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $('#id_tipo_documento_venta_nit').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#nitVentaFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/nit/combo-tipo-documento',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $('#id_ciudad_venta_nit').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#nitVentaFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/ciudades',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    if(primeraResolucionVenta && primeraResolucionVenta.length > 0){
-        var dataResolucion = {
-            id: primeraResolucionVenta[0].id,
-            text: primeraResolucionVenta[0].prefijo + ' - ' + primeraResolucionVenta[0].nombre
+    function debounce(fn, ms) {
+        let t = null;
+        return function (...args) {
+            clearTimeout(t);
+            t = setTimeout(() => fn.apply(this, args), ms);
         };
-        var newOption = new Option(dataResolucion.text, dataResolucion.id, false, false);
-        $comboResolucionVentas.append(newOption).val(dataResolucion.id).trigger('change');
     }
 
-    if(primeraBodegaVenta && primeraBodegaVenta.length > 0){
-        var dataBodega = {
-            id: primeraBodegaVenta[0].id,
-            text: primeraBodegaVenta[0].codigo + ' - ' + primeraBodegaVenta[0].nombre
-        };
-        var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
-        $comboBodegaVenta.append(newOption).val(dataBodega.id).trigger('change');
+    function setText(id, valor) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (Math.abs(valor) < 0.005) valor = 0;
+        el.textContent = fmt2.format(valor);
     }
 
-    if (primeraNit) {
-        var dataCliente = {
-            id: primeraNit.id,
-            text: primeraNit.numero_documento + ' - ' + primeraNit.nombre_completo
-        };
-        var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-        $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
-        procesarCambioClienteVenta(primeraNit);
-    }
+    let countUpTotal = null;
+    let ultimoTotalAnimado = null;
 
-    $('#id_cliente_venta').on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        if(data.length){
-            procesarCambioClienteVenta(data[0]);
-        }
-    });
-    
-    $('#id_resolucion_venta').on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        if(data.length){
-            document.getElementById('iniciarCapturaVenta').click();
-        }
-    });
-}
+    /** Anima solo el total grande. La instancia se crea una vez y luego se actualiza desde el valor actual. */
+    function animarTotal(valor) {
+        valor = round2(valor);
+        if (valor === ultimoTotalAnimado) return; // sin cambios, no relanza animación
+        ultimoTotalAnimado = valor;
 
-function procesarCambioClienteVenta(data) {
-    if (!data) {
-        $("#btn_ver_cliente_venta").hide();
-        return;
-    }
-
-    calculaRetencionVenta = false;
-    $("#btn_ver_cliente_venta").show();
-    $('#checkRetencionVentas').prop('checked', false);
-    
-    if (data.retencion) {
-        calculaRetencionVenta = true;
-        $('#checkRetencionVentas').prop('checked', true);
-    }
-
-    responsabilidadesVenta = getResponsabilidades(data.id_responsabilidades);
-    clearFormasPagoVenta();
-    changeRetencionVentas();
-    loadAnticiposClienteVentas();
-    if (vendedoresVentas) loadVendedorCliente();
-}
-
-function focusCantidadVenta (idRow) {
-    setTimeout(function(){
-        $('#venta_cantidad_'+idRow).select();
-    },80);
-}
-
-function focusCostoVenta (idRow) {
-    setTimeout(function(){
-        $('#venta_costo_'+idRow).select();
-    },80);
-}
-
-function focusPDescuentoVenta (idRow) {
-    setTimeout(function(){
-        $('#venta_descuento_porcentaje_'+idRow).select();
-    },80);
-}
-
-function focusVDescuentoVenta (idRow) {
-    setTimeout(function(){
-        $('#venta_descuento_valor_'+idRow).select();
-    },80);
-}
-
-function loadAnticiposClienteVentas() {
-    totalAnticiposDisponibles = 0;
-    $('#input-anticipos-venta').hide();
-    $('#venta_anticipo_disp_view').hide();
-    $('#saldo_anticipo_venta').val(0);
-    $('#venta_anticipo_disp').text('0.00');
-
-    if(!$('#id_cliente_venta').val()) return;
-
-    let data = {
-        id_nit: $('#id_cliente_venta').val(),
-        id_tipo_cuenta: [8]
-    }
-
-    $.ajax({
-        url: base_url + 'extracto-anticipos',
-        method: 'GET',
-        data: data,
-        headers: headers,
-        dataType: 'json',
-    }).done((res) => {
-        if(res.success){
-
-            totalAnticiposVenta = 0;
-            totalAnticiposVentaCuenta = [];
-
-            if (res.data.length) {
-                const anticiposDisponibles = res.data;
-                for (let index = 0; index < anticiposDisponibles.length; index++) {
-                    const anticipo = anticiposDisponibles[index];
-
-                    let idCuenta = anticipo.id_cuenta;
-                    let cuentaExistente = encontrarCuentaVenta(idCuenta);
-                    
-                    totalAnticiposVenta+= Math.abs(parseFloat(anticipo.saldo));
-
-                    if (cuentaExistente) {
-                        cuentaExistente[idCuenta].saldo = (cuentaExistente[idCuenta].saldo || 0) + parseFloat(anticipo.saldo);
-                    } else {
-                        let nuevoObj = {};
-                        nuevoObj[idCuenta] = {
-                            'id_cuenta': idCuenta,
-                            'saldo': Math.abs(parseFloat(anticipo.saldo))
-                        };
-                        totalAnticiposVentaCuenta.push(nuevoObj);
-                    }
-                }
-
-                if (totalAnticiposVenta) {
-                    $('#venta_anticipo_disp_view').show();
-                    $('#saldo_anticipo_venta').val(new Intl.NumberFormat('ja-JP').format(totalAnticiposVenta));
-                    $('#venta_anticipo_disp').text(new Intl.NumberFormat('ja-JP').format(totalAnticiposVenta));
-                }
-            }
-        }
-    }).fail((err) => {
-        var mensaje = err.responseJSON.message;
-        var errorsMsg = arreglarMensajeError(mensaje);
-        agregarToast('error', 'Creación errada', errorsMsg);
-    });
-}
-
-function encontrarCuentaVenta(idCuenta) {
-    if (totalAnticiposVentaCuenta && totalAnticiposVentaCuenta.length) {
-        return totalAnticiposVentaCuenta.find(item => item[idCuenta]);
-    }
-    return false;
-}
-
-function loadVendedorCliente() {
-    
-    let data = {
-        id: $('#id_cliente_venta').val(),
-    }
-
-    $.ajax({
-        url: base_url + 'nit',
-        method: 'GET',
-        data: data,
-        headers: headers,
-        dataType: 'json',
-    }).done((res) => {
-        
-        if(res.success){
-            if (res.data[0].vendedor) {
-                var vendedor = res.data[0].vendedor.nit;
-                var dataVendedor = {
-                    id: vendedor.id,
-                    text: vendedor.numero_documento + ' - ' + vendedor.nombre_completo
-                };
-                var newOption = new Option(dataVendedor.text, dataVendedor.id, false, false);
-                $comboVendedor.append(newOption).val(dataVendedor.id).trigger('change');
-            }
-        }
-    }).fail((err) => {
-        var mensaje = err.responseJSON.message;
-        var errorsMsg = arreglarMensajeError(mensaje);
-        agregarToast('error', 'Creación errada', errorsMsg);
-    });
-}
-
-$(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {
-
-    if (guardandoVenta) {
-        return;
-    }
-
-    var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-    var dataSearch = $('.select2-search__field').val();
-    
-    if (event.keyCode == 96 && !dataSearch.length) {
-        abrirFormasPagoVentas = true;
-    } else if (event.keyCode == 13){
-        if (total > 0) {
-            if (abrirFormasPagoVentas) {
-                abrirFormasPagoVentas = false;
-                $(".venta_producto").select2('close');
-                focusFormaPagoVenta(1);
-            }
-        }
-    } else {
-        abrirFormasPagoVentas = false;
-    }
-});
-
-$(document).on('keydown', '.custom-id_cliente_venta .select2-search__field', function (event) {
-    if (event.keyCode == 13){
-        openModalNewNitVenta();
-        var documentoBuscado = $('.select2-search__field').val();
-        $comboCliente.select2('close');
-        $("#numero_documento_venta_nit").val(documentoBuscado);
-    }
-});
-
-function cargarchangesVenta() {
-    $("#id_vendedor_venta").on('change', function(event) {
-        if ($("#id_vendedor_venta").val()) {
-            $("#crearCapturaVenta").show();
-            $("#crearCapturaVentaDisabled").hide();
-        } else {
-            $("#crearCapturaVenta").hide();
-            $("#crearCapturaVentaDisabled").show();
-        }
-    });
-
-    $("#id_resolucion_venta").on('change', function(event) {
-        consecutivoSiguienteVenta();
-    });
-}
-
-function consecutivoSiguienteVenta() {
-    var id_resolucion = $('#id_resolucion_venta').val();
-    var fecha_manual = $('#fecha_manual_venta').val();
-    if(id_resolucion && fecha_manual) {
-
-        let data = {
-            id_resolucion: id_resolucion,
-            fecha_manual: fecha_manual
-        }
-
-        $.ajax({
-            url: base_url + 'consecutivo',
-            method: 'GET',
-            data: data,
-            headers: headers,
-            dataType: 'json',
-        }).done((res) => {
-            if(res.success){
-                $("#documento_referencia_venta").val(res.data);
-            }
-        }).fail((err) => {
-            var mensaje = err.responseJSON.message;
-            var errorsMsg = arreglarMensajeError(mensaje);
-            agregarToast('error', 'Creación errada', errorsMsg);
-        });
-    }
-}
-
-$("#fecha_manual_venta").on('keydown', function(event) {
-    if(event.keyCode == 13){
-        event.preventDefault();
-        setTimeout(function(){
-            $('#documento_referencia_venta').focus();
-            $('#documento_referencia_venta').select();
-        },10);
-    }
-});
-
-$("#documento_referencia_venta").on('keydown', function(event) {
-    if(event.keyCode == 13){
-        event.preventDefault();
-        document.getElementById('iniciarCapturaVenta').click();
-    }
-});
-
-$(document).on('click', '#iniciarCapturaVenta', function () {
-    var form = document.querySelector('#ventaFilterForm');
-
-    if(!form.checkValidity()){
-        form.classList.add('was-validated');
-        $("#error_documento_referencia_venta").text('El No. factura requerido');
-        return;
-    }
-    
-    $("#iniciarCapturaVenta").hide();
-    $('#agregarVentaProducto').show();
-    $("#crearCapturaVenta").hide();
-    $("#cancelarCapturaVenta").show();
-    $('#cambio-totals').hide();
-    $("#crearCapturaVentaDisabled").show();
-
-    addRowProductoVenta();
-});
-
-function addRowProductoVenta () {
-
-    var rows = venta_table.rows().data();
-    var totalRows = rows.length;
-    var dataLast = rows[totalRows - 1];
-
-    if (dataLast) {
-        var cuentaLast = $('#venta_producto_'+dataLast.id).val();
-        if (!cuentaLast) {
-            $('#venta_producto_'+dataLast.id).select2('open');
-            document.getElementById("card-venta").scrollLeft = 0;
+        // Si CountUp no está cargado, escribe directo
+        if (typeof CountUp === 'undefined') {
+            setText('venta_total_valor', valor);
             return;
         }
-    } else if(totalRows > 1) {
-        clearFormasPagoVenta();
+
+        if (!countUpTotal) {
+            countUpTotal = new CountUp('venta_total_valor', 0, valor, 2, 0.2);
+            countUpTotal.start();
+        } else {
+            countUpTotal.update(valor); // anima desde el valor actual, no desde 0
+        }
     }
 
-    venta_table.row.add({
-        "id": idVentaProducto,
-        "cantidad": 1,
-        "costo": 0,
-        "existencias": 0,
-        "porcentaje_descuento": 0,
-        "valor_descuento": 0,
-        "porcentaje_iva": 0,
-        "valor_iva": 0,
-        "valor_total": 0,
-        "concepto": "",
-    }).draw(false);
+    function mostrarError(err, titulo = 'Error') {
+        if (err && err.statusText === 'abort') return;
+        const mensaje = (err && err.responseJSON && err.responseJSON.message) ||
+            (err && err.message) ||
+            (err && err.statusText) ||
+            'Error de conexión';
+        agregarToast('error', titulo, arreglarMensajeError(mensaje));
+    }
 
-    $('#card-venta').focus();
-    document.getElementById("card-venta").scrollLeft = 0;
+    function api(url, method = 'GET', data = null) {
+        return $.ajax({ url: base_url + url, method, data, headers, dataType: 'json' });
+    }
 
-    $('#venta_producto_'+idVentaProducto).focus();
-    $('#venta_producto_'+idVentaProducto).select2('open');
-    idVentaProducto++;
-}
+    function seleccionarConDelay(el) {
+        setTimeout(() => { try { el.select(); } catch (e) { /* noop */ } }, 80);
+    }
 
-function deleteProductoVenta (idRow) {
-    let dataVenta = venta_table.rows().data();
+    function scrollGrillaIzquierda() {
+        const card = document.getElementById('card-venta');
+        if (card) card.scrollLeft = 0;
+    }
 
-    for (let row = 0; row < dataVenta.length; row++) {
-        let element = dataVenta[row];
-        if(element.id == idRow) {
-            venta_table.row(row).remove().draw();
-            if(!venta_table.rows().data().lengt){
-                $("#crearCapturaVentaDisabled").show();
-                $("#crearCapturaVenta").hide();
+    function inyectarEstilos() {
+        if (document.getElementById('venta-estilos')) return;
+        const style = document.createElement('style');
+        style.id = 'venta-estilos';
+        style.textContent = `
+            #ventaTable.v-sin-existencias th:nth-child(3), #ventaTable.v-sin-existencias td:nth-child(3),
+            #ventaTable.v-sin-descuento th:nth-child(6), #ventaTable.v-sin-descuento td:nth-child(6),
+            #ventaTable.v-sin-descuento th:nth-child(7), #ventaTable.v-sin-descuento td:nth-child(7) { display: none; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function aplicarVisibilidadColumnas() {
+        const $t = $('#ventaTable');
+        $t.toggleClass('v-sin-existencias', !ventaExistencias);
+        $t.toggleClass('v-sin-descuento', !ventaDescuento);
+    }
+
+    function getTbody() {
+        let $tb = $('#ventaTable tbody');
+        if (!$tb.length) $tb = $('<tbody></tbody>').appendTo('#ventaTable');
+        return $tb;
+    }
+
+    // ------------------------------------------------------------------
+    // Cálculo (funciones puras)
+    // ------------------------------------------------------------------
+    function nuevaLinea(id) {
+        return {
+            id, idProducto: null, producto: null,
+            cantidad: 1, costo: 0, descPct: 0, descVal: 0,
+            ivaPct: 0, ivaVal: 0, total: 0, concepto: '',
+            retencion: null
+        };
+    }
+
+    /** origen: 'pct' si el usuario editó el %, cualquier otro valor => manda el valor. */
+    function calcularLinea(l, origen) {
+        const bruto = l.cantidad > 0 ? l.cantidad * l.costo : 0;
+
+        if (bruto > 0) {
+            if (origen === 'pct') {
+                l.descPct = Math.min(Math.max(l.descPct, 0), 100);
+                l.descVal = round2(bruto * l.descPct / 100);
+            } else {
+                l.descVal = Math.min(Math.max(l.descVal, 0), bruto);
+                l.descPct = l.descVal > 0 ? round2(l.descVal / bruto * 100) : 0;
+            }
+        } else {
+            l.descPct = 0;
+            l.descVal = 0;
+        }
+
+        const base = bruto - l.descVal;
+        let iva = 0;
+        if (l.ivaPct > 0) {
+            iva = ivaIncluidoVentas
+                ? base * (l.ivaPct / (l.ivaPct + 100))
+                : base * l.ivaPct / 100;
+        }
+        l.ivaVal = iva;
+        l.total = round2(ivaIncluidoVentas ? base : base + iva);
+        return l;
+    }
+
+    function retencionesActivas() {
+        const mapa = new Map();
+        state.lineas.forEach((l) => {
+            if (l.idProducto && l.retencion && !mapa.has(l.retencion.id_retencion)) {
+                mapa.set(l.retencion.id_retencion, l.retencion);
+            }
+        });
+        return Array.from(mapa.values());
+    }
+
+    function obtenerDatosRetencion(valorSubtotal) {
+        let porcentaje = 0;
+        let base = 0;
+        retencionesActivas().forEach((r) => {
+            if (r.base <= valorSubtotal && r.base > base && r.porcentaje > porcentaje) {
+                porcentaje = r.porcentaje;
+                base = r.base;
+            }
+        });
+        return [base, porcentaje];
+    }
+
+    function calcularRetencion(neto, total) {
+        if (!state.calculaRetencion) return 0;
+        const [base, porcentaje] = obtenerDatosRetencion(neto);
+        if (porcentaje && total >= base) return neto * (porcentaje / 100);
+        return 0;
+    }
+
+    function calcularTotales() {
+        let bruto = 0, iva = 0, descuento = 0;
+
+        state.lineas.forEach((l) => {
+            if (!l.idProducto) return;
+            bruto += l.cantidad * l.costo - l.descVal;
+            iva += l.ivaVal;
+            descuento += l.descVal;
+        });
+
+        const neto = ivaIncluidoVentas ? bruto - iva : bruto;
+        let total = neto + iva;
+        const retencion = calcularRetencion(neto, total);
+        total -= retencion;
+
+        let redondeo = 0;
+        if (window.redondearFactura) {
+            const redondeado = Math.round(total / REDONDEO_PASO) * REDONDEO_PASO;
+            redondeo = redondeado - total;
+            total = redondeado;
+        }
+
+        return { iva, retencion, descuento, total: round2(total), valorBruto: neto, redondeo };
+    }
+
+    // ------------------------------------------------------------------
+    // Pagos (lectura)
+    // ------------------------------------------------------------------
+    function esAnticipoCuenta(row) {
+        const tipos = (row && row.cuenta && row.cuenta.tipos_cuenta) || [];
+        return tipos.some((t) => t.id_tipo_cuenta == ID_TIPO_CUENTA_ANTICIPO);
+    }
+
+    function filasPagos() {
+        return state.tablaPagos ? state.tablaPagos.rows().data().toArray() : [];
+    }
+
+    function totalFormasPago(exceptoId = null) {
+        let efectivo = 0, otros = 0, anticipos = 0;
+        filasPagos().forEach((fp) => {
+            if (exceptoId && exceptoId == fp.id) return;
+            const $in = $('#venta_forma_pago_' + fp.id);
+            const valor = num($in.val());
+            if (fp.id == ID_FORMA_PAGO_EFECTIVO) efectivo += valor;
+            else if ($in.hasClass('anticipos')) anticipos += valor;
+            else otros += valor;
+        });
+        return [efectivo, otros, anticipos];
+    }
+
+    function propinaActual() {
+        return num($('#input_venta_propina').val());
+    }
+
+    // ------------------------------------------------------------------
+    // Render
+    // ------------------------------------------------------------------
+    function refrescar() {
+        if (state.guardando) return;
+
+        const t = calcularTotales();
+        state.ultimosTotales = t;
+        const propina = propinaActual();
+        const aPagar = t.total + propina;
+
+        // Totales
+        $('#totales_descuento').toggle(!!t.descuento);
+        setText('venta_total_iva', t.iva);
+        setText('venta_total_descuento', t.descuento);
+        setText('venta_total_retencion', t.retencion);
+        animarTotal(t.total);
+        setText('venta_sub_total', t.valorBruto);
+
+        // Propina
+        if (cuentaPropina && porcentajePropina) {
+            $('#total_con_propina').show();
+            const sugerida = t.total * (porcentajePropina / 100);
+            const inputProp = document.getElementById('input_venta_propina');
+            if (inputProp) inputProp.placeholder = String(Math.round(sugerida));
+            setText('venta_total_propina', t.total + (propina || sugerida));
+        } else {
+            $('#total_con_propina').hide();
+        }
+
+        // Pagos
+        const [ef, otros, ant] = totalFormasPago();
+        const pagado = ef + otros + ant;
+        const faltante = Math.max(0, aPagar - pagado);
+        setText('total_pagado_venta', Math.min(pagado, aPagar));
+        setText('total_faltante_venta', faltante);
+        $('#total_faltante_venta').removeClass('is-invalid');
+
+        const cambio = pagado - aPagar;
+        if (cambio >= 1) {
+            $('#cambio-totals').show();
+            setText('total_cambio_venta', cambio);
+        } else {
+            $('#cambio-totals').hide();
+        }
+
+        habilitarFormasPago(t.total > 0);
+
+        // Botón guardar
+        if (state.capturando) {
+            const listo = t.total > 0 && round2(pagado) >= round2(aPagar);
+            const faltaVendedor = vendedoresVentas && !$('#id_vendedor_venta').val();
+
+            if (listo && !faltaVendedor) {
+                $('#crearCapturaVenta').show();
+                $('#crearCapturaVentaDisabled').hide();
+                $('#id_vendedor_venta').removeClass('is-invalid').addClass('is-valid');
+            } else {
+                $('#crearCapturaVenta').hide();
+                $('#crearCapturaVentaDisabled').show();
+                if (listo && faltaVendedor) {
+                    $('#id_vendedor_venta').addClass('is-invalid').removeClass('is-valid');
+                }
             }
         }
-    }
-    mostrarValoresVentas();
-    actualizarInfoRetencionVentas();
-}
 
-$(document).on('click', '#agregarVentaProducto', function () {
-    addRowProductoVenta();
-});
-
-function calcularProductoVenta (idRow, validarCantidad = false) {
-    var costoProducto = stringToNumberFloat($('#venta_costo_'+idRow).val());
-    var cantidadProducto = $('#venta_cantidad_'+idRow).val();
-    var ivaProducto = parseFloat($('#venta_iva_porcentaje_'+idRow).val());
-    var descuentoProducto = $('#venta_descuento_porcentaje_'+idRow).val();
-    var totalPorCantidad = 0;
-    var totalIva = 0;
-    var totalDescuento = stringToNumberFloat($('#venta_descuento_valor_' + idRow).val());;
-    var totalProducto = 0;
-
-    if (validarCantidad && !validarExistencias(idRow)) return;
-    
-    if (cantidadProducto > 0) {
-        totalPorCantidad = cantidadProducto * costoProducto;
+        refrescarPopoverRetencion();
     }
 
-    if (totalDescuento > 0 && totalPorCantidad > 0) {
-        descuentoProducto = (totalDescuento / totalPorCantidad) * 100;
-        $('#venta_descuento_porcentaje_' + idRow).val(descuentoProducto.toFixed(2));
-    } else {
-        descuentoProducto = 0;
-        $('#venta_descuento_porcentaje_' + idRow).val(formatCurrencyValue(0));
-        $('#venta_descuento_valor_' + idRow).val(formatCurrencyValue(0));
+    function habilitarFormasPago(hayTotal) {
+        filasPagos().forEach((fp) => {
+            const $in = $('#venta_forma_pago_' + fp.id);
+            if (esAnticipoCuenta(fp)) {
+                const saldo = state.anticiposPorCuenta[fp.cuenta.id] || 0;
+                $in.prop('disabled', !(hayTotal && saldo > 0));
+            } else {
+                $in.prop('disabled', !hayTotal);
+            }
+        });
     }
 
-    totalProducto = totalPorCantidad - totalDescuento;
+    function actualizarInfoRetencionVentas() {
+        const iconInfo = document.getElementById('icon_info_retencion_venta');
+        if (!iconInfo) return;
 
-    if (ivaProducto > 0) {
-        totalIva = (totalPorCantidad - totalDescuento) * ivaProducto / 100;
-        if (ivaIncluidoVentas) {
-            const subTotal = (totalPorCantidad - totalDescuento);
-            totalIva = subTotal * (ivaProducto / (ivaProducto + 100));
+        const t = state.ultimosTotales || calcularTotales();
+        let porcentaje = 0, base = 0, totalUvt = 0;
+        let nombre = 'Sin cuenta con retención';
+
+        retencionesActivas().forEach((r) => {
+            if (r.base > base && r.porcentaje > porcentaje) {
+                porcentaje = r.porcentaje;
+                base = r.base;
+                totalUvt = r.total_uvt;
+                nombre = `${r.cuenta} - ${r.nombre}`;
+            }
+        });
+
+        $('#nombre_info_retencion_venta').html(`RETENCIÓN %${porcentaje}:`);
+
+        const uvt = typeof valor_uvt !== 'undefined' ? valor_uvt : 0;
+        const responsable = state.calculaRetencion
+            ? `<b class='titulo-popover'>Con permiso:</b> Calcula retención en la fuente`
+            : `<b class='titulo-popover'>Sin permiso:</b> 07 => No calcula retención en la fuente`;
+
+        const titulo = `
+            <b class='titulo-popover'>Cuenta:</b> ${esc(nombre)}<br/>
+            <b class='titulo-popover'>UVT:</b> ${totalUvt} X ${fmt0.format(uvt)} = ${fmt0.format(base)}<br/>
+            <b class='titulo-popover'>Subtotal:</b> ${fmt0.format(t.valorBruto)}<br/>
+            ${responsable}
+        `;
+        recrearPopover(iconInfo, titulo);
+    }
+
+    const refrescarPopoverRetencion = debounce(actualizarInfoRetencionVentas, 250);
+
+    function actualizarInfoPropinaVentas() {
+        if (!cuentaPropina || !porcentajePropina) {
+            $('#totales_propina').hide();
+            $('#total_con_propina').hide();
+            return;
         }
-        
-        $('#venta_iva_valor_'+idRow).val(formatCurrencyValue(totalIva));
+        $('#totales_propina').show();
+        $('#total_con_propina').show();
+
+        const iconInfo = document.getElementById('icon_info_propina_venta');
+        $('#nombre_info_propina_venta').html(`PROPINA %${porcentajePropina}:`);
+        if (!iconInfo) return;
+
+        recrearPopover(iconInfo, `
+            <b class='titulo-popover'>Porcentaje:</b> ${porcentajePropina}% <br/>
+            <b class='titulo-popover'>Cuenta:</b> ${esc(cuentaPropina.cuenta)} - ${esc(cuentaPropina.nombre)}<br/>
+        `);
     }
-    
-    if (!ivaIncluidoVentas) {
-        totalProducto+= totalIva;
+
+    function recrearPopover(el, titulo) {
+        el.setAttribute('title', titulo);
+        $(el).popover('dispose');
+        $(el).popover({
+            trigger: 'hover',
+            html: true,
+            placement: 'top',
+            container: 'body',
+            customClass: 'popover-formas-pagos'
+        });
     }
 
-    totalProducto = Math.round(totalProducto * 100) / 100;
-    $('#venta_total_'+idRow).val(formatCurrencyValue(totalProducto));
+    // ------------------------------------------------------------------
+    // Grilla de productos
+    // ------------------------------------------------------------------
+    function rowHtml(id) {
+        const celdaCosto = multiplesPrecios
+            ? `
+                <div class="input-group" style="width: 180px; height: 30px;">
+                    <input type="text" data-type="currency" class="form-control form-control-sm v-costo" data-id="${id}" style="min-width: 100px; text-align: right; height: 30px;" id="venta_costo_${id}" value="0" disabled>
+                    <div id="texto_extracto_${id}" class="valid-feedback info-factura">Nueva factura</div>
+                    <div class="input-group-append button-group">
+                        <span id="button_preciosventas_${id}" data-id="${id}" class="btn badge bg-gradient-light btn-group btn-precios-ventas" style="min-width: 30px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 30px;">
+                            <i class="fa-solid fa-money-bill" style="font-size: 17px; margin-top: 1px;"></i>
+                        </span>
+                    </div>
+                </div>`
+            : `<input type="text" data-type="currency" class="form-control form-control-sm v-costo" data-id="${id}" style="min-width: 100px; text-align: right;" id="venta_costo_${id}" value="0" disabled>`;
 
-    mostrarValoresVentas();
-    actualizarInfoRetencionVentas();
-}
+        return `
+        <tr id="venta_row_${id}" data-id="${id}">
+            <td><span class="btn badge bg-gradient-danger drop-row-grid v-borrar" data-id="${id}" id="delete-producto-venta_${id}"><i class="fas fa-trash-alt"></i></span></td>
+            <td><select class="form-control form-control-sm venta_producto combo-grid" data-id="${id}" id="venta_producto_${id}" inert></select></td>
+            <td><input type="number" class="form-control form-control-sm" style="min-width: 30px; text-align: right;" id="venta_existencia_${id}" disabled></td>
+            <td>
+                <div class="input-group" style="height: 30px;">
+                    <input type="number" class="form-control form-control-sm v-cantidad" data-id="${id}" style="min-width: 80px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: right;" id="venta_cantidad_${id}" min="0" step="any" value="1" disabled>
+                    <i class="fa fa-spinner fa-spin fa-fw venta_producto_load" id="venta_producto_load_${id}" style="display: none;"></i>
+                    <div id="venta_cantidad_text_${id}" style="position: absolute; margin-top: 30px; z-index: 9;" class="invalid-feedback"></div>
+                </div>
+            </td>
+            <td>${celdaCosto}</td>
+            <td><input type="text" data-type="currency" class="form-control form-control-sm v-dpct" data-id="${id}" style="min-width: 80px; text-align: right;" id="venta_descuento_porcentaje_${id}" value="0" disabled></td>
+            <td><input type="text" data-type="currency" class="form-control form-control-sm v-dval" data-id="${id}" style="min-width: 100px; text-align: right;" id="venta_descuento_valor_${id}" value="0" disabled></td>
+            <td>
+                <div class="form-group mb-3" style="min-width: 85px;">
+                    <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
+                        <span id="venta_iva_porcentaje_text_${id}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
+                        <input style="height: 30px; text-align: right; min-width: 80px;" type="text" class="form-control form-control-sm" value="0" id="venta_iva_valor_${id}" disabled>
+                    </div>
+                </div>
+                <input type="number" class="form-control form-control-sm" style="min-width: 110px; display: none;" id="venta_iva_porcentaje_${id}" value="0">
+            </td>
+            <td><input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_total_${id}" value="0" disabled></td>
+            <td><input type="text" class="form-control form-control-sm v-concepto" data-id="${id}" id="venta_concepto_${id}" onfocus="this.select();" style="width: 180px !important;" value="" disabled></td>
+        </tr>`;
+    }
 
-function validarExistencias (idRow) {
-    var producto = $('#venta_producto_'+idRow).select2('data')[0];
-    var cantidad = $('#venta_cantidad_'+idRow).val();
-    var rowProductos = venta_table.rows().data();
+    function formatProducto(producto) {
+        if (producto.loading) return producto.text;
 
-    if (ventaNegativa) {
-        addRowProductoVenta();
-        calcularProductoVenta(idRow);
+        const urlImagen = producto.imagen ? bucketUrl + producto.imagen : '/img/sin_imagen.png';
+        const inventarios = producto.inventarios || [];
+        const conInventario = !!(producto.familia && producto.familia.inventario) && ventaExistencias;
+
+        let infoInventario = '';
+        if (conInventario) {
+            const hay = inventarios.length > 0;
+            const cant = hay ? parseFloat(inventarios[0].cantidad) : 0;
+            const texto = hay ? `${cant} Existencias` : 'Sin inventario';
+            const color = hay ? (cant <= 0 ? '#a30000' : '#1c4587') : '#838383';
+            infoInventario = `
+                <div class="col-12" style="padding-left: 0px !important">
+                    <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i> ${texto}
+                </div>`;
+        }
+
+        return $(`
+            <div class="row">
+                <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
+                    <img style="width: 40px; border-radius: 10%;" src="${esc(urlImagen)}" />
+                </div>
+                <div class="col-9" style="padding-left: 0px !important">
+                    <div class="row" style="margin-left: 5px;">
+                        <div class="col-12" style="padding-left: 0px !important">
+                            <h6 style="font-size: 12px; margin-bottom: 0px; color: black;">${esc(producto.text)}</h6>
+                        </div>
+                        ${infoInventario}
+                    </div>
+                </div>
+            </div>`);
+    }
+
+    function initProductoSelect($el) {
+        $el.select2({
+            theme: 'bootstrap-5',
+            dropdownCssClass: 'custom-venta_producto',
+            minimumInputLength: 2,
+            language: Object.assign({}, LANG, {
+                inputTooShort: () => 'Por favor introduce 2 o más caracteres'
+            }),
+            ajax: {
+                url: 'api/producto/combo-producto',
+                headers,
+                dataType: 'json',
+                delay: 250,
+                data: (params) => ({
+                    q: params.term,
+                    id_bodega: $('#id_bodega_venta').val(),
+                    id_cliente: $('#id_cliente_venta').val(),
+                    captura: 'venta',
+                    _type: 'query'
+                }),
+                processResults: (data) => ({ results: data.data })
+            },
+            templateResult: formatProducto,
+            templateSelection: (p) => p.full_name || p.text
+        });
+    }
+
+    function ultimaLinea() {
+        let ultima = null;
+        state.lineas.forEach((l) => { ultima = l; });
+        return ultima;
+    }
+
+    function addRowProductoVenta() {
+        const last = ultimaLinea();
+        if (last && !last.idProducto) {
+            $('#venta_producto_' + last.id).select2('open');
+            scrollGrillaIzquierda();
+            return;
+        }
+
+        const id = state.nextId++;
+        state.lineas.set(id, nuevaLinea(id));
+        getTbody().append(rowHtml(id));
+
+        const $sel = $('#venta_producto_' + id);
+        initProductoSelect($sel);
+        scrollGrillaIzquierda();
+        $sel.select2('open');
+    }
+
+    function deleteProductoVenta(id) {
+        const $sel = $('#venta_producto_' + id);
+        if ($sel.data('select2')) $sel.select2('destroy');
+        $('#venta_row_' + id).remove();
+        state.lineas.delete(id);
+        refrescar();
+    }
+
+    function vaciarGrilla() {
+        $('#ventaTable .venta_producto').each(function () {
+            if ($(this).data('select2')) $(this).select2('destroy');
+        });
+        getTbody().empty();
+        state.lineas.clear();
+        state.nextId = 0;
+    }
+
+    // ------------------------------------------------------------------
+    // Líneas: lectura / pintado / eventos
+    // ------------------------------------------------------------------
+    function leerLineaDom(l) {
+        const id = l.id;
+        l.cantidad = parseFloat($('#venta_cantidad_' + id).val()) || 0;
+        l.costo = num($('#venta_costo_' + id).val());
+        l.descPct = num($('#venta_descuento_porcentaje_' + id).val());
+        l.descVal = num($('#venta_descuento_valor_' + id).val());
+        l.concepto = $('#venta_concepto_' + id).val() || '';
+    }
+
+    function pintarLinea(l) {
+        const id = l.id;
+        $('#venta_descuento_porcentaje_' + id).val(formatCurrencyValue(l.descPct));
+        $('#venta_descuento_valor_' + id).val(formatCurrencyValue(l.descVal));
+        $('#venta_iva_porcentaje_' + id).val(l.ivaPct);
+        $('#venta_iva_porcentaje_text_' + id).text(l.ivaPct + '%');
+        $('#venta_iva_valor_' + id).val(formatCurrencyValue(l.ivaVal));
+        $('#venta_total_' + id).val(formatCurrencyValue(l.total));
+    }
+
+    function recalcularLinea(id, origen) {
+        const l = state.lineas.get(id);
+        if (!l) return null;
+        leerLineaDom(l);
+        calcularLinea(l, origen);
+        pintarLinea(l);
+        refrescar();
+        return l;
+    }
+
+    function onProductoChange(id) {
+        const l = state.lineas.get(id);
+        if (!l) return;
+
+        const sel = $('#venta_producto_' + id).select2('data');
+        const data = sel && sel[0];
+        if (!data || !data.id) return;
+
+        const familia = data.familia || {};
+        const inv = (data.inventarios || [])[0];
+
+        l.idProducto = data.id;
+        l.producto = data;
+
+        if (inv && familia.inventario) {
+            const existencias = parseFloat(inv.cantidad);
+            $('#venta_existencia_' + id).val(existencias);
+            $('#venta_cantidad_' + id).attr('max', existencias);
+        }
+
+        const imp = familia.cuenta_venta_iva && familia.cuenta_venta_iva.impuesto;
+        l.ivaPct = imp ? (parseFloat(imp.porcentaje) || 0) : 0;
+
+        const cr = familia.cuenta_venta_retencion;
+        l.retencion = (cr && cr.impuesto) ? {
+            cuenta: cr.cuenta,
+            nombre: cr.nombre,
+            id_retencion: cr.impuesto.id,
+            porcentaje: parseFloat(cr.impuesto.porcentaje),
+            base: parseFloat(cr.impuesto.base),
+            total_uvt: parseFloat(cr.impuesto.total_uvt)
+        } : null;
+
+        const permiteDescuento = !!(familia.id_cuenta_venta_descuento && ventaDescuento);
+        $('#venta_descuento_valor_' + id).prop('disabled', !permiteDescuento);
+        $('#venta_descuento_porcentaje_' + id).prop('disabled', !permiteDescuento);
+
+        $('#venta_costo_' + id).val(formatCurrencyValue(data.precio));
+        $('#venta_cantidad_' + id).prop('disabled', false);
+        $('#venta_costo_' + id).prop('disabled', false);
+        $('#venta_concepto_' + id).prop('disabled', false);
+
+        vaciarPagos();
+        recalcularLinea(id);
+
+        setTimeout(() => {
+            const $c = $('#venta_cantidad_' + id);
+            $c.focus();
+            $c.select();
+        }, 10);
+    }
+
+    // ---- Existencias ----
+    function stockProducto(l) {
+        if (ventaNegativa) return Infinity;
+        const p = l.producto;
+        if (!p || !p.familia || !p.familia.inventario) return Infinity;
+        const inv = (p.inventarios || [])[0];
+        return inv ? parseFloat(inv.cantidad) : 0;
+    }
+
+    function cantidadEnOtrasLineas(l) {
+        let total = 0;
+        state.lineas.forEach((o) => {
+            if (o.id !== l.id && o.idProducto && o.idProducto == l.idProducto) {
+                total += parseFloat($('#venta_cantidad_' + o.id).val()) || 0;
+            }
+        });
+        return total;
+    }
+
+    function marcarCantidadInvalida(l, disponible) {
+        const id = l.id;
+        $('#venta_cantidad_text_' + id).text(`Se ha superado las existencias (disponible: ${disponible})`);
+        $('#venta_cantidad_' + id).addClass('is-invalid').removeClass('is-valid').val(disponible);
+        recalcularLinea(id);
+        setTimeout(() => {
+            const $c = $('#venta_cantidad_' + id);
+            $c.focus();
+            $c.select();
+        }, 10);
+    }
+
+    function validarExistenciaLocal(l) {
+        const stock = stockProducto(l);
+        if (!Number.isFinite(stock)) return true;
+
+        const cantidad = parseFloat($('#venta_cantidad_' + l.id).val()) || 0;
+        const disponible = Math.max(0, stock - cantidadEnOtrasLineas(l));
+
+        if (cantidad > disponible) {
+            marcarCantidadInvalida(l, disponible);
+            return false;
+        }
+        $('#venta_cantidad_' + l.id).removeClass('is-invalid');
         return true;
     }
 
-    if (producto !== undefined && producto.familia && producto.familia.inventario){
+    /** Fallback: producto sin "familia" => se consulta al servidor. Devuelve Promise<boolean>. */
+    function validarExistenciaServidor(l) {
+        if (state.reqExistencias) state.reqExistencias.abort();
+        const $load = $('#venta_producto_load_' + l.id);
+        $load.show();
 
-        if (rowProductos.length > 1) {
-            consultarExistencias(idRow);
-            return false;
-        } else {
-            if (cantidad > parseInt(producto.inventarios[0].cantidad)) {
-                $('#venta_cantidad_text_'+idRow).text("Se ha superado las existencias");
-                $('#venta_cantidad_'+idRow).addClass("is-invalid");
-                $('#venta_cantidad_'+idRow).removeClass("is-valid");
-                $('#venta_cantidad_'+idRow).val(0);
-                setTimeout(function(){
-                    $('#venta_cantidad_'+idRow).focus();
-                    $('#venta_cantidad_'+idRow).select();
-                },10);
-                return false;
-            } else {
-                if (key13PressNewRow) {
-                    key13PressNewRow = false;
-                    calcularProductoVenta(idRow);
-                    addRowProductoVenta();
-                }
-                $('#venta_cantidad_'+idRow).removeClass("is-invalid");
-            }
-        }
-    } else if (producto !== undefined && !producto.familia) {
-        consultarExistencias(idRow);
-        return false;
-    }
-    addRowProductoVenta();
-    calcularProductoVenta(idRow);
-    return true;
-}
+        const cantidad = (parseFloat($('#venta_cantidad_' + l.id).val()) || 0) + cantidadEnOtrasLineas(l);
 
-function totalCantidadProducto(idRow) {
-    
-    var idProducto = $('#venta_producto_'+idRow).val();
-    var rowProductos = venta_table.rows().data();
-    var cantidadActualRow = parseInt($('#venta_cantidad_'+idRow).val());
-    var cantidadTotal = 0;
-
-    for (let index = 0; index < rowProductos.length; index++) {
-        var producto = $('#venta_producto_'+rowProductos[index].id).val();
-         
-        if (producto && rowProductos[index].id != idRow && producto == idProducto) {
-            var cantidad = parseInt($('#venta_cantidad_'+rowProductos[index].id).val());
-            cantidadTotal+= cantidad;
-        }
-    }
-
-    return [cantidadActualRow, cantidadTotal];
-}
-
-function consultarExistencias(idRow) {
-
-    var idproducto = $('#venta_producto_'+idRow).val();
-    var bodega = $('#id_bodega_venta').val();
-    var [cantidadActualRow, cantidadTotal] = totalCantidadProducto(idRow)
-
-    if (validarExistenciasProducto) {
-        validarExistenciasProducto.abort();
-    }
-    
-    $('#venta_producto_load_'+idRow).show();
-    setTimeout(function(){
-        validarExistenciasProducto = $.ajax({
-            url: base_url + 'existencias-producto',
-            method: 'GET',
-            data: {
-                id_producto: idproducto,
-                id_bodega: bodega
-            },
-            headers: headers,
-            dataType: 'json',
-        }).done((res) => {
-            validarExistenciasProducto = null;
-            $('#venta_producto_load_'+idRow).hide();
-            if (res.data) {
-                if (cantidadActualRow + cantidadTotal > parseInt(res.data.cantidad)) {
-                    $('#venta_cantidad_text_'+idRow).text("Se ha superado las existencias");
-                    $('#venta_cantidad_'+idRow).addClass("is-invalid");
-                    $('#venta_cantidad_'+idRow).removeClass("is-valid");
-
-                    if (1 + cantidadTotal > parseInt(res.data.cantidad)) $('#venta_cantidad_'+idRow).val(0);
-                    else $('#venta_cantidad_'+idRow).val(0);
-                    
-                    setTimeout(function(){
-                        $('#venta_cantidad_'+idRow).focus();
-                        $('#venta_cantidad_'+idRow).select();
-                    },10);
-
-                    return false;
+        return new Promise((resolve) => {
+            state.reqExistencias = api('existencias-producto', 'GET', {
+                id_producto: l.idProducto,
+                id_bodega: $('#id_bodega_venta').val()
+            }).done((res) => {
+                state.reqExistencias = null;
+                $load.hide();
+                if (res.data && cantidad > parseInt(res.data.cantidad, 10)) {
+                    marcarCantidadInvalida(l, Math.max(0, parseInt(res.data.cantidad, 10) - cantidadEnOtrasLineas(l)));
+                    resolve(false);
                 } else {
-                    $('#venta_cantidad_'+idRow).removeClass("is-invalid");
-                    if (key13PressNewRow) {
-                        key13PressNewRow = false;
-                        calcularProductoVenta(idRow);
-                        addRowProductoVenta();
-                    }
+                    $('#venta_cantidad_' + l.id).removeClass('is-invalid');
+                    resolve(true);
                 }
-            }
-            
-        }).fail((err) => {
-            $('#venta_producto_load_'+idRow).hide();
-            validarExistenciasProducto = null;
-            if(err.statusText != "abort") {
-            }
-            var mensaje = err.responseJSON.message;
-            var errorsMsg = arreglarMensajeError(mensaje);
-            agregarToast('error', 'Creación errada', errorsMsg);
+            }).fail((err) => {
+                $load.hide();
+                state.reqExistencias = null;
+                mostrarError(err, 'Error consultando existencias');
+                resolve(false);
+            });
         });
-    },300);
-}
-
-function mostrarValoresVentas () {
-    
-    if (guardandoVenta) {
-        return;
     }
 
-    var [iva, retencion, descuento, total, valorBruto, redondeo, propina] = totalValoresVentas();
+    function confirmarCantidad(id) {
+        const l = recalcularLinea(id);
+        if (!l || !l.idProducto) return;
 
-    if (descuento) $('#totales_descuento').show();
-    else $('#totales_descuento').hide();
+        if (ventaNegativa) { addRowProductoVenta(); return; }
 
-    if (total) disabledFormasPagoVenta(false);
-    else disabledFormasPagoVenta();
-
-    new CountUp('venta_total_iva', 0, iva, 2, 0.5).start();
-    new CountUp('venta_total_descuento', 0, descuento, 2, 0.5).start();
-    new CountUp('venta_total_retencion', 0, retencion, 2, 0.5).start();
-    new CountUp('venta_total_valor', 0, total , 2, 0.5).start();
-    new CountUp('venta_sub_total', 0, valorBruto, 2, 0.5).start();
-    new CountUp('total_faltante_venta', 0, (total + propina), 2, 0.5).start();
-}
-
-function totalValoresVentas() {
-    var iva = retencion = descuento = total = redondeo = 0;
-    var valorBruto = 0;
-    let propina = 0;
-    var dataVenta = venta_table.rows().data();
-
-    if(dataVenta.length > 0) {
-        
-        for (let index = 0; index < dataVenta.length; index++) {
-            var producto = $('#venta_producto_'+dataVenta[index].id).val();
-             
-            if (producto) {
-                var cantidad = stringToNumberFloat($('#venta_cantidad_'+dataVenta[index].id).val());
-                var costo = stringToNumberFloat($('#venta_costo_'+dataVenta[index].id).val());
-                var ivaSum = stringToNumberFloat($('#venta_iva_valor_'+dataVenta[index].id).val());
-                var totaSum = stringToNumberFloat($('#venta_total_'+dataVenta[index].id).val());
-                var descSum = stringToNumberFloat($('#venta_descuento_valor_'+dataVenta[index].id).val());
-    
-                descSum= descSum ? descSum : 0;
-                iva+= ivaSum ? ivaSum : 0;
-                descuento+= descSum ? descSum : 0;
-                valorBruto+= (cantidad*costo) - descSum;
-            }
+        if (l.producto && !l.producto.familia) {
+            validarExistenciaServidor(l).then((ok) => { if (ok) addRowProductoVenta(); });
+            return;
         }
-
-        if (ivaIncluidoVentas) valorBruto-= iva;
-
-        total = ivaIncluidoVentas ? valorBruto : valorBruto + iva;
-        retencion = calcularRetencionVentas(valorBruto, total);
-
-        if (retencion) {
-            total = total - retencion;
-        }
-
-        if (redondearFactura) {
-            var totalParaRedondear =  parseFloat(total / 1000);
-            var totalRedondeado =  totalParaRedondear.toFixed(2) * 1000;
-            redondeo = totalRedondeado - total;
-            total = totalRedondeado;
-        }
+        if (validarExistenciaLocal(l)) addRowProductoVenta();
     }
 
-    var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
-
-    if (parseFloat(total.toFixed(2)) > 0 && (totalEfectivo + totalOtrosPagos + totalAnticipos) >= parseFloat(total.toFixed(2))) {
-        if (vendedoresVentas && !$("#id_vendedor_venta").val()) {
-            $("#crearCapturaVentaDisabled").show();
-            $("#crearCapturaVenta").hide();
-            $('#id_vendedor_venta').addClass("is-invalid");
-            $('#id_vendedor_venta').removeClass("is-valid");
-        } else {
-            $("#crearCapturaVenta").show();
-            $("#crearCapturaVentaDisabled").hide();
-            $('#id_vendedor_venta').removeClass("is-invalid");
-            $('#id_vendedor_venta').addClass("is-valid");
-        }
-    } else {
-        $("#crearCapturaVenta").hide();
-        $("#crearCapturaVentaDisabled").show();
+    function validarTodasLasExistencias() {
+        let ok = true;
+        state.lineas.forEach((l) => {
+            if (ok && l.idProducto && !validarExistenciaLocal(l)) ok = false;
+        });
+        return ok;
     }
 
-    if (ivaIncluidoVentas) total = total+= iva;
+    // ------------------------------------------------------------------
+    // Precios múltiples
+    // ------------------------------------------------------------------
+    function mostrarPreciosVentas(id) {
+        const l = state.lineas.get(id);
+        if (!l || !l.producto) return;
 
-    if (cuentaPropina && porcentajePropina) {
-        $('#total_con_propina').show();
-        const propinaSugerida = total * (porcentajePropina / 100);
-        document.getElementById('input_venta_propina').placeholder = `${propinaSugerida}`;
-        const inputPropina = stringToNumberFloat($("#input_venta_propina").val());
-        if (inputPropina) {
-            propina = inputPropina;
-            new CountUp('venta_total_propina', 0, total + propina, 2, 0.5).start();
-        } else {
-            new CountUp('venta_total_propina', 0, total + propinaSugerida, 2, 0.5).start();
-        }
-    } else {
-        $('#total_con_propina').hide();
-    }
+        const precios = [
+            { nombre: 'Precio 1', valor: parseFloat(l.producto.precio || 0) },
+            { nombre: 'Precio 2', valor: parseFloat(l.producto.precio_2 || 0) }
+        ].filter((p) => p.valor > 0);
 
-    return [iva, retencion, descuento, total, valorBruto, redondeo, propina];
-}
-
-function calcularRetencionVentas(valorBruto, total) {
-
-    retencion = 0;
-
-    if (calculaRetencionVenta) {
-        [base, porcentaje] = obtenerDatosRetencionVenta(valorBruto);
-    
-        if (total >= base && porcentaje) {
-            retencion = valorBruto * (porcentaje  / 100);
-        }
-    }
-
-    return retencion;
-}
-
-function obtenerDatosRetencionVenta(valorSubtotal) {
-    porcentaje = 0;
-    base = 0;
-
-    retencionesVentas.forEach(retencion => {
-        if (retencion.base <= valorSubtotal) {
-            if (retencion.base > base ) {
-                if (retencion.porcentaje > porcentaje) {
-                    porcentaje = retencion.porcentaje;
-                    base = retencion.base;
-                }
-            }
-        }
-    });
-
-    return [base, porcentaje];
-}
-
-function actualizarInfoRetencionVentas() {
-    const iconInfo = document.getElementById('icon_info_retencion_venta');
-    var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
-
-    var porcentaje = 0;
-    var base = 0;
-    var nombre = 'Sin cuenta con retención';
-    let total_uvt = 0;
-
-    retencionesVentas.forEach(retencion => {
-        if (retencion.base > base ) {
-            if (retencion.porcentaje > porcentaje) {
-                porcentaje = retencion.porcentaje;
-                base = retencion.base;
-                total_uvt = retencion.total_uvt;
-                nombre = `${retencion.cuenta} - ${retencion.nombre}`;
-            }
-        }
-    });
-
-    $("#nombre_info_retencion_venta").html(`RETENCIÓN %${porcentaje}:`);
-
-    let baseformat = new Intl.NumberFormat('ja-JP').format(base);
-    let totalUVTs = new Intl.NumberFormat('ja-JP').format(valor_uvt);
-    let valorSubtotal = new Intl.NumberFormat('ja-JP').format(subtotal);
-    let responsableRetencion = '';
-
-    if (calculaRetencionVenta) {
-        responsableRetencion = `<b class='titulo-popover'>Con permiso:</b> Calcula retención en la fuente`;
-    } else {
-        responsableRetencion = `<b class='titulo-popover'>Sin permiso:</b> 07 => No calcula retención en la fuente`;
-    }
-
-    const nuevoTitulo = `
-        <b class='titulo-popover'>Cuenta:</b> ${nombre}<br/>
-        <b class='titulo-popover'>UVT:</b> ${total_uvt} X ${totalUVTs} = ${baseformat}<br/>
-        <b class='titulo-popover'>Subtotal:</b> ${valorSubtotal}<br/>
-        ${responsableRetencion}
-    `;
-
-    iconInfo.setAttribute('title', nuevoTitulo);
-    $(iconInfo).popover('dispose'); // Destruye el actual
-    $(iconInfo).popover({
-        trigger: 'hover',
-        html: true,
-        placement: 'top',
-        container: 'body',
-        customClass: 'popover-formas-pagos'
-    });
-}
-
-function actualizarInfoPropinaVentas() {
-
-    if (!cuentaPropina || !porcentajePropina) {
-        $("#totales_propina").hide();
-        $("#total_con_propina").hide();
-        return;
-    }
-
-    $("#totales_propina").show();
-    $("#total_con_propina").show();    
-
-    const iconInfo = document.getElementById('icon_info_propina_venta');
-    $("#nombre_info_propina_venta").html(`PROPINA %${porcentajePropina}:`);
-
-    var numeroCuenta = cuentaPropina.cuenta;
-    var nombreCuenta = cuentaPropina.nombre;
-
-    const nuevoTitulo = `
-    <b class='titulo-popover'>Porcentaje:</b> ${porcentajePropina}% <br/>
-        <b class='titulo-popover'>Cuenta:</b> ${numeroCuenta} - ${nombreCuenta}<br/>
-    `;
-
-    iconInfo.setAttribute('title', nuevoTitulo);
-    $(iconInfo).popover('dispose'); // Destruye el actual
-    $(iconInfo).popover({
-        trigger: 'hover',
-        html: true,
-        placement: 'top',
-        container: 'body',
-        customClass: 'popover-formas-pagos'
-    });
-}
-
-function calcularPropinaVenta () {
-    const inputPropina = stringToNumberFloat($("#input_venta_propina").val());
-    if (inputPropina) {
-        return
-    } else {
-        var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-        const propina = total * (porcentajePropina / 100);
-        $("#input_venta_propina").val(stringToNumberFloat(propina));
-        $('#input_venta_propina').select();
-    }
-}
-
-function keyPresPropinaVenta (event) {
-    if (event.keyCode == 13) {
-        mostrarValoresVentas();
-    }
-}
-
-function changeProductoVenta (idRow) {
-
-    var data = $('#venta_producto_'+idRow).select2('data');
-    if (data.length == 0) return;
-    data = data[0];
-    
-    if (data.inventarios.length > 0 && data.familia.inventario) {
-        var totalInventario = parseFloat(data.inventarios[0].cantidad);
-        $("#venta_existencia_"+idRow).val(totalInventario);
-        $("#venta_cantidad_"+idRow).attr({"max" : totalInventario});
-    }
-
-    if (data.familia.cuenta_venta_iva && data.familia.cuenta_venta_iva.impuesto) {
-        
-        $('#venta_iva_porcentaje_'+idRow).val(stringToNumberFloat(data.familia.cuenta_venta_iva.impuesto.porcentaje));
-        $('#venta_iva_porcentaje_text_'+idRow).text(stringToNumberFloat(data.familia.cuenta_venta_iva.impuesto.porcentaje)+'%');
-    }
-
-    if (data.familia.cuenta_venta_retencion && data.familia.cuenta_venta_retencion.impuesto) {
-
-        var existe = retencionesVentas.findIndex(item => item.id_retencion == data.familia.cuenta_venta_retencion.impuesto.id);
-        if (!existe || existe < 0) {
-            retencionesVentas.push({
-                cuenta: data.familia.cuenta_venta_retencion.cuenta,
-                nombre: data.familia.cuenta_venta_retencion.nombre,
-                id_retencion: data.familia.cuenta_venta_retencion.impuesto.id,
-                porcentaje: parseFloat(data.familia.cuenta_venta_retencion.impuesto.porcentaje),
-                base: parseFloat(data.familia.cuenta_venta_retencion.impuesto.base),
-                total_uvt: parseFloat(data.familia.cuenta_venta_retencion.impuesto.total_uvt)
-            })
-        }
-    }
-
-    if (data.familia.id_cuenta_venta_descuento && ventaDescuento) {
-        $('#venta_descuento_valor_'+idRow).prop('disabled', false);
-        $('#venta_descuento_porcentaje_'+idRow).prop('disabled', false);
-    } else {
-        $('#venta_descuento_valor_'+idRow).prop('disabled', true);
-        $('#venta_descuento_porcentaje_'+idRow).prop('disabled', true);
-    }
-
-    $('#venta_costo_'+idRow).val(formatCurrencyValue(data.precio));
-    $('#venta_producto_'+idRow).select2('open');
-    $('#venta_cantidad_'+idRow).prop('disabled', false);
-    $('#venta_costo_'+idRow).prop('disabled', false);
-    $('#venta_concepto_'+idRow).prop('disabled', false);
-        
-    calcularProductoVenta(idRow);
-    clearFormasPagoVenta();
-    
-    setTimeout(function(){
-        $('#venta_cantidad_'+idRow).focus();
-        $('#venta_cantidad_'+idRow).select();
-    },10);
-}
-
-function cantidadVentakeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        key13PressNewRow = true;
-        if (!validarExistencias(idRow)) return;
-    }
-}
-
-function CostoVentakeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        calcularProductoVenta (idRow);
-        addRowProductoVenta();
-    }
-}
-
-function DescuentoVentakeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        calcularProductoVenta(idRow);
-        setTimeout(function(){
-            $('#venta_descuento_valor_'+idRow).focus();
-            $('#venta_descuento_valor_'+idRow).select();
-        },10);
-    }
-}
-
-function DescuentoTotalVentakeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        var descuentoProductoValor = stringToNumberFloat($('#venta_descuento_valor_'+idRow).val());
-        var costoProducto = stringToNumberFloat($('#venta_costo_'+idRow).val());
-        var cantidadProducto = $('#venta_cantidad_'+idRow).val();
-        var porcentajeDescuento = descuentoProductoValor * 100 / (costoProducto * cantidadProducto);
-
-        $('#venta_descuento_porcentaje_'+idRow).val(formatCurrencyValue(porcentajeDescuento));
-        
-        calcularProductoVenta(idRow);
-        setTimeout(function(){
-            $('#venta_iva_porcentaje_'+idRow).focus();
-            $('#venta_iva_porcentaje_'+idRow).select();
-        },10);
-    }
-}
-
-function IvaVentakeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        calcularProductoVenta(idRow);
-        addRowProductoVenta();
-    }
-}
-
-$(document).on('click', '#cancelarCapturaVenta', function () {
-    cancelarVenta();
-});
-
-$(document).on('click', '.btn-precios-ventas', function () {
-    var idRow = this.id.split('_')[2];
-    mostrarPreciosVentas(idRow);
-});
-
-function mostrarPreciosVentas(idRow) {
-    if (!venta_table) cargarTablasVenta();
-
-    var dataProducto = $('#venta_producto_' + idRow).val();
-
-    if (dataProducto && dataProducto.length) {
-        dataProducto = $('#venta_producto_' + idRow).select2('data')[0];
-
-        console.log('dataProducto:', dataProducto);
-
-        var precio1 = parseFloat(dataProducto.precio || 0);
-        var precio2 = parseFloat(dataProducto.precio_2 || 0);
-
-        var opciones = '';
-
-        if (precio1 > 0) {
-            opciones += `
-                <button type="button" 
-                    class="btn btn-outline-primary btn-lg btn-precio"
-                    data-precio="${precio1}"
-                    style="margin: 5px; min-width: 180px;">
-                    <strong>Precio 1</strong><br>
-                    $${formatCurrencyValue(precio1)}
-                </button>
-            `;
-        }
-
-        if (precio2 > 0) {
-            opciones += `
-                <button type="button" 
-                    class="btn btn-outline-primary btn-lg btn-precio"
-                    data-precio="${precio2}"
-                    style="margin: 5px; min-width: 180px;">
-                    <strong>Precio 2</strong><br>
-                    $${formatCurrencyValue(precio2)}
-                </button>
-            `;
-        }
-
-        if (!opciones) {
+        if (!precios.length) {
             Swal.fire({
                 title: 'Precios de venta',
                 text: 'El producto no tiene precios de venta configurados.',
                 icon: 'warning',
                 confirmButtonText: 'Aceptar'
             });
-
             return;
         }
 
+        const opciones = precios.map((p) => `
+            <button type="button" class="btn btn-outline-primary btn-lg btn-precio"
+                data-precio="${p.valor}" style="margin: 5px; min-width: 180px;">
+                <strong>${p.nombre}</strong><br>$${formatCurrencyValue(p.valor)}
+            </button>`).join('');
+
         Swal.fire({
             title: 'Seleccione el precio de venta',
-            html: `
-                <div style="display: flex; justify-content: center; flex-wrap: wrap;">
-                    ${opciones}
-                </div>
-            `,
+            html: `<div style="display: flex; justify-content: center; flex-wrap: wrap;">${opciones}</div>`,
             showConfirmButton: false,
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             reverseButtons: true,
-            didOpen: () => {
-
-                $('.btn-precio').on('click', function () {
-
-                    var precioSeleccionado = parseFloat($(this).data('precio'));
-
-                    $('#venta_costo_' + idRow).val(formatCurrencyValue(precioSeleccionado));
-
-                    Swal.close();
-
-                    calcularProductoVenta(idRow);
+            didOpen: (popup) => {
+                popup.querySelectorAll('.btn-precio').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        $('#venta_costo_' + id).val(formatCurrencyValue(parseFloat(btn.dataset.precio)));
+                        Swal.close();
+                        recalcularLinea(id);
+                    });
                 });
             }
         });
     }
-}
 
-function cancelarVenta() {
-    idVentaProducto = 0;
-    var totalRows = venta_table.rows().data().length;
+    // ------------------------------------------------------------------
+    // Formas de pago
+    // ------------------------------------------------------------------
+    function iniciarTablaPagos() {
+        state.tablaPagos = $('#ventaFormaPago').DataTable({
+            dom: '',
+            paging: false,
+            responsive: false,
+            processing: true,
+            serverSide: true,
+            deferLoading: 0,
+            initialLoad: false,
+            language: lenguajeDatatable,
+            sScrollX: '100%',
+            scrollX: true,
+            ordering: false,
+            ajax: {
+                type: 'GET',
+                headers,
+                data: { type: 'ventas' },
+                url: base_url + 'forma-pago/combo-forma-pago'
+            },
+            columns: [
+                {
+                    data: function (row) {
+                        let styles = 'margin-bottom: 0px; font-size: 13px;';
+                        let stylesInfo = '';
+                        let naturaleza = 'Débito - Ventas';
+                        if (row.cuenta.naturaleza_ventas) {
+                            naturaleza = 'Error de naturaleza en ventas';
+                            stylesInfo = 'border: solid 1px red !important; color: red !important;';
+                        }
+                        let titulo = 'Cuenta:';
+                        if (esAnticipoCuenta(row)) {
+                            styles += ' color: #0bb19e; font-weight: 600;';
+                            titulo = 'Anticipos cuenta:';
+                        }
+                        const dataContent = `<b class='titulo-popover'>${titulo}</b> ${esc(naturaleza)}<br/> ${esc(row.cuenta.cuenta)} - ${esc(row.cuenta.nombre)}`;
+                        return `<p style="${styles}">
+                            <i class="fas fa-info icon-info" style="${stylesInfo}"
+                               title="${esc(dataContent)}" data-toggle="popover" data-html="true"></i>
+                            ${esc(row.nombre)}
+                        </p>`;
+                    }
+                },
+                {
+                    data: function (row) {
+                        const anticipo = esAnticipoCuenta(row);
+                        return `<input type="text" data-type="currency"
+                            class="form-control form-control-sm v-pago ${anticipo ? 'anticipos' : ''}"
+                            style="text-align: right; font-size: larger;" value="0"
+                            data-id="${row.id}" data-anticipo="${anticipo}" data-cuenta="${row.cuenta.id}"
+                            id="venta_forma_pago_${row.id}">`;
+                    }
+                }
+            ],
+            initComplete: function () {
+                $('#ventaFormaPago').on('draw.dt', function () {
+                    $('#ventaFormaPago [data-toggle="popover"]').popover({
+                        trigger: 'hover',
+                        html: true,
+                        placement: 'top',
+                        container: 'body',
+                        customClass: 'popover-formas-pagos'
+                    });
+                });
+            }
+        });
+    }
 
-    if(venta_table.rows().data().length){
-        venta_table.clear([]).draw();
-        for (let index = 0; index < totalRows; index++) {
-            venta_table.row(0).remove().draw();
+    function loadFormasPagoVenta() {
+        if (!state.tablaPagos) return;
+        state.tablaPagos.ajax.reload(function () {
+            refrescar();
+        });
+    }
+
+    function vaciarPagos() {
+        $('#ventaFormaPago .v-pago').val(0);
+    }
+
+    function clearFormasPagoVenta() {
+        vaciarPagos();
+        refrescar();
+    }
+
+    function metaPago($input) {
+        return {
+            id: Number($input.data('id')),
+            anticipo: String($input.data('anticipo')) === 'true',
+            idCuenta: Number($input.data('cuenta'))
+        };
+    }
+
+    /** Máximo permitido para un anticipo: saldo de la cuenta menos otros anticipos, y no más de lo que falta. */
+    function maxAnticipoPermitido(id, idCuenta) {
+        const t = calcularTotales();
+        const aPagar = t.total + propinaActual();
+        const [ef, otros, ant] = totalFormasPago(id);
+        const saldo = state.anticiposPorCuenta[idCuenta] || 0;
+        const faltante = Math.max(0, aPagar - (ef + otros + ant));
+        return Math.max(0, Math.min(saldo - ant, faltante));
+    }
+
+    function focusFormaPagoVenta(id, anticipo = false, idCuenta = null) {
+        if (state.guardando) return;
+
+        const t = calcularTotales();
+        const aPagar = t.total + propinaActual();
+        const [ef, otros, ant] = totalFormasPago(id);
+        const faltante = Math.max(0, aPagar - (ef + otros + ant));
+        
+        const $in = $('#venta_forma_pago_' + id);
+
+        if (anticipo) {
+            $in.val(formatCurrencyValue(maxAnticipoPermitido(id, idCuenta)));
+            $in.select();
+            return;
         }
-        mostrarValoresVentas();
+
+        if (!num($in.val())) $in.val(faltante);
+        $in.select();
+    }
+
+    function onPagoCommit(id, anticipo, idCuenta, esEnter) {
+        if (state.guardando) return;
+
+        if (anticipo) {
+            const max = maxAnticipoPermitido(id, idCuenta);
+            if (num($('#venta_forma_pago_' + id).val()) > max) {
+                $('#venta_forma_pago_' + id).val(formatCurrencyValue(max));
+            }
+        }
+
+        const $in = $('#venta_forma_pago_' + id);
+        if ($in.val() === '' || num($in.val()) < 0) $in.val(0);
+
+        refrescar();
+        if (!esEnter) return;
+
+        const t = state.ultimosTotales;
+        if (!t || !t.total) return;
+        if (vendedoresVentas && !$('#id_vendedor_venta').val()) return;
+
+        const [ef, otros, ant] = totalFormasPago();
+        if ((ef + otros + ant) >= t.total + propinaActual()) {
+            validateSaveVenta();
+            return;
+        }
+        focusNextFormasPagoVentas(id);
+    }
+
+    function focusNextFormasPagoVentas(idActual) {
+        const filas = filasPagos();
+        if (!filas.length) return;
+
+        let idFocus = filas[0].id;
+        let tomarSiguiente = false;
+
+        for (const fp of filas) {
+            const input = document.getElementById('venta_forma_pago_' + fp.id);
+            if (!input || input.disabled) continue;
+            if (tomarSiguiente) {
+                idFocus = fp.id;
+                tomarSiguiente = false;
+            } else if (fp.id == idActual) {
+                tomarSiguiente = true;
+            }
+        }
+        focusFormaPagoVenta(idFocus);
+    }
+
+    // ------------------------------------------------------------------
+    // Anticipos / cliente / vendedor
+    // ------------------------------------------------------------------
+    function loadAnticiposClienteVentas() {
+        state.anticiposTotal = 0;
+        state.anticiposPorCuenta = {};
+        $('#input-anticipos-venta').hide();
+        $('#venta_anticipo_disp_view').hide();
+        $('#saldo_anticipo_venta').val(0);
+        $('#venta_anticipo_disp').text('0.00');
+
+        const idNit = $('#id_cliente_venta').val();
+        if (!idNit) return;
+
+        api('extracto-anticipos', 'GET', { id_nit: idNit, id_tipo_cuenta: [ID_TIPO_CUENTA_ANTICIPO] })
+            .done((res) => {
+                if (!res.success || !res.data || !res.data.length) return;
+
+                res.data.forEach((a) => {
+                    const saldo = Math.abs(parseFloat(a.saldo)) || 0;
+                    state.anticiposTotal += saldo;
+                    state.anticiposPorCuenta[a.id_cuenta] = (state.anticiposPorCuenta[a.id_cuenta] || 0) + saldo;
+                });
+
+                if (state.anticiposTotal) {
+                    $('#venta_anticipo_disp_view').show();
+                    $('#saldo_anticipo_venta').val(fmt0.format(state.anticiposTotal));
+                    $('#venta_anticipo_disp').text(fmt0.format(state.anticiposTotal));
+                }
+                refrescar();
+            })
+            .fail((err) => mostrarError(err, 'Error cargando anticipos'));
+    }
+
+    function loadVendedorCliente() {
+        api('nit', 'GET', { id: $('#id_cliente_venta').val() })
+            .done((res) => {
+                if (!res.success || !res.data[0] || !res.data[0].vendedor) return;
+                const v = res.data[0].vendedor.nit;
+                setComboValue(state.$vendedor, v.id, v.numero_documento + ' - ' + v.nombre_completo);
+            })
+            .fail((err) => mostrarError(err, 'Error cargando vendedor'));
+    }
+
+    function procesarCambioClienteVenta(data) {
+        if (!data) {
+            $('#btn_ver_cliente_venta').hide();
+            return;
+        }
+
+        state.calculaRetencion = false;
+        $('#btn_ver_cliente_venta').show();
+        $('#checkRetencionVentas').prop('checked', false);
+
+        if (data.retencion) {
+            state.calculaRetencion = true;
+            $('#checkRetencionVentas').prop('checked', true);
+        }
+
+        state.responsabilidades = getResponsabilidades(data.id_responsabilidades);
+        vaciarPagos();
+        changeRetencionVentas();
+        loadAnticiposClienteVentas();
+        if (vendedoresVentas) loadVendedorCliente();
+    }
+
+    function changeRetencionVentas() {
+        state.calculaRetencion = true;
+        $('#totales_retencion').removeClass('totales_retencion_disable');
+        if (!$('#checkRetencionVentas').is(':checked')) {
+            state.calculaRetencion = false;
+            $('#totales_retencion').addClass('totales_retencion_disable');
+        }
+        refrescar();
         actualizarInfoRetencionVentas();
     }
 
-    $("#id_bodega_venta").prop('disabled', false);
-    $("#id_resolucion_venta").prop('disabled', false);
+    // ------------------------------------------------------------------
+    // Propina
+    // ------------------------------------------------------------------
+    function calcularPropinaVenta() {
+        if (propinaActual()) return;
+        const t = calcularTotales();
+        const propina = t.total * (porcentajePropina / 100);
+        $('#input_venta_propina').val(propina);
+        $('#input_venta_propina').select();
+    }
 
-    $("#iniciarCapturaVenta").show();
-    $('#agregarVentaProducto').hide();
-    $("#crearCapturaVenta").hide();
-    $("#cancelarCapturaVenta").hide();
-    $("#crearCapturaVentaDisabled").hide();
-    $('#input-anticipos-venta').hide();
+    function keyPresPropinaVenta(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) refrescar();
+    }
 
-    cargarFechasVentas();
+    // ------------------------------------------------------------------
+    // Combos / fechas
+    // ------------------------------------------------------------------
+    function crearCombo(selector, url, extra = {}, ajaxExtra = {}) {
+        return $(selector).select2(Object.assign({
+            theme: 'bootstrap-5',
+            language: LANG,
+            ajax: Object.assign({
+                url,
+                headers,
+                dataType: 'json',
+                delay: 250,
+                processResults: (data) => ({ results: data.data })
+            }, ajaxExtra)
+        }, extra));
+    }
 
-    setTimeout(function(){
-        $comboCliente.select2("open");
-    },10);
-}
+    function setComboValue($combo, id, text) {
+        const option = new Option(text, id, false, false);
+        $combo.append(option).val(id).trigger('change');
+    }
 
-function loadFormasPagoVenta() {
-    var totalRows = venta_table_pagos.rows().data().length;
-    if(venta_table_pagos.rows().data().length){
-        venta_table_pagos.clear([]).draw();
-        for (let index = 0; index < totalRows; index++) {
-            venta_table_pagos.row(0).remove().draw();
+    function cargarCombosVenta() {
+        state.$cliente = crearCombo('#id_cliente_venta', 'api/nit/combo-nit', {
+            dropdownCssClass: 'custom-id_cliente_venta',
+            language: Object.assign({}, LANG, {
+                noResults: () => { state.createNewNit = true; return 'No hay resultado'; },
+                searching: () => { state.createNewNit = false; return 'Buscando..'; }
+            })
+        });
+
+        state.$vendedor = crearCombo('#id_vendedor_venta', 'api/vendedores/combo', { allowClear: true }, {
+            processResults: (data) => ({
+                results: data.data.map((o) => Object.assign({}, o, { text: o.nit.nombre_completo }))
+            })
+        });
+
+        state.$resolucion = crearCombo('#id_resolucion_venta', 'api/resoluciones/combo-resoluciones', {}, {
+            data: (params) => ({ q: params.term, tipo_resoluciones: [0, 1], _type: 'query' })
+        });
+
+        state.$bodega = crearCombo('#id_bodega_venta', 'api/bodega/combo-bodega');
+
+        crearCombo('#id_tipo_documento_venta_nit', 'api/nit/combo-tipo-documento',
+            { dropdownParent: $('#nitVentaFormModal') });
+        crearCombo('#id_ciudad_venta_nit', 'api/ciudades',
+            { dropdownParent: $('#nitVentaFormModal') });
+
+        if (primeraResolucionVenta && primeraResolucionVenta.length > 0) {
+            const r = primeraResolucionVenta[0];
+            setComboValue(state.$resolucion, r.id, r.prefijo + ' - ' + r.nombre);
         }
-    }
-    venta_table_pagos.ajax.reload(function(res) {
-        disabledFormasPagoVenta();
-    });
-}
 
-function clearFormasPagoVenta() {
-    var dataFormasPago = venta_table_pagos.rows().data();
-
-    if (dataFormasPago.length) {
-        for (let index = 0; index < dataFormasPago.length; index++) {
-            var formaPago = dataFormasPago[index];
-            $('#venta_forma_pago_'+formaPago.id).val(0);
+        if (primeraBodegaVenta && primeraBodegaVenta.length > 0) {
+            const b = primeraBodegaVenta[0];
+            setComboValue(state.$bodega, b.id, b.codigo + ' - ' + b.nombre);
         }
-    }
-    calcularVentaPagos();
-}
 
-function disabledFormasPagoVenta(estado = true) {
-    const dataFormasPago = venta_table_pagos.rows().data();
-
-    if (dataFormasPago.length) {
-        for (let index = 0; index < dataFormasPago.length; index++) {
-
-            const formaPago = dataFormasPago[index];
-            const tiposCuentas = formaPago.cuenta.tipos_cuenta;
-
-            if (!tiposCuentas.length) {
-                $('#venta_forma_pago_'+formaPago.id).prop('disabled', estado);
-                continue;
-            }
-
-            for (let index = 0; index < tiposCuentas.length; index++) {
-                let isAnticipo = false;
-                const tipoCuenta = tiposCuentas[index];
-
-                if (tipoCuenta.id_tipo_cuenta == 8) {
-                    isAnticipo = true;
-                }
-
-                if (isAnticipo) {
-                    let cuentaExistente = encontrarCuentaVenta(formaPago.cuenta.id);
-    
-                    if (cuentaExistente) {
-                        let totalSaldoAnticipos = cuentaExistente[formaPago.cuenta.id].saldo;
-                        if (totalSaldoAnticipos) {
-                            $('#venta_forma_pago_'+formaPago.id).prop('disabled', estado);
-                        }
-                    } else {
-                        $('#venta_forma_pago_'+formaPago.id).prop('disabled', true);
-                    }
-                } else {
-                    $('#venta_forma_pago_'+formaPago.id).prop('disabled', estado);
-                }
-            }
-        }
-    }
-}
-
-$(document).on('click', '#crearCapturaVenta', function () {
-    validateSaveVenta();
-});
-
-function focusFormaPagoVenta(idFormaPago, anticipo = false, id_cuenta = null) {
-
-    if (guardandoVenta) {
-        return;
-    }
-
-    var [iva, retencion, descuento, total, subtotal, redondeo, propina] = totalValoresVentas();
-    var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas(idFormaPago);
-    var totalFactura = (total + propina)- (totalEfectivo + totalOtrosPagos + totalAnticipos);
-    totalFactura = totalFactura < 0 ? 0 : totalFactura;
-    var saldoFormaPago = stringToNumberFloat($('#venta_forma_pago_'+idFormaPago).val());
-
-    if (anticipo) {
-
-        let cuentaExistente = encontrarCuentaVenta(id_cuenta);
-        if (cuentaExistente) {
-            let totalSaldoAnticipos = cuentaExistente[id_cuenta].saldo;
-            if ((totalSaldoAnticipos - totalAnticipos) < totalFactura) {
-                $('#venta_forma_pago_'+idFormaPago).val(formatCurrencyValue(totalSaldoAnticipos - totalAnticipos));
-                $('#venta_forma_pago_'+idFormaPago).select();
-                return;
-            }
-        }
-        return;
-    }
-
-    if (!saldoFormaPago) {
-        $('#venta_forma_pago_'+idFormaPago).val(new Intl.NumberFormat("ja-JP").format(totalFactura < 0 ? 0 : totalFactura));
-    };
-    $('#venta_forma_pago_'+idFormaPago).select();
-}
-
-function calcularVentaPagos(idFormaPago) {
-    if (guardandoVenta) {
-        return;
-    }
-
-    if (
-        $('#venta_forma_pago_'+idFormaPago).val() == '' ||
-        $('#venta_forma_pago_'+idFormaPago).val() < 0
-    ) {
-        $('#venta_forma_pago_'+idFormaPago).val(0);
-    }
-
-    $('#total_faltante_venta').removeClass("is-invalid");
-
-    var [iva, retencion, descuento, total, subtotal, redondeo, propina] = totalValoresVentas();
-
-    total = parseFloat(total.toFixed(2)) + propina;
-
-    var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
-    var totalFaltante = total - (totalEfectivo + totalOtrosPagos + totalAnticipos);
-    
-    if ((totalOtrosPagos + totalEfectivo + totalAnticipos) >= total) {
-        var totalCambio = (totalEfectivo + totalOtrosPagos + totalAnticipos) - total;
-        if(parseInt(totalCambio) > 0)$('#cambio-totals').show();
-        document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalCambio);
-    } else {
-        $('#cambio-totals').hide();
-        if (totalFaltante < 0) {
-            $('#venta_forma_pago_'+idFormaPago).val(totalFaltante * -1);
-            $('#venta_forma_pago_'+idFormaPago).select();
-        }
-    }
-    var totalPagado = totalFaltante < 0 ? total : totalEfectivo + totalOtrosPagos + totalAnticipos;
-    var totalFaltante = totalFaltante < 0 ? 0 : totalFaltante;
-
-    new CountUp('total_pagado_venta', 0, totalPagado, 2, 0.5).start();
-    new CountUp('total_faltante_venta', 0, (totalFaltante), 2, 0.5).start();
-}
-
-function totalFormasPagoVentas(idFormaPago = null) {
-    var totalEfectivo = 0;
-    var totalAnticipos = 0;
-    var totalOtrosPagos = 0;
-
-    var dataPagoVenta = venta_table_pagos.rows().data();
-
-    if(dataPagoVenta.length > 0) {
-        for (let index = 0; index < dataPagoVenta.length; index++) {
-            
-            var ventaPago = stringToNumberFloat($('#venta_forma_pago_'+dataPagoVenta[index].id).val());
-            
-            if (idFormaPago && idFormaPago == dataPagoVenta[index].id) continue;
-
-            if (dataPagoVenta[index].id == 1) totalEfectivo+= ventaPago;
-            else if ($('#venta_forma_pago_'+dataPagoVenta[index].id).hasClass("anticipos")) totalAnticipos+= ventaPago;
-            else totalOtrosPagos+= ventaPago;
+        if (primeraNit) {
+            setComboValue(state.$cliente, primeraNit.id, primeraNit.numero_documento + ' - ' + primeraNit.nombre_completo);
+            procesarCambioClienteVenta(primeraNit);
         }
     }
 
-    return [totalEfectivo, totalOtrosPagos, totalAnticipos];
-}
+    function cargarFechasVentas() {
+        const d = new Date();
+        const p = (n) => String(n).padStart(2, '0');
+        const valor = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+        $('#fecha_manual_venta').val(valor).prop('disabled', !ventaFecha);
+    }
 
-function validateSaveVenta() {
-    $('#total_faltante_venta_text').css("color","#484848");
-    $('#total_faltante_venta').css("color","#484848");
+    function cargarPopoverVenta() {
+        $('[data-toggle="popover"]').popover({
+            trigger: 'hover',
+            html: true,
+            placement: 'top',
+            container: 'body',
+            customClass: 'popover-formas-pagos'
+        });
+    }
 
-    if (!guardandoVenta) {
+    function consecutivoSiguienteVenta() {
+        const idResolucion = $('#id_resolucion_venta').val();
+        const fechaManual = $('#fecha_manual_venta').val();
+        if (!idResolucion || !fechaManual) return;
 
-        var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
-        var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-        const propinaActual = stringToNumberFloat($("#input_venta_propina").val());
+        api('consecutivo', 'GET', { id_resolucion: idResolucion, fecha_manual: fechaManual })
+            .done((res) => { if (res.success) $('#documento_referencia_venta').val(res.data); })
+            .fail((err) => mostrarError(err, 'Error consultando consecutivo'));
+    }
 
-        total = parseFloat(total.toFixed(2)) + propinaActual;
+    // ------------------------------------------------------------------
+    // Guardar
+    // ------------------------------------------------------------------
+    function getVentasPagos() {
+        const data = [];
+        filasPagos().forEach((fp) => {
+            const valor = num($('#venta_forma_pago_' + fp.id).val());
+            if (valor > 0) data.push({ id: fp.id, valor });
+        });
+        return data;
+    }
 
-        if ((totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
-            
-            guardandoVenta = true;
+    function getProductosVenta() {
+        const data = [];
+        state.lineas.forEach((l) => {
+            if (!l.idProducto) return;
+            leerLineaDom(l);
+            if (!l.cantidad) return;
+
+            let subtotal = l.cantidad * l.costo;
+            if (ivaIncluidoVentas) subtotal -= l.ivaVal;
+
+            data.push({
+                id_producto: parseInt(l.idProducto, 10),
+                cantidad: l.cantidad,
+                costo: l.costo || 0,
+                subtotal,
+                descuento_porcentaje: l.descPct || 0,
+                descuento_valor: l.descVal || 0,
+                iva_porcentaje: l.ivaPct || 0,
+                iva_valor: l.ivaVal || 0,
+                total: l.total || 0,
+                concepto: l.concepto || null
+            });
+        });
+        return data;
+    }
+
+    function validateSaveVenta() {
+        $('#total_faltante_venta_text, #total_faltante_venta').css('color', '#484848');
+        if (state.guardando) return;
+
+        if (vendedoresVentas && !$('#id_vendedor_venta').val()) {
+            refrescar();
+            return;
+        }
+        if (!validarTodasLasExistencias()) return;
+
+        const t = calcularTotales();
+        const aPagar = t.total + propinaActual();
+        const [ef, otros, ant] = totalFormasPago();
+
+        if (aPagar > 0 && round2(ef + otros + ant) >= round2(aPagar)) {
+            state.guardando = true;
             saveVenta();
         } else {
-            $('#total_faltante_venta_text').css("color","red");
-            $('#total_faltante_venta').css("color","red");
+            $('#total_faltante_venta_text, #total_faltante_venta').css('color', 'red');
         }
     }
-}
 
-function saveVenta() {
+    function saveVenta() {
+        $('#crearCapturaVenta').hide();
+        $('#crearCapturaVentaDisabled').hide();
+        $('#crearCapturaVentaLoading').show();
 
-    $("#crearCapturaVenta").hide();
-    $("#crearCapturaVentaDisabled").hide();
-    $("#crearCapturaVentaLoading").show();
-    
-    let data = {
-        pagos: getVentasPagos(),
-        productos: getProductosVenta(),
-        propina: stringToNumberFloat($("#input_venta_propina").val()),
-        id_bodega: $("#id_bodega_venta").val(),
-        id_cliente: $("#id_cliente_venta").val(),
-        fecha_manual: $("#fecha_manual_venta").val(),
-        id_resolucion: $("#id_resolucion_venta").val(),
-        id_vendedor: $("#id_vendedor_venta").val(),
-        documento_referencia: $("#documento_referencia_venta").val(),
-        observacion: $("#observacion_venta").val(),
-        calcula_retencion: calculaRetencionVenta ? 1 : 0,
-    }
+        // Llave de idempotencia: el backend puede usarla para ignorar reenvíos duplicados.
+        if (!state.idempotencyKey) {
+            state.idempotencyKey = (window.crypto && crypto.randomUUID)
+                ? crypto.randomUUID()
+                : String(Date.now()) + Math.random().toString(16).slice(2);
+        }
 
-    disabledFormasPagoVenta();
+        const data = {
+            pagos: getVentasPagos(),
+            productos: getProductosVenta(),
+            propina: propinaActual(),
+            id_bodega: $('#id_bodega_venta').val(),
+            id_cliente: $('#id_cliente_venta').val(),
+            fecha_manual: $('#fecha_manual_venta').val(),
+            id_resolucion: $('#id_resolucion_venta').val(),
+            id_vendedor: $('#id_vendedor_venta').val(),
+            documento_referencia: $('#documento_referencia_venta').val(),
+            observacion: $('#observacion_venta').val(),
+            calcula_retencion: state.calculaRetencion ? 1 : 0,
+            idempotency_key: state.idempotencyKey
+        };
 
-    $.ajax({
-        url: base_url + 'ventas',
-        method: 'POST',
-        data: JSON.stringify(data),
-        headers: headers,
-        dataType: 'json',
-    }).done((res) => {
-        guardandoVenta = false;
-        if(res.success){
+        // Bloquea los campos de pago mientras se guarda
+        $('#ventaFormaPago .v-pago').prop('disabled', true);
 
+        $.ajax({
+            url: base_url + 'ventas',
+            method: 'POST',
+            data: JSON.stringify(data),
+            headers,
+            dataType: 'json'
+        }).done((res) => {
+            state.guardando = false;
+            $('#crearCapturaVentaLoading').hide();
+
+            if (!res.success) {
+                mostrarError({ responseJSON: { message: res.message } }, 'Creación errada');
+                refrescar();
+                return;
+            }
+
+            state.idempotencyKey = null;
             consecutivoSiguienteVenta();
             agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
 
-            $("#crearCapturaVenta").show();
-            $("#crearCapturaVentaLoading").hide();
-
-            if(res.impresion) {
-                window.open("/ventas-print/"+res.impresion, '_blank');
-            }
-            idVentaProducto = 0;
+            if (res.impresion) window.open('/ventas-print/' + res.impresion, '_blank');
 
             $('#iniciarCapturaVenta').hide();
             $('#iniciarCapturaVentaLoading').hide();
             $('#documento_referencia_venta').val('');
+            $('#input_venta_propina').val('');
 
-            var totalRows = venta_table.rows().data().length;
-            for (let index = 0; index < totalRows; index++) {
-                venta_table.row(0).remove().draw();
-            }
+            vaciarGrilla();
+            vaciarPagos();
 
             if (ventaRapida) {
                 addRowProductoVenta();
             } else {
-                setTimeout(function(){
+                setTimeout(() => {
                     $('#id_cliente_venta').focus();
-                    $comboCliente.select2("open");
-                },10);
+                    state.$cliente.select2('open');
+                }, 10);
             }
 
             loadAnticiposClienteVentas();
-            disabledFormasPagoVenta();
             cargarFechasVentas();
-
-        } else {
-
-            guardandoVenta = false;
-            $("#crearCapturaVenta").show();
-            $("#crearCapturaVentaLoading").hide();
-            
-            var mensaje = res.responseJSON.message;
-            var errorsMsg = arreglarMensajeError(mensaje);
-            agregarToast('error', 'Creación errada', errorsMsg);
-        }
-    }).fail((err) => {
-        guardandoVenta = false;
-        $("#crearCapturaVenta").show();
-        $("#crearCapturaVentaLoading").hide();
-        
-        var mensaje = err.responseJSON.message;
-        var errorsMsg = arreglarMensajeError(mensaje);
-        agregarToast('error', 'Creación errada', errorsMsg);
-    });
-
-}
-
-function getVentasPagos() {
-    var data = [];
-
-    var dataVentaPagos = venta_table_pagos.rows().data();
-
-    if(!dataVentaPagos.length > 0) return data;
-
-    for (let index = 0; index < dataVentaPagos.length; index++) {
-        const dataPagoVenta = dataVentaPagos[index];
-        var pagoVenta = stringToNumberFloat($('#venta_forma_pago_'+dataPagoVenta.id).val());
-        if (pagoVenta > 0) {
-            data.push({
-                id: dataPagoVenta.id,
-                valor: pagoVenta
-            });
-        }
+            refrescar();
+        }).fail((err) => {
+            // Reactiva todo para que el cajero pueda corregir y reintentar
+            state.guardando = false;
+            $('#crearCapturaVentaLoading').hide();
+            refrescar();
+            mostrarError(err, 'Creación errada');
+        });
     }
 
-    return data;
-}
+    // ------------------------------------------------------------------
+    // Cancelar / iniciar
+    // ------------------------------------------------------------------
+    function cancelarVenta() {
+        vaciarGrilla();
+        vaciarPagos();
+        state.capturando = false;
+        state.idempotencyKey = null;
 
-function getProductosVenta() {
-    var data = [];
+        $('#id_bodega_venta').prop('disabled', false);
+        $('#id_resolucion_venta').prop('disabled', false);
 
-    var dataVentaProductos = venta_table.rows().data();
+        $('#iniciarCapturaVenta').show();
+        $('#agregarVentaProducto').hide();
+        $('#crearCapturaVenta').hide();
+        $('#cancelarCapturaVenta').hide();
+        $('#crearCapturaVentaDisabled').hide();
+        $('#input-anticipos-venta').hide();
 
-    if(!dataVentaProductos.length > 0) return data;
+        refrescar();
+        cargarFechasVentas();
 
-    for (let index = 0; index < dataVentaProductos.length; index++) {
-
-        const id_row = dataVentaProductos[index].id;
-        var id_producto = $('#venta_producto_'+id_row).val();
-        var cantidad = parseFloat($('#venta_cantidad_'+id_row).val());
-        
-        if (id_producto && cantidad) {
-            let costo = stringToNumberFloat($('#venta_costo_'+id_row).val());
-            let descuento_porcentaje = stringToNumberFloat($('#venta_descuento_porcentaje_'+id_row).val());
-            let descuento_valor = stringToNumberFloat($('#venta_descuento_valor_'+id_row).val());
-            let iva_porcentaje = stringToNumberFloat($('#venta_iva_porcentaje_'+id_row).val());
-            let iva_valor = stringToNumberFloat($('#venta_iva_valor_'+id_row).val());
-            let total = stringToNumberFloat($('#venta_total_'+id_row).val());
-            let subtotal = cantidad * costo;
-            let concepto = $('#venta_concepto_'+id_row).val();
-
-            if(ivaIncluidoVentas) {
-                subtotal-= iva_valor;
-            }
-
-            data.push({
-                id_producto: parseInt(id_producto),
-                cantidad: cantidad,
-                costo: costo ? costo : 0,
-                subtotal: subtotal,
-                descuento_porcentaje: descuento_porcentaje ? descuento_porcentaje : 0,
-                descuento_valor: descuento_valor ? descuento_valor : 0,
-                iva_porcentaje: iva_porcentaje ? iva_porcentaje : 0,
-                iva_valor: iva_valor ? iva_valor : 0,
-                total: total ? total : 0,
-                concepto: concepto ? concepto : null,
-            });
-        }
+        setTimeout(() => state.$cliente.select2('open'), 10);
     }
 
-    return data;
-}
-
-function changeFormaPago(idFormaPago, anticipo, event, id_cuenta) {
-
-    if (guardandoVenta) {
-        return;
-    }
-
-    if(event.keyCode == 13){
-
-        calcularVentaPagos(idFormaPago);
-
-        var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
-        var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-        var totalFaltante = total - (totalEfectivo + totalOtrosPagos + totalAnticipos);
-
-        if (!total) {
+    function iniciarCaptura() {
+        const form = document.querySelector('#ventaFilterForm');
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            $('#error_documento_referencia_venta').text('El No. factura requerido');
             return;
         }
 
-        if (anticipo) {
+        state.capturando = true;
+        $('#iniciarCapturaVenta').hide();
+        $('#agregarVentaProducto').show();
+        $('#crearCapturaVenta').hide();
+        $('#cancelarCapturaVenta').show();
+        $('#cambio-totals').hide();
+        $('#crearCapturaVentaDisabled').show();
 
-            let cuentaExistente = encontrarCuentaVenta(id_cuenta);
-            if (cuentaExistente) {
+        addRowProductoVenta();
+    }
 
-                let totalSaldoAnticipos = cuentaExistente[id_cuenta].saldo;
-                if (totalAnticipos > totalSaldoAnticipos) {
-                    $('#venta_forma_pago_'+idFormaPago).val(totalSaldoAnticipos);
-                    $('#venta_forma_pago_'+idFormaPago).select();
-                    calcularVentaPagos();
-                    return;
-                } else if (totalAnticipos > (totalFaltante + totalAnticipos)) {
-                    $('#venta_forma_pago_'+idFormaPago).val(totalFaltante);
-                    $('#venta_forma_pago_'+idFormaPago).select();
-                    calcularVentaPagos();
-                    return;
+    // ------------------------------------------------------------------
+    // Modales de NIT
+    // ------------------------------------------------------------------
+    function openModalNewNitVenta() {
+        abrirNitGeneral({
+            modo: 'create',
+            captura: 'venta',
+            onSave: function (dataNit) {
+                setComboValue(state.$cliente, dataNit.id, dataNit.numero_documento + ' - ' + dataNit.nombre_completo);
+                procesarCambioClienteVenta(dataNit);
+                agregarToast('exito', 'Creación exitosa', 'Cliente creado con éxito!', true);
+                document.getElementById('iniciarCapturaVenta').click();
+            }
+        });
+    }
+
+    function openModalViewNitVenta() {
+        const data = $('#id_cliente_venta').select2('data');
+        if (!data.length) {
+            agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
+            return;
+        }
+        abrirNitDetalle(data[0].id);
+    }
+
+    function openModalEditNitVenta() {
+        const data = $('#id_cliente_venta').select2('data');
+        if (!data.length) {
+            agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
+            return;
+        }
+        abrirNitGeneral({
+            modo: 'edit',
+            id: data[0].id,
+            onUpdate: function (dataNit) {
+                const $sel = $('#id_cliente_venta');
+                const texto = dataNit.numero_documento + ' - ' + dataNit.nombre_completo;
+                $sel.find("option[value='" + dataNit.id + "']").remove();
+                $sel.append(new Option(texto, dataNit.id, true, true));
+                $sel.val(dataNit.id).trigger('change');
+
+                procesarCambioClienteVenta(dataNit);
+                agregarToast('exito', 'Edición exitosa', 'Cliente actualizado con éxito!', true);
+            }
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // Eventos (se registran una sola vez, todos delegados)
+    // ------------------------------------------------------------------
+    function registrarEventos() {
+        if (state.inited) return;
+        state.inited = true;
+
+        const $doc = $(document);
+
+        // Formato de moneda: un solo handler para toda la grilla y los pagos
+        $('#ventaTable, #ventaFormaPago')
+            .on('keyup.venta', "input[data-type='currency']", function (e) {
+                const k = e.key;
+                if ((k >= '0' && k <= '9') || k === 'Backspace' || k === 'Delete' || k === ',' || k === '.') {
+                    formatCurrency($(this));
                 }
+            })
+            .on('blur.venta', "input[data-type='currency']", function () {
+                formatCurrency($(this), 'blur');
+            });
+
+        // --- Grilla de productos ---
+        $doc.on('click.venta', '.v-borrar', function () {
+            deleteProductoVenta(Number(this.dataset.id));
+        });
+
+        $doc.on('change.venta', '#ventaTable .venta_producto', function () {
+            onProductoChange(Number(this.dataset.id));
+        });
+
+        $doc.on('click.venta', '.btn-precios-ventas', function () {
+            mostrarPreciosVentas(Number(this.dataset.id));
+        });
+
+        $doc.on('focusin.venta', '#ventaTable .v-cantidad, #ventaTable .v-costo, #ventaTable .v-dpct, #ventaTable .v-dval',
+            function () { seleccionarConDelay(this); });
+
+        $doc.on('focusout.venta', '#ventaTable .v-cantidad, #ventaTable .v-costo, #ventaTable .v-dval, #ventaTable .v-concepto',
+            function () { recalcularLinea(Number(this.dataset.id), 'val'); });
+
+        $doc.on('focusout.venta', '#ventaTable .v-dpct', function () {
+            recalcularLinea(Number(this.dataset.id), 'pct');
+        });
+
+        $doc.on('keydown.venta', '#ventaTable .v-cantidad', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); confirmarCantidad(Number(this.dataset.id)); }
+        });
+
+        $doc.on('keydown.venta', '#ventaTable .v-costo', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                recalcularLinea(Number(this.dataset.id), 'val');
+                addRowProductoVenta();
             }
-        }
+        });
 
-        if (vendedoresVentas && !$("#id_vendedor_venta").val()) {
-            return;
-        }
+        $doc.on('keydown.venta', '#ventaTable .v-dpct', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const id = Number(this.dataset.id);
+                recalcularLinea(id, 'pct');
+                setTimeout(() => {
+                    const $v = $('#venta_descuento_valor_' + id);
+                    $v.focus();
+                    $v.select();
+                }, 10);
+            }
+        });
 
-        if ((totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
-            validateSaveVenta();
-            return;
-        }
-        focusNextFormasPagoVentas(idFormaPago);
+        $doc.on('keydown.venta', '#ventaTable .v-dval', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                recalcularLinea(Number(this.dataset.id), 'val');
+                addRowProductoVenta();
+            }
+        });
+
+        // --- Buscador de productos: Numpad0 + Enter abre formas de pago ---
+        $doc.on('keydown.venta', '.custom-venta_producto .select2-search__field', function (event) {
+            if (state.guardando) return;
+
+            if (event.code === 'Numpad0' && !this.value.length) {
+                state.abrirFormasPago = true;
+            } else if (event.key === 'Enter') {
+                const t = calcularTotales();
+                if (t.total > 0 && state.abrirFormasPago) {
+                    state.abrirFormasPago = false;
+                    $('.venta_producto').select2('close');
+                    focusFormaPagoVenta(ID_FORMA_PAGO_EFECTIVO);
+                }
+            } else {
+                state.abrirFormasPago = false;
+            }
+        });
+
+        // --- Buscador de clientes: Enter sin resultados => crear NIT ---
+        $doc.on('keydown.venta', '.custom-id_cliente_venta .select2-search__field', function (event) {
+            if (event.key === 'Enter' && state.createNewNit) {
+                const documentoBuscado = this.value;
+                openModalNewNitVenta();
+                state.$cliente.select2('close');
+                $('#numero_documento_venta_nit').val(documentoBuscado);
+            }
+        });
+
+        // --- Formas de pago ---
+        $doc.on('focusin.venta', '#ventaFormaPago .v-pago', function () {
+            const m = metaPago($(this));
+            focusFormaPagoVenta(m.id, m.anticipo, m.idCuenta);
+        });
+
+        $doc.on('focusout.venta', '#ventaFormaPago .v-pago', function () {
+            const m = metaPago($(this));
+            onPagoCommit(m.id, m.anticipo, m.idCuenta, false);
+        });
+
+        $doc.on('keydown.venta', '#ventaFormaPago .v-pago', function (e) {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            const m = metaPago($(this));
+            onPagoCommit(m.id, m.anticipo, m.idCuenta, true);
+        });
+
+        // --- Encabezado ---
+        $doc.on('change.venta', '#id_vendedor_venta', refrescar);
+        $doc.on('change.venta', '#id_resolucion_venta', consecutivoSiguienteVenta);
+
+        $doc.on('select2:close.venta', '#id_cliente_venta', function () {
+            const data = $(this).select2('data');
+            if (data.length) procesarCambioClienteVenta(data[0]);
+        });
+
+        $doc.on('select2:close.venta', '#id_resolucion_venta', function () {
+            const data = $(this).select2('data');
+            if (data.length) document.getElementById('iniciarCapturaVenta').click();
+        });
+
+        $doc.on('keydown.venta', '#fecha_manual_venta', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                setTimeout(() => {
+                    $('#documento_referencia_venta').focus().select();
+                }, 10);
+            }
+        });
+
+        $doc.on('keydown.venta', '#documento_referencia_venta', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('iniciarCapturaVenta').click();
+            }
+        });
+
+        // --- Botones ---
+        $doc.on('click.venta', '#iniciarCapturaVenta', iniciarCaptura);
+        $doc.on('click.venta', '#agregarVentaProducto', addRowProductoVenta);
+        $doc.on('click.venta', '#cancelarCapturaVenta', cancelarVenta);
+        $doc.on('click.venta', '#crearCapturaVenta', validateSaveVenta);
     }
-}
 
-function focusNextFormasPagoVentas(idFormaPago) {
-    var dataVentaPagos = venta_table_pagos.rows().data();
-    var idFormaPagoFocus = dataVentaPagos[0].id;
-    var obtenerFormaPago = false;
+    function resetState() {
+        // 1. Quitar handlers viejos (namespace .venta)
+        try { $(document).off('.venta'); } catch (e) { /* noop */ }
+        try { $('#ventaTable, #ventaFormaPago').off('.venta'); } catch (e) { /* noop */ }
 
-    if(!dataVentaPagos.length > 0) return;
-
-    for (let index = 0; index < dataVentaPagos.length; index++) {
-        const dataPagoVenta = dataVentaPagos[index];
-        const input = document.getElementById("venta_forma_pago_"+dataPagoVenta.id);
-
-        if (input.disabled) {
-            continue;
+        // 2. Destruir DataTable de pagos
+        if (state.tablaPagos) {
+            try { state.tablaPagos.destroy(); } catch (e) { /* noop */ }
+            state.tablaPagos = null;
         }
-        
-        if (obtenerFormaPago) {
-            idFormaPagoFocus = dataPagoVenta.id;
-            obtenerFormaPago = false;
-        } else if (dataPagoVenta.id == idFormaPago) {
-            obtenerFormaPago = true;
-        }
+        $('#ventaFormaPago').empty();
+
+        // 3. Destruir select2 de combos principales
+        ['#id_cliente_venta', '#id_vendedor_venta', '#id_resolucion_venta', '#id_bodega_venta']
+            .forEach((sel) => {
+                const $el = $(sel);
+                if ($el.data('select2')) {
+                    try { $el.select2('destroy'); } catch (e) { /* noop */ }
+                }
+                // Quitar opciones viejas para que no queden pegadas
+                try { $el.empty(); } catch (e) { /* noop */ }
+            });
+
+        // 4. Destruir select2 de productos y vaciar tbody
+        $('#ventaTable .venta_producto').each(function () {
+            if ($(this).data('select2')) {
+                try { $(this).select2('destroy'); } catch (e) { /* noop */ }
+            }
+        });
+        $('#ventaTable tbody').empty();
+
+        // 5. Resetear estado en memoria
+        state.nextId = 0;
+        state.lineas = new Map();
+        state.capturando = false;
+        state.guardando = false;
+        state.abrirFormasPago = false;
+        state.createNewNit = false;
+        state.calculaRetencion = false;
+        state.responsabilidades = [];
+        state.anticiposTotal = 0;
+        state.anticiposPorCuenta = {};
+        state.ultimosTotales = null;
+        state.idempotencyKey = null;
+        state.reqExistencias = null;
+        state.inited = false;
+
+        // 6. Resetear animación
+        countUpTotal = null;
+        ultimoTotalAnimado = null;
+
+        // 7. Resetear UI de botones al estado inicial
+        $('#iniciarCapturaVenta').show();
+        $('#agregarVentaProducto').hide();
+        $('#crearCapturaVenta').hide();
+        $('#cancelarCapturaVenta').hide();
+        $('#crearCapturaVentaDisabled').hide();
+        $('#crearCapturaVentaLoading').hide();
+        $('#iniciarCapturaVentaLoading').hide();
+        $('#input-anticipos-venta').hide();
+
+        $('#id_bodega_venta').prop('disabled', false);
+        $('#id_resolucion_venta').prop('disabled', false);
     }
-    focusFormaPagoVenta(idFormaPagoFocus);
-}
 
-function changeRetencionVentas() {
-    calculaRetencionVenta = true;
-    $('#totales_retencion').removeClass('totales_retencion_disable');
-    if (!$('#checkRetencionVentas').is(':checked')) {
-        calculaRetencionVenta = false;
-        $('#totales_retencion').addClass('totales_retencion_disable');
+    // ------------------------------------------------------------------
+    // Init
+    // ------------------------------------------------------------------
+    function ventaInit() {
+        resetState();
+
+        inyectarEstilos();
+        registrarEventos();
+        aplicarVisibilidadColumnas();
+        iniciarTablaPagos();
+        cargarFechasVentas();
+        cargarCombosVenta();
+        cargarPopoverVenta();
+        loadFormasPagoVenta();
+        actualizarInfoPropinaVentas();
+
+        $('.water').hide();
     }
 
-    actualizarInfoRetencionVentas();
-    mostrarValoresVentas();
-}
-
-function openModalNewNitVenta() {
-    abrirNitGeneral({
-        modo: 'create',
-        captura: 'venta',
-        onSave: function (dataNit) {
-            var dataCliente = {
-                id: dataNit.id,
-                text: dataNit.numero_documento + ' - ' + dataNit.nombre_completo
-            };
-            var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-            $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
-
-            procesarCambioClienteVenta(dataNit);
-            
-            agregarToast('exito', 'Creación exitosa', 'Cliente creado con éxito!', true);
-            document.getElementById('iniciarCapturaVenta').click();
-        }
+    // ------------------------------------------------------------------
+    // API pública (lo que el HTML u otros scripts pueden invocar)
+    // ------------------------------------------------------------------
+    Object.assign(window, {
+        ventaInit,
+        cancelarVenta,
+        changeRetencionVentas,
+        calcularPropinaVenta,
+        keyPresPropinaVenta,
+        openModalNewNitVenta,
+        openModalViewNitVenta,
+        openModalEditNitVenta,
+        loadFormasPagoVenta,
+        clearFormasPagoVenta,
+        consecutivoSiguienteVenta,
+        loadAnticiposClienteVentas
     });
-}
 
-function openModalViewNitVenta() {
-    var data = $('#id_cliente_venta').select2('data');
-
-    if (!data.length) {
-        agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
-        return;
-    }
-
-    abrirNitDetalle(data[0].id);
-}
-
-function openModalEditNitVenta() {
-    var data = $('#id_cliente_venta').select2('data');
-    if (!data.length) {
-        agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
-        return;
-    }
-    abrirNitGeneral({
-        modo: 'edit',
-        id: data[0].id,
-        onUpdate: function (dataNit) {
-
-            var $sel = $('#id_cliente_venta');
-            var optText = dataNit.numero_documento + ' - ' + dataNit.nombre_completo;
-
-            $sel.find("option[value='" + dataNit.id + "']").remove();
-            var newOption = new Option(optText, dataNit.id, true, true);
-            $sel.append(newOption);
-            $sel.val(dataNit.id).trigger('change');
-
-            procesarCambioClienteVenta(dataNit);
-            agregarToast('exito', 'Edición exitosa', 'Cliente actualizado con éxito!', true);
-        }
-    });
-}
+})(window, jQuery);
