@@ -266,10 +266,11 @@ class GastosController extends Controller
                     
                     $subtotalGasto+= $ivaGasto;
                 } else {
-                    $ivaGasto = $this->redondearGasto($porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0, $redondeo_gastos);
+                    
+                    $ivaGasto = $this->redondearGasto(($movimiento->no_valor_iva + $movimiento->valor_iva), $redondeo_gastos);
                     $retencionGasto = $calcularRetencion ? $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos) : 0;
                     $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? ($subtotalGasto) * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
-                    $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto + $movimiento->no_valor_iva) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
+                    $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
                 }
 
                 if ($this->proveedor->sumar_aiu) {
@@ -286,7 +287,7 @@ class GastosController extends Controller
                     'id_cuenta_reteica' => $conceptoGasto->id_cuenta_reteica,
                     'id_cuenta_retencion_declarante' => $conceptoGasto->id_cuenta_retencion_declarante,
                     'observacion' => $movimiento->observacion,
-                    'subtotal' => $subtotalGasto + $movimiento->no_valor_iva,
+                    'subtotal' => $subtotalGasto,
                     'aiu_porcentaje' => $this->proveedor->porcentaje_aiu,
                     'aiu_valor' => $baseAIU,
                     'descuento_porcentaje' => $movimiento->porcentaje_descuento_gasto,
@@ -296,11 +297,15 @@ class GastosController extends Controller
                     'rete_fuente_valor' => $retencionGasto,
                     'rete_ica_valor' => $reteIcaGasto,
                     'iva_porcentaje' => $porcentajeIva,
-                    'iva_valor' => $ivaGasto + $movimiento->no_valor_iva,
+                    'iva_valor' => $ivaGasto,
                     'total' => $totalGasto,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
+
+                if ($movimiento->no_valor_iva) {
+                    $detalleGasto->subtotal+= $movimiento->no_valor_iva;
+                }
 
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
 
@@ -842,7 +847,7 @@ class GastosController extends Controller
         
         $this->calcularTotales($request->get('gastos'), $request->get('id_proveedor'), $request->get('calcula_retencion'));
         $this->calcularFormasPago($request->get('pagos'));
-        
+
         $gasto = ConGastos::create([
             'id_concepto' => $request->get('id_concepto'),
             'id_proveedor' => $request->get('id_proveedor'),
@@ -974,7 +979,7 @@ class GastosController extends Controller
     private function calcularGasto($gasto, $conceptoGasto, $ctx): object
     {
         $subtotalGasto = $this->redondearGasto(
-            ($gasto->valor_gasto + $gasto->no_valor_iva) - $gasto->descuento_gasto,
+            ($gasto->valor_gasto) - $gasto->descuento_gasto,
             $ctx->redondeo
         );
 
@@ -1003,9 +1008,9 @@ class GastosController extends Controller
         if ($ctx->sumarAiu) {
             $subtotalGasto += $baseAIU;
         }
-
+        
         $valorTotal = $this->redondearGasto(
-            ($subtotalGasto + $ivaGasto) - ($valorRetencion + $valorReteIca),
+            ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - ($valorRetencion + $valorReteIca),
             $ctx->redondeo
         );
 

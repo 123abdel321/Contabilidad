@@ -129,7 +129,7 @@ class GastoPdfMapper
             $rows[] = [
                 'concepto' => ($detalle->concepto?->codigo ?? '') . ' - ' . ($detalle->concepto?->nombre ?? ''),
                 'cuenta' => ($detalle->concepto?->cuenta_gasto?->cuenta ?? '') . ' - ' . ($detalle->concepto?->cuenta_gasto?->nombre ?? ''),
-                'base' => $detalle->subtotal_neto ?? 0,
+                'base' => $detalle->subtotal ?? 0,
                 'iva' => $detalle->iva_valor ?? 0,
                 'rete_fuente' => $calcularRetencion ? $detalle->rete_fuente_valor ?? 0 : 0,
                 'rete_ica' => $detalle->rete_ica_valor ?? 0,

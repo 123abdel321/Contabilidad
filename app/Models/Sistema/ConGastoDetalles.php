@@ -57,7 +57,7 @@ class ConGastoDetalles extends Model
     public function getSubtotalNetoAttribute()
     {
         if (is_null($this->id_cuenta_iva) && $this->iva_valor > 0) {
-            return $this->subtotal - $this->iva_valor;
+            return $this->subtotal;
         }
         return $this->subtotal;
     }
