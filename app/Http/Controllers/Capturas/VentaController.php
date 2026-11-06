@@ -218,10 +218,21 @@ class VentaController extends Controller
             ], 200);
 
         } catch (\Throwable $e) {
+            $raw = $e->getMessage();
+
+            // Intentar decodificar si el mensaje es JSON válido
+            $decoded = null;
+            if (is_string($raw) && $raw !== '') {
+                $maybe = json_decode($raw, true);
+                if (json_last_error() === JSON_ERROR_NONE && (is_array($maybe) || is_object($maybe))) {
+                    $decoded = $maybe;
+                }
+            }
+
             return response()->json([
                 "success" => false,
                 'data'    => [],
-                "message" => json_decode($e->getMessage())
+                "message" => $decoded ?? $raw,   // ← si decodificó, array; si no, string plano
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }

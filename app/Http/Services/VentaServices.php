@@ -112,7 +112,7 @@ class VentaServices
 
         // ── 2. Resetear estado interno (por si es una instancia reutilizada) ──
         $this->resetEstado();
-
+        
         // ── 3. Resolución ──
         $this->resolucion = FacResoluciones::whereId($contexto['id_resolucion'])
             ->with('comprobante')
@@ -172,7 +172,7 @@ class VentaServices
 
         try {
             $venta = $this->createFacturaVenta($contexto, $productos, $consecutivo, $empresa);
-
+            
             $enviarFacturaEmail = $this->nit->notificacion_email ? true : false;
 
             $documentoGeneral = new Documento(
@@ -413,7 +413,14 @@ class VentaServices
                     }
 
                     if (!$ventaElectronica["zip_key"] && $ventaElectronica["status"] == 500) {
-                        throw new Exception($ventaElectronica["error_message"]);
+                        // ✅ Convertir el array a string legible ANTES de lanzar la excepción
+                        $errorRaw = $ventaElectronica["error_message"]
+                                ?? ($ventaElectronica["message_object"] ?? null)
+                                ?? ($ventaElectronica["mensajes"]      ?? null);
+
+                        $errorTexto = $this->stringifyError($errorRaw);
+
+                        throw new Exception($errorTexto);
                     }
                 }
 
@@ -1183,5 +1190,35 @@ class VentaServices
                 'response' => $response,
             ]);
         }
+    }
+
+    /**
+     * Convierte un error (string, array u objeto) a un string legible.
+     * Ejemplo de entrada:
+     *   ['Regla: FAK24a' => ['Rechazo: ...'], 'Regla: FAK24' => ['Rechazo: ...']]
+     * Ejemplo de salida:
+     *   "Regla: FAK24a: Rechazo: ... | Regla: FAK24: Rechazo: ..."
+     */
+    protected function stringifyError($error): string
+    {
+        if (is_string($error)) {
+            return $error;
+        }
+
+        if (is_array($error) || is_object($error)) {
+            $arr    = (array) $error;
+            $lineas = [];
+
+            array_walk_recursive($arr, function ($value) use (&$lineas) {
+                if (is_scalar($value) && trim((string) $value) !== '') {
+                    $lineas[] = (string) $value;
+                }
+            });
+
+            // ✅ Un error por línea
+            return implode("\n", array_unique($lineas)) ?: 'Error electrónico desconocido';
+        }
+
+        return (string) $error ?: 'Error electrónico desconocido';
     }
 }
