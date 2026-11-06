@@ -59,10 +59,14 @@ class NitController extends Controller
                 $columnSortOrder = null;
                 $searchValue = null;
 
+                
+
                 if (isset($columnIndex_arr)) $columnIndex = $columnIndex_arr[0]['column'];
                 if (isset($columnName_arr)) $columnName = $columnName_arr[$columnIndex]['data'];
                 if (isset($order_arr)) $columnSortOrder = $order_arr[0]['dir'];
                 if (isset($search_arr)) $searchValue = $search_arr['value'];
+
+                
     
                 $nits = Nits::with('tipo_documento', 'ciudad', 'vendedor.nit', 'actividad_economica')
                     ->select(
@@ -80,6 +84,8 @@ class NitController extends Controller
                         ->orderBy('primer_apellido',$columnSortOrder)
                         ->orderBy('segundo_apellido',$columnSortOrder);
 
+                
+
                 } else if ($columnIndex == '6') {
                     // $nits->orderBy('ciudad.nombre_completo');
                 } else if ($columnIndex == '8') {
@@ -90,7 +96,7 @@ class NitController extends Controller
                     $nits->orderBy('created_at',$columnSortOrder);
                 } else if ($columnIndex == '11') {
                     $nits->orderBy('updated_at',$columnSortOrder);
-                } else if ($columnName) {
+                } else if ($columnName && $columnName =! "function") {
                     $nits->orderBy($columnName,$columnSortOrder);
                 }
                 
@@ -214,6 +220,7 @@ class NitController extends Controller
                 'id_responsabilidades' => $responsabilidades,
                 'id_actividad_economica' => $request->get('id_actividad_economica'),
                 'numero_documento' => $request->get('numero_documento'),
+                'digito_verificacion' => $request->get('digito_verificacion'),
                 'tipo_contribuyente' => $request->get('id_tipo_documento') == '6' ? 1 : 2,
                 'primer_apellido' => $request->get('primer_apellido'),
                 'segundo_apellido' => $request->get('segundo_apellido'),
@@ -294,6 +301,7 @@ class NitController extends Controller
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'id_vendedor' => $request->get('id_vendedor'),
                 'numero_documento' => $request->get('numero_documento'),
+                'digito_verificacion' => $request->get('digito_verificacion'),
                 'id_responsabilidades' => $responsabilidades,
                 'id_actividad_economica' => $request->get('id_actividad_economica'),
                 'tipo_contribuyente' => $request->get('tipo_contribuyente'),
@@ -565,5 +573,35 @@ class NitController extends Controller
             "data"=>$nit->first()
         ], 200);
     }
+
+    // public function calcularDigitoVerificacion($nit)
+    // {
+    //     $nit = preg_replace('/[^0-9]/', '', (string) $nit);
+
+    //     if ($nit === '') {
+    //         return null;
+    //     }
+
+    //     $factores = [
+    //         3, 7, 13, 17, 19,
+    //         23, 29, 37, 41, 43,
+    //         47, 53, 59, 67, 71
+    //     ];
+
+    //     $nit = strrev($nit);
+    //     $suma = 0;
+
+    //     for ($i = 0; $i < strlen($nit); $i++) {
+    //         if (!isset($factores[$i])) {
+    //             throw new InvalidArgumentException('Longitud de NIT no soportada.');
+    //         }
+
+    //         $suma += (int) $nit[$i] * $factores[$i];
+    //     }
+
+    //     $residuo = $suma % 11;
+
+    //     return $residuo < 2 ? $residuo : 11 - $residuo;
+    // }
 
 }

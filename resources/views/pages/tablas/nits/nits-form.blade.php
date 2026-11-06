@@ -23,7 +23,7 @@
                     <input type="file" name="newAvatar" id="newAvatar" onchange="readURL(this);" style="display: none" />
 
                     <div class="form-group col-12 col-sm-6 col-md-6">
-                        <label for="exampleFormid_tipo_documento">Tipo documento </label>
+                        <label for="id_tipo_documento">Tipo documento </label>
                         <select name="id_tipo_documento" id="id_tipo_documento" class="form-control form-control-sm" required>
                         </select>
                         <div class="invalid-feedback">
@@ -32,15 +32,23 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_numero_documento">
-                        <label for="example-text-input" class="form-control-label">Numero documento </label>
+                        <label for="numero_documento" class="form-control-label">Numero documento </label>
                         <input type="number" class="form-control form-control-sm input_decimal only-numbers" name="numero_documento" id="numero_documento" required>
                         <div class="invalid-feedback">
                             El campo es requerido
                         </div>
                     </div>
 
+                    <div class="form-group col-12 col-sm-6 col-md-6" id="div_digito_verificacion">
+                        <label for="digito_verificacion" class="form-control-label">Digito verificacion </label>
+                        <input type="number" class="form-control form-control-sm input_decimal only-numbers" name="digito_verificacion" id="digito_verificacion" required>
+                        <div class="invalid-feedback">
+                            El campo es requerido
+                        </div>
+                    </div>
+
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_primer_nombre">
-                        <label for="example-text-input" class="form-control-label">Primer nombre</label>
+                        <label for="primer_nombre" class="form-control-label">Primer nombre</label>
                         <input type="text" class="form-control form-control-sm only-lyrics" name="primer_nombre" id="primer_nombre" >
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -48,7 +56,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_otros_nombres">
-                        <label for="example-text-input" class="form-control-label">Segundo nombre</label>
+                        <label for="otros_nombres" class="form-control-label">Segundo nombre</label>
                         <input type="text" class="form-control form-control-sm only-lyrics" name="otros_nombres" id="otros_nombres" >
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -56,7 +64,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_primer_apellido">
-                        <label for="example-text-input" class="form-control-label">Primer apellido</label>
+                        <label for="primer_apellido" class="form-control-label">Primer apellido</label>
                         <input type="text" class="form-control form-control-sm only-lyrics" name="primer_apellido" id="primer_apellido" >
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -64,7 +72,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_segundo_apellido">
-                        <label for="example-text-input" class="form-control-label">Segundo apellido</label>
+                        <label for="segundo_apellido" class="form-control-label">Segundo apellido</label>
                         <input type="text" class="form-control form-control-sm only-lyrics" name="segundo_apellido" id="segundo_apellido" >
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -72,7 +80,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_razon_social">
-                        <label for="example-text-input" class="form-control-label">Razon social</label>
+                        <label for="razon_social" class="form-control-label">Razon social</label>
                         <input type="text" class="form-control form-control-sm only-lyrics" name="razon_social" id="razon_social" >
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -80,7 +88,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_direccion">
-                        <label for="example-text-input" class="form-control-label">Dirección </label>
+                        <label for="direccion" class="form-control-label">Dirección </label>
                         <input type="text" class="form-control form-control-sm" name="direccion" id="direccion" >
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -88,7 +96,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_email">
-                        <label for="example-text-input" class="form-control-label">Email</label>
+                        <label for="email" class="form-control-label">Email</label>
                         <input type="email" class="form-control form-control-sm" name="email" id="email" >
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -96,7 +104,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_telefono_1">
-                        <label for="example-text-input" class="form-control-label">Telefono</label>
+                        <label for="telefono_1" class="form-control-label">Telefono</label>
                         <input type="text" class="form-control form-control-sm" name="telefono_1" id="telefono_1" >
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -104,7 +112,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_id_ciudad">
-                        <label for="exampleFormControlSelect1" style=" width: 100%;">Ciudad</label>
+                        <label for="id_ciudad" style=" width: 100%;">Ciudad</label>
                         <select class="form-control form-control-sm" name="id_ciudad" id="id_ciudad">
                         </select>
                         <div class="invalid-feedback">
@@ -113,29 +121,29 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_id_vendedor_nit">
-                        <label for="exampleFormControlSelect1" style=" width: 100%;">Vendedor</label>
+                        <label for="id_vendedor_nit" style=" width: 100%;">Vendedor</label>
                         <select class="form-control form-control-sm" name="id_vendedor_nit" id="id_vendedor_nit">
                         </select>
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_observaciones">
-                        <label for="example-text-input" class="form-control-label">Observaciones</label>
+                        <label for="observaciones" class="form-control-label">Observaciones</label>
                         <input type="text" class="form-control form-control-sm" name="observaciones" id="observaciones">
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_porcentaje_aiu">
-                        <label for="example-text-input" class="form-control-label">Porcentaje AIU</label>
+                        <label for="porcentaje_aiu" class="form-control-label">Porcentaje AIU</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_aiu" id="porcentaje_aiu" value="0">
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_id_actividad_economica_nit">
-                        <label for="exampleFormControlSelect1" style=" width: 100%;">Actividad economica</label>
+                        <label for="id_actividad_economica_nit" style=" width: 100%;">Actividad economica</label>
                         <select class="form-control form-control-sm" name="id_actividad_economica_nit" id="id_actividad_economica_nit">
                         </select>
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_porcentaje_reteica">
-                        <label for="example-text-input" class="form-control-label">Milaje ReteICA</label>
+                        <label for="porcentaje_reteica" class="form-control-label">Milaje ReteICA</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_reteica" id="porcentaje_reteica" value="0">
                     </div>
 
