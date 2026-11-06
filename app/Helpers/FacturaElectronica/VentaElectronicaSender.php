@@ -55,7 +55,7 @@ class VentaElectronicaSender extends AbstractFESender
 			$typeOrganizationId = $this->cliente->tipo_contribuyente == 1 ? 1 : 2;
 		}
 
-		return [
+		$customer = [
 			'identification_number' => $this->cliente->numero_documento,
 			'name' => $this->cliente->nombre_completo,
 			'email' => $this->cliente->email,
@@ -65,6 +65,12 @@ class VentaElectronicaSender extends AbstractFESender
 			'type_document_identification_id' => $tipoDocumento->id ?? null,
 			'type_organization_id' => $typeOrganizationId,
 		];
+
+		if ($typeOrganizationId) {
+			$customer['dv'] = $this->cliente->digito_verificacion;
+		}
+
+		return $customer;
 	}
 
 	protected function legalMonetaryTotals()
