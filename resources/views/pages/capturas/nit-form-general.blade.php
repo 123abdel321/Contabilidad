@@ -21,12 +21,35 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-6" >
+                    <div class="form-group col-12 col-sm-6 col-md-6">
                         <label for="numero_documento_general_nit" class="form-control-label">Numero documento </label>
-                        <input type="text" class="form-control form-control-sm input_decimal" name="numero_documento_general_nit" id="numero_documento_general_nit" required>
+                        <input type="text"
+                               class="form-control form-control-sm input_decimal"
+                               name="numero_documento_general_nit"
+                               id="numero_documento_general_nit"
+                               autocomplete="off"
+                               required>
                         <div class="invalid-feedback">
                             El campo es requerido
                         </div>
+                    </div>
+
+                    <!-- DV como campo normal, debajo del numero de documento -->
+                    <div class="form-group col-12 col-sm-6 col-md-6">
+                        <label for="digito_verificacion_general_nit" class="form-control-label">Dígito de verificación</label>
+                        <input type="text"
+                               class="form-control form-control-sm"
+                               name="digito_verificacion_general_nit"
+                               id="digito_verificacion_general_nit"
+                               maxlength="1"
+                               inputmode="numeric"
+                               pattern="[0-9]"
+                               autocomplete="off"
+                               title="Dígito de verificación (0-9)">
+                        <div class="invalid-feedback">
+                            El campo es requerido
+                        </div>
+                        <small id="dv_feedback_general_nit" class="form-text" style="display:none;"></small>
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6">
@@ -115,7 +138,7 @@
                         </div>
                     </div>
 
-                    <!-- Responsabilidades (nuevo) -->
+                    <!-- Responsabilidades -->
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_id_responsabilidades_general">
                         <label for="id_responsabilidades_general_nit">Responsabilidades</label>
                         <select class="form-control form-control-sm"
@@ -167,8 +190,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button id="saveNitVentaGeneral"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
-                <button id="saveNitGastoGeneral"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button id="saveNitVentaGeneral" type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button id="saveNitGastoGeneral" type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
                 <button id="saveNitGeneralLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left;" disabled>
                     Cargando
                     <i class="fas fa-spinner fa-spin"></i>

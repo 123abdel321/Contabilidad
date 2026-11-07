@@ -12,6 +12,7 @@ var nitGeneralIdActual = null;
  * @param {Object} opts
  *   - modo: 'create' | 'edit' | 'view'
  *   - id:   id del NIT (para edit/view)
+ *   - captura: 'venta' | 'gasto'
  *   - onSave: function(data, res)  -> se llama tras guardar/editar OK
  *   - onClose: function()          -> se llama al cerrar el modal
  */
@@ -88,6 +89,7 @@ function llenarFormNitGeneral(d) {
 
     $("#id_nit_general_up").val(d.id);
     $("#numero_documento_general_nit").val(d.numero_documento);
+    $("#digito_verificacion_general_nit").val(d.digito_verificacion != null ? d.digito_verificacion : '');
     $("#tipo_contribuyente_general_nit").val(d.tipo_contribuyente).change();
     $("#primer_nombre_general_nit").val(d.primer_nombre);
     $("#otros_nombres_general_nit").val(d.otros_nombres);
@@ -97,7 +99,7 @@ function llenarFormNitGeneral(d) {
     $("#direccion_general_nit").val(d.direccion);
     $("#email_general_nit").val(d.email);
     $("#telefono_1_general_nit").val(d.telefono_1);
-    
+
     if (d.sumar_aiu) {
         $('#sumar_aiu_general_nits').prop('checked', true);
     } else {
@@ -131,25 +133,28 @@ function llenarFormNitGeneral(d) {
     // Responsabilidades (array de ids)
     var idsResp = [];
     if (d.id_responsabilidades) {
-        // Puede venir como "1,5,7" o como array, según cómo lo serialice el backend
         idsResp = Array.isArray(d.id_responsabilidades)
             ? d.id_responsabilidades
             : String(d.id_responsabilidades).split(',').filter(Boolean);
     }
 
-    // Limpiar opciones previas y agregar las que vienen del server
     var $selResp = $("#id_responsabilidades_general_nit");
     $selResp.empty();
+
     if (d.responsabilidades && d.responsabilidades.length) {
         d.responsabilidades.forEach(function (r) {
             $selResp.append(new Option(r.codigo + ' - ' + r.nombre, r.id, false, false));
         });
-    } else if (idsResp.length) {
+    } else {
+        // Si no vienen los objetos completos, al menos agregamos los ids
         idsResp.forEach(function (id) {
             $selResp.append(new Option(id, id, false, false));
         });
     }
     $selResp.val(idsResp).trigger('change');
+
+    // Validar/avisar DV con los datos cargados (sin sobrescribir el guardado)
+    evaluarDigitoVerificacionGeneral(false);
 }
 
 function setFormNitGeneralReadonly(readonly) {
@@ -168,6 +173,8 @@ function clearFormNitGeneral() {
     $("#id_tipo_documento_general_nit").val('').change();
     $("#id_ciudad_general_nit").val('').change();
     $("#numero_documento_general_nit").val('');
+    $("#digito_verificacion_general_nit").val('').removeClass('is-valid is-invalid');
+    $("#dv_feedback_general_nit").hide().text('').removeClass('text-success text-danger');
     $("#tipo_contribuyente_general_nit").val(2).change();
     $("#primer_nombre_general_nit").val('');
     $("#otros_nombres_general_nit").val('');
@@ -185,8 +192,101 @@ function clearFormNitGeneral() {
     $('#notificacion_whatsapp_general_nit').prop('checked', false);
     $('#proveedor_general_nit').prop('checked', false);
     $('#sumar_aiu_general_nits').prop('checked', false);
-    
 }
+
+// ------------------------------------------------------------
+// CÁLCULO Y VALIDACIÓN DEL DÍGITO DE VERIFICACIÓN (Módulo 11)
+// ------------------------------------------------------------
+function calcularDigitoVerificacionJS(nit) {
+    nit = String(nit || '').replace(/[^0-9]/g, '');
+    if (nit === '') return null;
+
+    var factores = [3, 7, 13, 17, 19, 23, 29, 37, 41, 43, 47, 53, 59, 67, 71];
+    var invertido = nit.split('').reverse().join('');
+    var suma = 0;
+
+    for (var i = 0; i < invertido.length; i++) {
+        if (factores[i] === undefined) return null; // longitud no soportada
+        suma += parseInt(invertido[i], 10) * factores[i];
+    }
+
+    var residuo = suma % 11;
+    return residuo < 2 ? residuo : 11 - residuo;
+}
+
+/**
+ * Evalúa el DV actual contra el esperado.
+ * @param {boolean} autocompletarSiVacio  Si true y el DV está vacío, lo llena con el esperado.
+ *                                        Si false (modo edición), solo avisa si difiere.
+ */
+function evaluarDigitoVerificacionGeneral(autocompletarSiVacio) {
+    var $dv = $("#digito_verificacion_general_nit");
+    var $fb = $("#dv_feedback_general_nit");
+
+    var numero = ($("#numero_documento_general_nit").val() || '').replace(/[^0-9]/g, '');
+    var dvManual = ($dv.val() || '').replace(/[^0-9]/g, '');
+
+    // Limpiar estado
+    $dv.removeClass('is-valid is-invalid');
+    $fb.hide().text('').removeClass('text-success text-danger').css('color', '');
+
+    if (!numero) return;
+
+    var dvEsperado = calcularDigitoVerificacionJS(numero);
+    if (dvEsperado === null) {
+        $dv.addClass('is-invalid');
+        $fb.show().text('Número demasiado largo para calcular el DV.').addClass('text-danger');
+        return;
+    }
+
+    // DV vacío
+    if (dvManual === '') {
+        if (autocompletarSiVacio) {
+            $dv.val(dvEsperado);
+            $dv.addClass('is-valid');
+            $fb.show().text('DV calculado automáticamente.').addClass('text-success');
+        } else {
+            // En edición, no sobrescribir: solo indicar el esperado
+            $fb.show()
+               .html('El DV esperado para este número es <strong>' + dvEsperado + '</strong>.')
+               .addClass('text-danger');
+        }
+        return;
+    }
+
+    // Comparar
+    if (parseInt(dvManual, 10) === dvEsperado) {
+        $dv.addClass('is-valid');
+        $fb.show().text('Dígito de verificación correcto.').addClass('text-success');
+    } else {
+        $dv.addClass('is-invalid');
+        $fb.show()
+           .html('DV incorrecto. El esperado es <strong>' + dvEsperado + '</strong>.')
+           .addClass('text-danger');
+    }
+}
+
+// Solo dígitos mientras escribe el numero_documento (sin calcular todavía)
+$(document).on('input', '#numero_documento_general_nit', function () {
+    var limpio = $(this).val().replace(/[^0-9]/g, '');
+    if (limpio !== $(this).val()) $(this).val(limpio);
+});
+
+// Calcular al salir del numero_documento
+$(document).on('blur', '#numero_documento_general_nit', function () {
+    evaluarDigitoVerificacionGeneral(true); // autocompleta solo si está vacío
+});
+
+// Solo dígitos y 1 carácter en el DV
+$(document).on('input', '#digito_verificacion_general_nit', function () {
+    var limpio = $(this).val().replace(/[^0-9]/g, '').slice(0, 1);
+    if (limpio !== $(this).val()) $(this).val(limpio);
+});
+
+// Validar el DV cuando pierde el foco (no en cada tecla)
+$(document).on('blur', '#digito_verificacion_general_nit', function () {
+    evaluarDigitoVerificacionGeneral(false);
+});
 
 // ------------------------------------------------------------
 // Guardar (POST/PUT según id oculto)
@@ -203,6 +303,25 @@ function guardarNitGeneral() {
         return;
     }
 
+    // Validación final del DV antes de enviar
+    var numero = ($("#numero_documento_general_nit").val() || '').replace(/[^0-9]/g, '');
+    var dvEsperado = calcularDigitoVerificacionJS(numero);
+    var dvActual = ($("#digito_verificacion_general_nit").val() || '').replace(/[^0-9]/g, '');
+
+    if (numero && dvEsperado !== null) {
+        if (dvActual === '') {
+            // Si no puso DV, lo autocompletamos
+            $("#digito_verificacion_general_nit").val(dvEsperado);
+            dvActual = String(dvEsperado);
+        }
+        if (parseInt(dvActual, 10) !== dvEsperado) {
+            evaluarDigitoVerificacionGeneral(false);
+            agregarToast('error', 'Dígito de verificación inválido',
+                'El DV ingresado no coincide con el calculado (' + dvEsperado + ').');
+            return;
+        }
+    }
+
     $("#saveNitGeneralLoading").show();
     $("#saveNitVentaGeneral").hide();
     $("#saveNitGastoGeneral").hide();
@@ -213,6 +332,7 @@ function guardarNitGeneral() {
     let data = {
         id_tipo_documento: $("#id_tipo_documento_general_nit").val(),
         numero_documento: $("#numero_documento_general_nit").val(),
+        digito_verificacion: $("#digito_verificacion_general_nit").val(),
         tipo_contribuyente: $("#tipo_contribuyente_general_nit").val(),
         primer_nombre: $("#primer_nombre_general_nit").val(),
         otros_nombres: $("#otros_nombres_general_nit").val(),
@@ -231,7 +351,7 @@ function guardarNitGeneral() {
         notificacion_email:    $("input[type='checkbox']#notificacion_email_general_nit").is(':checked')    ? '1' : '',
         notificacion_whatsapp: $("input[type='checkbox']#notificacion_whatsapp_general_nit").is(':checked') ? '1' : '',
     };
-    
+
     if (esEdicion) data.id = idNit;
 
     $.ajax({
@@ -334,6 +454,9 @@ $(document).on('shown.bs.modal', '#nitGeneralFormModal', function () {
             }
         });
     }
+
+    // Al abrir el modal, si ya hay número, evaluar el DV (en edición no sobrescribe)
+    evaluarDigitoVerificacionGeneral(nitGeneralModo === 'create');
 });
 
 function abrirNitDetalle(id) {
@@ -373,11 +496,16 @@ function abrirNitDetalle(id) {
         $('#nitDetailTipoContribuyente').text(tipoContribuyente);
         $('#nitDetailContribuyente2').text(tipoContribuyente);
 
-        // Documento
+        // Documento (con DV si existe)
+        var numDoc = d.numero_documento || '-';
+        if (d.digito_verificacion !== null && d.digito_verificacion !== undefined && d.digito_verificacion !== '') {
+            numDoc = numDoc + '-' + d.digito_verificacion;
+        }
+
         $('#nitDetailTipoDocumento').text(d.tipo_documento ? d.tipo_documento.codigo : '-');
         $('#nitDetailTipoDocumentoCompleto').text(d.tipo_documento ? d.tipo_documento.codigo + ' - ' + d.tipo_documento.nombre : '-');
-        $('#nitDetailNumeroDocumento').text(d.numero_documento || '-');
-        $('#nitDetailNumeroDocumento2').text(d.numero_documento || '-');
+        $('#nitDetailNumeroDocumento').text(numDoc);
+        $('#nitDetailNumeroDocumento2').text(numDoc);
 
         // Información general
         $('#nitDetailRazonSocial').text(d.razon_social || '-');
