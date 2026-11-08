@@ -285,10 +285,6 @@ function cargarTablasConceptosNomina() {
             
         
             $("#conceptosNominaFormModal").modal('show');
-
-            setTimeout(function(){
-                document.getElementById('nombre_periodo').focus();
-            },500);
         });
     }
     conceptos_nomina_table.ajax.reload();
@@ -553,9 +549,6 @@ function actualizarConceptosNomina() {
 $(document).on('click', '#createConceptosNomina', function () {
     clearFormConceptosNomina();
     $("#conceptosNominaFormModal").modal('show');
-    setTimeout(function(){
-        document.getElementById('nombre_periodo').focus();
-    },500);
 });
 
 $(document).on('click', '#saveConceptosNomina', function () {

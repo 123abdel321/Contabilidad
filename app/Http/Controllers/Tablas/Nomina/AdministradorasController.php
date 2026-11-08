@@ -39,7 +39,7 @@ class AdministradorasController extends Controller
         return view('pages.tablas.administradoras.administradoras-view');
     }
 
-    public function generate (Request $request)
+    public function generate(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -48,40 +48,52 @@ class AdministradorasController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $searchValue = $request->get('search');
-        $searchValue = isset($searchValue) ? $searchValue["value"] : null;
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        // Filtros personalizados enviados desde el JS
+        $searchValue = $request->get('search_value');
+        $tipo        = $request->get('tipo');
+
+        $columnIndex     = $columnIndex_arr[0]['column'] ?? 0;
+        $columnName      = $columnName_arr[$columnIndex]['data'] ?? 'id';
+        $columnSortOrder = $order_arr[0]['dir'] ?? 'desc';
 
         $nomAdministradoras = NomAdministradoras::with('nit')
             ->select(
-                '*',
+                'nom_administradoras.*',
                 DB::raw("DATE_FORMAT(nom_administradoras.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
                 DB::raw("DATE_FORMAT(nom_administradoras.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                 'nom_administradoras.created_by',
                 'nom_administradoras.updated_by'
-            )
-            ->orderBy('id', 'desc');
+            );
 
-        if($searchValue) {
-            $nomAdministradoras->where('nombre', 'like', '%' .$searchValue . '%')
-                ->orWhere('codigo', 'like', '%' .$searchValue . '%');
+        // Filtro por texto (código o descripción)
+        if (!empty($searchValue)) {
+            $nomAdministradoras->where(function ($query) use ($searchValue) {
+                $query->where('nom_administradoras.codigo', 'like', '%' . $searchValue . '%')
+                    ->orWhere('nom_administradoras.descripcion', 'like', '%' . $searchValue . '%');
+            });
+        }
+
+        // Filtro por tipo
+        if ($tipo !== null && $tipo !== '') {
+            $nomAdministradoras->where('nom_administradoras.tipo', $tipo);
         }
 
         $totalNomAdministradoras = $nomAdministradoras->count();
-        $nomAdministradoras = $nomAdministradoras->skip($start)
+
+        $nomAdministradoras = $nomAdministradoras
+            ->orderBy('nom_administradoras.id', 'desc')
+            ->skip($start)
             ->take($rowperpage);
 
         return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $totalNomAdministradoras,
-            'iTotalDisplayRecords' => $totalNomAdministradoras,
-            'data' => $nomAdministradoras->get(),
-            'perPage' => $rowperpage,
-            'message'=> 'Administradores cargados con exito!'
+            'success'               => true,
+            'draw'                  => $draw,
+            'iTotalRecords'         => $totalNomAdministradoras,
+            'iTotalDisplayRecords'  => $totalNomAdministradoras,
+            'data'                  => $nomAdministradoras->get(),
+            'perPage'               => $rowperpage,
+            'message'               => 'Administradores cargados con exito!'
         ]);
     }
 

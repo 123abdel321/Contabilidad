@@ -94,7 +94,7 @@
                                 data-toggle="popover"
                                 data-html="true"
                             ></i>
-                            <input name="fecha_inicio_periodo_nomina" id="fecha_inicio_periodo_nomina" class="form-control form-control-sm" type="date" disabled>
+                            <input name="fecha_inicio_periodo_nomina" id="fecha_inicio_periodo_nomina" class="form-control form-control-sm" type="date">
                             <div class="invalid-feedback">
                                 La fecha inicio periodo es requerida
                             </div>
@@ -109,7 +109,7 @@
                                 data-toggle="popover"
                                 data-html="true"
                             ></i>
-                            <input name="fecha_fin_periodo_nomina" id="fecha_fin_periodo_nomina" class="form-control form-control-sm" type="date" disabled>
+                            <input name="fecha_fin_periodo_nomina" id="fecha_fin_periodo_nomina" class="form-control form-control-sm" type="date">
                             <div class="invalid-feedback">
                                 La fecha fin periodo es requerida
                             </div>

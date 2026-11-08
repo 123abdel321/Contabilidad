@@ -10,7 +10,16 @@
                     @endcan
                 </div>
                 <div class="col-12 col-md-6 col-sm-6">
-                    <input type="text" id="searchInputAdministradoras" class="form-control form-control-sm search-table" placeholder="Buscar">
+                    <div class="d-flex gap-2">
+                        <input type="text" id="searchInputAdministradoras" class="form-control form-control-sm search-table" placeholder="Buscar">
+                        <select id="filtroTipoAdministradora" class="form-select form-select-sm" style="min-width: 180px;">
+                            <option value="">Todos los tipos</option>
+                            <option value="0">EPS</option>
+                            <option value="1">AFP</option>
+                            <option value="2">ARL</option>
+                            <option value="3">CCF</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>

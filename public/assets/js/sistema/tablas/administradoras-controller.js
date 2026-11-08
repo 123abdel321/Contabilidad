@@ -1,15 +1,23 @@
 var administradora_table = null;
 var $comboNitAdministradoras = null;
+var $comboTipoAdministradora = null;
 
 function administradorasInit() {
 
     cargarTablasAdministradoras();
     loadSelect2Administradoras();
+    loadSelect2TipoAdministradora();
 
     $('.water').hide();
 }
 
 function cargarTablasAdministradoras() {
+
+    // Si ya existe la tabla, la destruimos para evitar duplicados
+    if ($.fn.DataTable.isDataTable('#administradorasTable')) {
+        $('#administradorasTable').DataTable().destroy();
+    }
+
     administradora_table = $('#administradorasTable').DataTable({
         pageLength: 15,
         dom: 'Brtip',
@@ -22,31 +30,27 @@ function cargarTablasAdministradoras() {
         initialLoad: false,
         language: lenguajeDatatable,
         sScrollX: "100%",
-        fixedColumns : {
+        fixedColumns: {
             left: 0,
-            right : 1,
+            right: 1,
         },
-        ajax:  {
+        ajax: {
             type: "GET",
             headers: headers,
             url: base_url + 'administradoras',
+            data: function (d) {
+                d.search_value = $('#searchInputAdministradoras').val();
+                d.tipo = $('#filtroTipoAdministradora').val();
+            }
         },
         columns: [
             {"data": function (row, type, set){
                 const tipo = parseInt(row.tipo);
 
-                if (tipo == 0) {
-                    return 'EPS';
-                }
-                if (tipo == 1) {
-                    return 'AFP';
-                }
-                if (tipo == 2) {
-                    return 'ARL';
-                }
-                if (tipo == 3) {
-                    return 'CCF';
-                }
+                if (tipo == 0) return 'EPS';
+                if (tipo == 1) return 'AFP';
+                if (tipo == 2) return 'ARL';
+                if (tipo == 3) return 'CCF';
                 return '';
             }},
             {"data":'codigo'},
@@ -57,7 +61,7 @@ function cargarTablasAdministradoras() {
                 return "";
             }},
             {"data":'descripcion'},
-            {"data": function (row, type, set){  
+            {"data": function (row, type, set){
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
                 if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
@@ -72,8 +76,8 @@ function cargarTablasAdministradoras() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    if (editarAdministradoras) html+= `<span id="editadministradoras_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-success edit-administradora" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;`;
-                    if (eliminarAdministradoras) html+= `<span id="deleteadministradoras_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-administradora" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
+                    if (editarAdministradoras) html += `<span id="editadministradoras_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-success edit-administradora" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;`;
+                    if (eliminarAdministradoras) html += `<span id="deleteadministradoras_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-administradora" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
                     return html;
                 }
             },
@@ -84,7 +88,7 @@ function cargarTablasAdministradoras() {
         administradora_table.on('click', '.drop-administradora', function() {
             var id = this.id.split('_')[1];
             var data = getDataById(id, administradora_table);
-            
+
             Swal.fire({
                 title: `Eliminar administradora: ${data.codigo} - ${data.descripcion}?`,
                 text: "No se podrá revertir!",
@@ -116,6 +120,7 @@ function cargarTablasAdministradoras() {
                 }
             })
         });
+
         administradora_table.on('click', '.edit-administradora', function() {
 
             $("#textAdministradorasCreate").hide();
@@ -131,6 +136,7 @@ function cargarTablasAdministradoras() {
 
             $("#codigo_administradora").val(data.codigo);
             $("#nombre_administradora").val(data.descripcion);
+            $("#tipo_administradora").val(data.tipo).trigger('change');
 
             if(data.nit){
                 var dataNit = {
@@ -140,7 +146,7 @@ function cargarTablasAdministradoras() {
                 var newOption = new Option(dataNit.text, dataNit.id, false, false);
                 $comboNitAdministradoras.append(newOption).val(dataNit.id).trigger('change');
             }
-        
+
             $("#administradorasFormModal").modal('show');
         });
     }
@@ -148,13 +154,19 @@ function cargarTablasAdministradoras() {
 }
 
 function loadSelect2Administradoras() {
+
+    // 🔥 CLAVE: destruir el select2 si ya estaba inicializado
+    if ($('#id_nit_administradora').data('select2')) {
+        $('#id_nit_administradora').select2('destroy');
+    }
+
     $comboNitAdministradoras = $('#id_nit_administradora').select2({
         theme: 'bootstrap-5',
         delay: 250,
         language: {
             noResults: function() {
                 createNewNit = true;
-                return "No hay resultado";        
+                return "No hay resultado";
             },
             searching: function() {
                 createNewNit = false;
@@ -177,6 +189,43 @@ function loadSelect2Administradoras() {
     });
 }
 
+function loadSelect2TipoAdministradora() {
+
+    // 🔥 CLAVE: destruir el select2 si ya estaba inicializado
+    if ($('#filtroTipoAdministradora').data('select2')) {
+        $('#filtroTipoAdministradora').select2('destroy');
+    }
+
+    $comboTipoAdministradora = $('#filtroTipoAdministradora').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        allowClear: true,
+        placeholder: 'Tipo administradora',
+        minimumResultsForSearch: Infinity,
+        language: {
+            noResults: function () { return "No hay resultado"; }
+        }
+    });
+
+    // 🔥 CLAVE: .off() antes de .on() para no duplicar eventos
+    $comboTipoAdministradora.off('change.filtro').on('change.filtro', function () {
+        if (administradora_table) {
+            administradora_table.ajax.reload();
+        }
+    });
+}
+
+// Búsqueda con debounce (se engancha UNA sola vez fuera de la función de init)
+var searchTimerAdministradoras = null;
+$(document).off('keyup', '#searchInputAdministradoras').on('keyup', '#searchInputAdministradoras', function () {
+    clearTimeout(searchTimerAdministradoras);
+    searchTimerAdministradoras = setTimeout(function () {
+        if (administradora_table) {
+            administradora_table.ajax.reload();
+        }
+    }, 400);
+});
+
 function clearFormAdministradoras(){
     $("#textAdministradorasCreate").show();
     $("#textAdministradorasUpdate").hide();
@@ -187,6 +236,7 @@ function clearFormAdministradoras(){
     $("#id_administradoras_up").val('');
     $("#codigo_administradora").val('');
     $("#nombre_administradora").val('');
+    $("#tipo_administradora").val('').trigger('change');
     $("#id_nit_administradora").val('').trigger('change');
 }
 
@@ -226,7 +276,7 @@ $(document).on('click', '#saveAdministradoras', function () {
             $("#saveAdministradoras").show();
             $("#saveAdministradorasLoading").hide();
             $("#administradorasFormModal").modal('hide');
-            administradora_table.row.add(res.data).draw();
+            administradora_table.ajax.reload();
             agregarToast('exito', 'Creación exitosa', 'Administradora creada con exito!', true);
         }
     }).fail((err) => {
@@ -271,7 +321,7 @@ $(document).on('click', '#updateAdministradoras', function () {
             $("#saveAdministradoras").show();
             $("#saveAdministradorasLoading").hide();
             $("#administradorasFormModal").modal('hide');
-            administradora_table.row.add(res.data).draw();
+            administradora_table.ajax.reload();
             agregarToast('exito', 'Actualización exitosa', 'Administradora actualizada con exito!', true);
         }
     }).fail((err) => {
@@ -310,5 +360,3 @@ $(document).on('click', '#sincronizarAdministradoras', function () {
         agregarToast('error', 'Actualización errada', errorsMsg);
     });
 });
-
-

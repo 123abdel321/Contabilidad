@@ -629,10 +629,10 @@ class CausarProvicionadaController extends Controller
                 if ($detalle->concepto->base_arl) {
                     $bases['base_arl']+= $detalle->valor;
                 }
-                if ($detalle->concepto->base_salud) {
-                    if ($contrato->tipo_salario == NomContratos::TIPO_SALARIO_INTEGRAL ||
-                        $contrato->salario > intval($salarioMinimo) * 10 ||
-                        $noExoneradoDeParafiscales) {
+                if ($detalle->concepto->base_salud && $detalle->valor) {
+                    if (($contrato->tipo_salario == NomContratos::TIPO_SALARIO_INTEGRAL ||
+                        $contrato->salario > intval($salarioMinimo) * 10)
+                        && $noExoneradoDeParafiscales) {//CALCULAR SI NO ESTA EXONERADO
                         $bases['base_salud']+= $detalle->valor;
                     }
                 }
@@ -696,7 +696,6 @@ class CausarProvicionadaController extends Controller
         }
 
         $provision = $salarioIntegral ? 0 : $base * ($porcentaje / 100);
-
         return [
             'id_administradora' => $config->id,
             'id_empleado' => $empleado->id_empleado,
