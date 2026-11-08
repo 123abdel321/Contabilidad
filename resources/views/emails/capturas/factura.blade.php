@@ -197,35 +197,7 @@
                         </td>
                     </tr>
 
-                    {{-- ============ BOTONES ============ --}}
-                    @if ((isset($urlPago) || isset($urlPdf) || isset($urlAcuse)))
-                        <tr>
-                            <td class="px" align="center" bgcolor="#ffffff" style="background-color:#ffffff;padding:14px 40px 4px;">
-                                @isset($urlPago)
-                                    <a href="{{ $urlPago }}" target="_blank"
-                                    style="display:inline-block;margin:4px;padding:14px 28px;border-radius:12px;background-color:#4f46e5;background-image:linear-gradient(120deg,#4f46e5,#6366f1);font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:800;color:#ffffff;">
-                                        Pagar ahora &rarr;
-                                    </a>
-                                @endisset
-
-                                @isset($urlPdf)
-                                    <a href="{{ $urlPdf }}" target="_blank"
-                                    style="display:inline-block;margin:4px;padding:12px 24px;border-radius:12px;border:1.5px solid #c7d2fe;font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:700;color:#4f46e5;">
-                                        Ver factura en PDF
-                                    </a>
-                                @endisset
-
-                                @if (!$factura->fe_estado_acuse)
-                                    @isset($urlAcuse)
-                                        <a href="{{ $urlAcuse }}" target="_blank"
-                                        style="display:inline-block;margin:4px;padding:14px 28px;border-radius:12px;background-color:#059669;background-image:linear-gradient(120deg,#059669,#10b981);font-family:'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:800;color:#ffffff;">
-                                            ✓ Acuse de recibo
-                                        </a>
-                                    @endisset
-                                @endif
-                            </td>
-                        </tr>
-                    @endif
+                    
 
                     {{-- ============ CONTACTO / EMITIDO POR / NOTAS ============ --}}
                     <tr>
