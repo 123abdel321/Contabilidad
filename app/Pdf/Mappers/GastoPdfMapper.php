@@ -158,7 +158,7 @@ class GastoPdfMapper
         return [
             'titulo' => 'RESUMEN FINANCIERO',
             'filas' => [
-                ['label' => 'SUBTOTAL', 'value' => $totales['subtotal'] - $totales['iva'], 'formatter' => 'number'],
+                ['label' => 'SUBTOTAL', 'value' => $totales['subtotal'], 'formatter' => 'number'],
                 ['label' => 'IVA', 'value' => $totales['iva'], 'formatter' => 'number'],
                 ['label' => 'RETENCIÓN EN LA FUENTE', 'value' => $calcularRetencion ? $totales['rete_fuente'] : 0, 'formatter' => 'number'],
                 ['label' => 'RETEICA', 'value' => $totales['rete_ica'], 'formatter' => 'number'],
