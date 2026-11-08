@@ -37,7 +37,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/filepond-plugin-image-preview.min.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/filepond-plugin-file-poster.min.css') }}" rel="stylesheet" />
     <!-- quill -->
-    <link href="assets/css/sistema/quill.snow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/sistema/quill.snow.css') }}" rel="stylesheet" />
     <!-- DATAPICKER -->
     <link href="assets/css/sistema/daterangepicker.css" rel="stylesheet" />
     

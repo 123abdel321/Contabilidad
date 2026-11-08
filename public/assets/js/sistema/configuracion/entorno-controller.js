@@ -5,12 +5,46 @@ var $comboComprobanteNomina = null;
 var $comboComprobanteParafiscales = null;
 var $comboComprobanteSeguridadSocial = null;
 var $comboComprobantePrestacionesSociales = null;
+var quill = null; 
 
 function entornoInit() {
-
+    initQuillEntorno();
     cargarPopoverGeneral();
     cargarVariablesDeEntorno();
     cargarSelect2VariablesDeEntorno();
+}
+
+function initQuillEntorno() {
+    var cont = document.getElementById('editor-container');
+    if (!cont) {
+        console.warn('[entorno] #editor-container no existe todavía');
+        return;
+    }
+
+    if (window.__quillEntorno && window.__quillEntorno.root === cont) {
+        quill = window.__quillEntorno;
+        return;
+    }
+
+    quill = new Quill(cont, {
+        theme: 'snow',
+        placeholder: 'Escribe algo aquí...',
+        modules: {
+            toolbar: [['bold', 'italic', 'underline'],
+                      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                      ['link']]
+        }
+    });
+    window.__quillEntorno = quill;
+}
+
+// ✅ AÑADIR ESTA FUNCIÓN
+function entornoDestroy() {
+    if (quill) {
+        try { quill.root.innerHTML = ''; } catch (e) {}
+    }
+    quill = null;
+    window.__quillEntorno = null;
 }
 
 function cargarVariablesDeEntorno() {
@@ -108,7 +142,11 @@ function cargarVariablesDeEntorno() {
         }
 
         if (variable.nombre == 'observacion_venta') {
-            quill.root.innerHTML = variable.valor;
+            if (quill && quill.root) {
+                quill.root.innerHTML = variable.valor || '';
+            } else {
+                console.warn('[entorno] Quill no disponible, se omite observacion_venta');
+            }
             continue;
         }
 
@@ -151,6 +189,8 @@ function cargarVariablesDeEntorno() {
             $('#cuenta_propina').val(variable.valor);
             continue;
         }
+
+        
     }
 }
 
@@ -440,14 +480,6 @@ function generarTokenEco() {
         }
     });
 }
-
-var quill = new Quill('#editor-container', {
-    theme: 'snow',
-    placeholder: 'Escribe algo aquí...',
-    modules: {
-        toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link']]
-    }
-});
 
 $(document).on('click', '#updateEntorno', function () {
     $("#updateEntornoLoading").show();
