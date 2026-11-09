@@ -464,7 +464,7 @@ class VentaServices
                 } catch (\Throwable $e) {
                     Log::warning('Venta creada, pero falló el envío de email', [
                         'venta_id' => $venta->id,
-                        'error'    => $e->getMessage()." - ".$e->getMessage(),
+                        'error'    => $e->getLine()." - ".$e->getMessage(),
                     ]);
                 }
             }
@@ -481,7 +481,7 @@ class VentaServices
                 } catch (\Throwable $e) {
                     Log::warning('Venta creada, pero falló el envío de WhatsApp', [
                         'venta_id' => $venta->id,
-                        'error'    => $e->getMessage(),
+                        'error'    => $e->getLine()." - ".$e->getMessage(),
                     ]);
                 }
             }
