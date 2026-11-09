@@ -144,14 +144,14 @@ class DocumentoController extends Controller
 
             $documento = DocumentosGeneral::with('comprobante')
                 ->where('id_comprobante', $id_comprobante)
-                ->whereDate('fecha_manual', $fechaNormalizada)
+                ->where('fecha_manual', $fechaNormalizada)
                 ->where('consecutivo', $consecutivo)
                 ->first();
 
             if (!$documento) {
                 $q = DocumentosGeneral::with('comprobante')
                     ->where('id_comprobante', $id_comprobante)
-                    ->whereDate('fecha_manual', $fechaNormalizada)
+                    ->where('fecha_manual', $fechaNormalizada)
                     ->where('consecutivo', $consecutivo);
 
                 logger()->critical('showGeneralPdf: el documento no tiene cabezas para imprimir', [
