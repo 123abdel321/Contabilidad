@@ -140,6 +140,21 @@ class DocumentoController extends Controller
                 abort(404, 'El enlace no es válido o ha expirado.');
             }
 
+            $raw = DB::connection('sam')
+                ->table('documentos_generals')
+                ->where('id', 876)
+                ->first(['id','id_comprobante','fecha_manual','consecutivo','anulado']);
+
+            logger()->critical('RAW fila 876', [
+                'row'          => (array) $raw,
+                'consecutivo'  => $raw->consecutivo ?? null,
+                'consec_len'   => $raw ? strlen($raw->consecutivo) : null,
+                'consec_hex'   => $raw ? bin2hex($raw->consecutivo) : null,
+                'fecha_raw'    => $raw->fecha_manual ?? null,
+                'anulado'      => $raw->anulado ?? null,
+                'db_name'      => DB::connection('sam')->getDatabaseName(),
+            ]);
+
             $fechaNormalizada = \Carbon\Carbon::parse($fecha_manual)->format('Y-m-d');
 
             $documento = DocumentosGeneral::with('comprobante')
