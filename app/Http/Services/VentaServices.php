@@ -464,7 +464,7 @@ class VentaServices
                 } catch (\Throwable $e) {
                     Log::warning('Venta creada, pero falló el envío de email', [
                         'venta_id' => $venta->id,
-                        'error'    => $e->getMessage(),
+                        'error'    => $e->getMessage()." - ".$e->getMessage(),
                     ]);
                 }
             }
@@ -692,6 +692,8 @@ class VentaServices
             'created_by'                 => $contexto['id_usuario'],
             'updated_by'                 => $contexto['id_usuario'],
         ]);
+
+        $venta->loadMissing(['cliente']);
 
         return $venta;
     }
@@ -1146,7 +1148,7 @@ class VentaServices
         $fechaDocumento  = $venta->fecha_manual
             ? Carbon::parse($venta->fecha_manual)->format('Y-m-d')
             : Carbon::now()->format('Y-m-d');
-        $estadoDocumento = '';
+        $estadoDocumento = 'APROBADO';
         $nombreEmpresa   = $empresa->razon_social ?: 'PORTAFOLIO ERP SAS';
 
         // ── Clave del PDF ──
