@@ -28,8 +28,13 @@ use App\Jobs\SendSingleEmail;
 
 trait BegDocumentHelpersTrait
 {
-	public function sendEmailFactura(string $has_empresa, string $email, FacVentas $factura, $pdf = null, $xml = null)
-	{
+	public function sendEmailFactura(
+		string $has_empresa,
+		string $email,
+		FacVentas $factura,
+		$pdf = null,
+		$xml = null
+	) {
 		$empresa = Empresa::where('token_db', $has_empresa)->first();
 		$ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
 		$ecoToken = $ecoToken?->valor ?? null;

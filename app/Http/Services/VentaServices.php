@@ -472,7 +472,12 @@ class VentaServices
             // ── Factura WhatsApp ──
             if ($this->nit->notificacion_whatsapp) {
                 try {
-                    $this->enviarWhatsappFactura($venta, $empresa, $contexto);
+                    if (!$contexto['id_cliente']) {
+                        $empresaTokenDb = Empresa::where('token_db', $contexto['token_db'])->first();
+                        $this->enviarWhatsappFactura($venta, $empresaTokenDb, $contexto);
+                    } else {
+                        $this->enviarWhatsappFactura($venta, $empresa, $contexto);
+                    }
                 } catch (\Throwable $e) {
                     Log::warning('Venta creada, pero falló el envío de WhatsApp', [
                         'venta_id' => $venta->id,
