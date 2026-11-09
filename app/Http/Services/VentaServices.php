@@ -1190,8 +1190,8 @@ class VentaServices
         Log::info('WhatsApp factura enviada', [
             'venta_id' => $venta->id,
             'telefono' => $telefono,
-            'link'     => $linkFactura,
             'response' => $response,
+            'whatsappData' => $whatsappData
         ]);
 
         if (!$response || !isset($response->status) || $response->status >= 400) {
