@@ -340,8 +340,8 @@ function cargarTablasContratos() {
 
             $("#fecha_inicio_contrato_nomina").val(data.fecha_inicio_contrato);
             $("#fecha_fin_contrato_nomina").val(data.fecha_fin_contrato);
-            $("#fecha_inicio_periodo_nomina").val(data.fecha_inicio_periodo);
-            $("#fecha_fin_periodo_nomina").val(data.fecha_fin_periodo);
+            // $("#fecha_inicio_periodo_nomina").val(data.fecha_inicio_periodo);
+            // $("#fecha_fin_periodo_nomina").val(data.fecha_fin_periodo);
             $("#estado_contrato_nomina").val(data.estado).trigger('change');
             $("#termino_contrato_nomina").val(data.termino).trigger('change');
             $("#salario_contrato_nomina").val(new Intl.NumberFormat("ja-JP").format(data.salario));
@@ -710,8 +710,8 @@ function clearFormContratos() {
     $("#id_concepto_basico_contrato_nomina").val('').trigger('change')
     $("#fecha_inicio_contrato_nomina").val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
     $("#fecha_fin_contrato_nomina").val('');
-    $("#fecha_inicio_periodo_nomina").val('');
-    $("#fecha_fin_periodo_nomina").val('');
+    // $("#fecha_inicio_periodo_nomina").val('');
+    // $("#fecha_fin_periodo_nomina").val('');
     $("#estado_contrato_nomina").val('1').trigger('change');
     $("#termino_contrato_nomina").val('1').trigger('change');
     $("#salario_contrato_nomina").val('0');
@@ -838,8 +838,8 @@ function getDataContratos() {
         id_concepto_basico: $("#id_concepto_basico_contrato_nomina").val(),
         fecha_inicio_contrato: $("#fecha_inicio_contrato_nomina").val(),
         fecha_fin_contrato: $("#fecha_fin_contrato_nomina").val(),
-        fecha_inicio_periodo: $("#fecha_inicio_periodo_nomina").val(),
-        fecha_fin_periodo: $("#fecha_fin_periodo_nomina").val(),
+        // fecha_inicio_periodo: $("#fecha_inicio_periodo_nomina").val(),
+        // fecha_fin_periodo: $("#fecha_fin_periodo_nomina").val(),
         estado: $("#estado_contrato_nomina").val(),
         termino: $("#termino_contrato_nomina").val(),
         salario: stringToNumberFloat($("#salario_contrato_nomina").val()),

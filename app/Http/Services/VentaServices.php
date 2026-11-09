@@ -481,6 +481,14 @@ class VentaServices
                 }
             }
 
+            if (!empty($contexto['auto_crear_nit']) && !empty($contexto['empresa_compradora'])) {
+                Log::warning('Venta creada, pero falló el envío de WhatsApp', [
+                    'nit' => $this->nit,
+                    'notificacion_whatsapp' => $this->nit->notificacion_whatsapp,
+                    'enviarFacturaEmail' => $enviarFacturaEmail
+                ]);
+            }
+
             return $venta;
 
         } catch (Exception $e) {
@@ -636,6 +644,8 @@ class VentaServices
             'direccion'           => $empresa->direccion,
             'email'               => $empresa->email,
             'telefono_1'          => $empresa->telefono,
+            'notificacion_email'  => true,
+            'notificacion_whatsapp' => true,
             'created_by'          => $userId,
             'updated_by'          => $userId,
         ]);

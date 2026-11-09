@@ -85,7 +85,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-12 col-sm-6 col-md-6">
+                        <!-- <div class="form-group col-12 col-sm-6 col-md-6">
                             <label for="fecha_inicio_periodo_nomina" class="form-control-label">Fecha inicio periodo</label>
                             <i
                                 class="fas fa-info icon-info"
@@ -113,7 +113,7 @@
                             <div class="invalid-feedback">
                                 La fecha fin periodo es requerida
                             </div>
-                        </div>
+                        </div> -->
 
                         <h6 class="section-title bg-light p-2 mb-3">3. Configuración del Contrato</h6>
 
