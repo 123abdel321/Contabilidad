@@ -72,7 +72,7 @@ trait BegDocumentHelpersTrait
 		else $file = $pdf;
 
 		$filterData = [
-			'id_nit' => $factura->cliente->id_nit,
+			'id_nit' => $factura->cliente->id,
 			'nombre_completo' => $factura->cliente->nombre_completo,
 			'numero_documento' => $factura->cliente->numero_documento,
 			'email' => $factura->cliente->email,
