@@ -71,6 +71,10 @@ trait BegDocumentHelpersTrait
 		if ($zip) $file = $zip;
 		else $file = $pdf;
 
+		if (!$factura->relationLoaded('cliente') || !$factura->cliente) {
+			$factura->load('cliente');
+		}
+
 		$filterData = [
 			'id_nit' => $factura->cliente->id,
 			'nombre_completo' => $factura->cliente->nombre_completo,
