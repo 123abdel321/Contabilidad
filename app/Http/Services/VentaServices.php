@@ -486,14 +486,6 @@ class VentaServices
                 }
             }
 
-            if (!empty($contexto['auto_crear_nit']) && !empty($contexto['empresa_compradora'])) {
-                Log::warning('Venta creada, pero falló el envío de WhatsApp', [
-                    'nit' => $this->nit,
-                    'notificacion_whatsapp' => $this->nit->notificacion_whatsapp,
-                    'enviarFacturaEmail' => $enviarFacturaEmail
-                ]);
-            }
-
             return $venta;
 
         } catch (Exception $e) {
@@ -697,8 +689,6 @@ class VentaServices
             'created_by'                 => $contexto['id_usuario'],
             'updated_by'                 => $contexto['id_usuario'],
         ]);
-
-        $venta->loadMissing(['cliente']);
 
         return $venta;
     }
@@ -934,7 +924,7 @@ class VentaServices
                     );
                 }
 
-                $concepto = "VENTA: {$productoDb->codigo} {$productoDb->nombre} - {$venta->documento_referencia}";
+                $concepto = "VENTA: {$venta->documento_referencia}";
                 if (!empty($producto['concepto'])) {
                     $concepto .= " - {$producto['concepto']}";
                 }
