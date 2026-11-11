@@ -47,8 +47,9 @@ trait BegDocumentHelpersTrait
 				$ecoToken = config('services.eco.email_token');
 				\Log::info(config('services.eco.email_token'));
 			}
+
 			if (!$ecoToken) {
-				\Log::warning("sendEmailFactura: no hay token configurado {$has_empresa}");
+				\Log::warning("sendEmailFactura : no hay token configurado {$has_empresa}");
 				return true;
 			}
 		}
