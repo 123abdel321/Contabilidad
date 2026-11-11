@@ -23,10 +23,6 @@ class WompiWebhookController extends Controller
      */
     public function handle(Request $request)
     {
-        // 🔑 Loguear todo para debug
-        \Log::info('[Wompi Webhook] Payload recibido', [
-            'body' => $request->all(),
-        ]);
 
         // ── 1) Validar firma ──
         if (!$this->validarFirma($request)) {
