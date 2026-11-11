@@ -447,7 +447,7 @@ class VentaServices
             DB::connection('sam')->commit();
 
             // ── Email (fuera de la transacción) ──
-            if ($enviarFacturaEmail) {
+            if ($enviarFacturaEmail && $this->nit->email) {
                 try {
                     $claveUrl = $this->generarClavePDF(
                         $empresa->id,
