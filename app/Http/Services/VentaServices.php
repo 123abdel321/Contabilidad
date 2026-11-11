@@ -437,6 +437,10 @@ class VentaServices
                         }
                     }
                 }
+
+                \Log::info('ventaElectronica', $ventaElectronica);
+
+
             } else if (!empty($contexto['auto_crear_producto'])) {
                 Log::warning('Factura Electronica', [
                     'resolucion' => $this->resolucion,
