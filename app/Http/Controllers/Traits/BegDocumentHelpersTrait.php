@@ -45,11 +45,15 @@ trait BegDocumentHelpersTrait
 			$empresaSuscripcion = config('services.suscripcion_venta.email_token_dbtoken');
 			if ($has_empresa == $empresaSuscripcion) {
 				$ecoToken = config('services.eco.email_token');
-				\Log::info(config('services.eco.email_token'));
 			}
 
 			if (!$ecoToken) {
-				\Log::warning("sendEmailFactura : no hay token configurado {$has_empresa}");
+				\Log::warning("sendEmailFactura : no hay token configurado", [
+					'eco_token' => config('services.eco.email_token'),
+					'has_empresa' => $has_empresa,
+					'empresaSuscripcion' => $empresaSuscripcion,
+					'empresaSuscripcion_confieg' => config('services.suscripcion_venta.email_token_dbtoken')
+				]);
 				return true;
 			}
 		}
