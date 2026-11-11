@@ -660,7 +660,7 @@ class VentaController extends Controller
 
             $this->sendEmailFactura(
                 $request->user()['has_empresa'],
-                $email,
+                $venta->cliente,
                 $venta,
                 $pdf
             );

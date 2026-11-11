@@ -464,7 +464,7 @@ class VentaServices
 
                     $this->sendEmailFactura(
                         $contexto['token_db'],
-                        $this->nit->email,
+                        $this->nit,
                         $venta,
                         $pdf
                     );

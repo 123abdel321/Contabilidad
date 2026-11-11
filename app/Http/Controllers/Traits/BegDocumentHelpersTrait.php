@@ -31,7 +31,7 @@ trait BegDocumentHelpersTrait
 {
 	public function sendEmailFactura(
 		string $has_empresa,
-		string $email,
+		Nits $cliente,
 		FacVentas $factura,
 		$pdf = null,
 		$xml = null
@@ -58,6 +58,7 @@ trait BegDocumentHelpersTrait
 			}
 		}
 
+		$email = $cliente->email;
 		$zip = null;
 		$file = null;
 		$pdfContent = null;
@@ -85,10 +86,6 @@ trait BegDocumentHelpersTrait
 
 		if ($zip) $file = $zip;
 		else $file = $pdf;
-
-		$cliente = $factura->relationLoaded('cliente')
-			? $factura->cliente
-			: $factura->cliente()->first();
 
 		$filterData = [
 			'id_nit' => $cliente->id,
