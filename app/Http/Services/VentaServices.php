@@ -1130,6 +1130,7 @@ class VentaServices
         if (!$ecoToken) {
             Log::info('WhatsApp factura omitido: token ECO no configurado', [
                 'venta_id' => $venta->id,
+                'ecoToken' => $ecoToken,
                 'empresa_id' => $empresa->id,
             ]);
             return;
