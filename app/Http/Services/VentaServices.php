@@ -437,6 +437,11 @@ class VentaServices
                         }
                     }
                 }
+            } else if (!empty($contexto['auto_crear_producto'])) {
+                Log::warning('Factura Electronica', [
+                    'resolucion' => $this->resolucion,
+                    'TIPO_FACTURA_ELECTRONICA' => FacResoluciones::TIPO_FACTURA_ELECTRONICA,
+                ]);
             }
 
             DB::connection('sam')->commit();
