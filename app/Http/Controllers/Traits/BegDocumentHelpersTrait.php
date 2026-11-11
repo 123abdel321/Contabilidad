@@ -42,7 +42,7 @@ trait BegDocumentHelpersTrait
 		$ecoToken = $ecoToken?->valor ?? null;
 		
 		if (!$ecoToken) {
-			$empresaSuscripcion = config('services.suscripcion_venta.email_token_dbtoken');
+			$empresaSuscripcion = config('services.suscripcion_venta.token_db');
 			if ($has_empresa == $empresaSuscripcion) {
 				$ecoToken = config('services.eco.email_token');
 			}
@@ -52,7 +52,7 @@ trait BegDocumentHelpersTrait
 					'eco_token' => config('services.eco.email_token'),
 					'has_empresa' => $has_empresa,
 					'empresaSuscripcion' => $empresaSuscripcion,
-					'empresaSuscripcion_confieg' => config('services.suscripcion_venta.email_token_dbtoken')
+					'empresaSuscripcion_confieg' => config('services.suscripcion_venta.token_db')
 				]);
 				return true;
 			}
