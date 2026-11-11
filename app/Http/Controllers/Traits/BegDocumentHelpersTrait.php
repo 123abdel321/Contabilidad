@@ -86,19 +86,19 @@ trait BegDocumentHelpersTrait
 		if ($zip) $file = $zip;
 		else $file = $pdf;
 
-		if (!$factura->relationLoaded('cliente') || !$factura->cliente) {
-			$factura->load('cliente');
-		}
+		$cliente = $factura->relationLoaded('cliente')
+			? $factura->cliente
+			: $factura->cliente()->first();
 
 		$filterData = [
-			'id_nit' => $factura->cliente->id,
-			'nombre_completo' => $factura->cliente->nombre_completo,
-			'numero_documento' => $factura->cliente->numero_documento,
-			'email' => $factura->cliente->email,
+			'id_nit' => $cliente->id,
+			'nombre_completo' => $cliente->nombre_completo,
+			'numero_documento' => $cliente->numero_documento,
+			'email' => $cliente->email,
 		];
 
 		$extractos = (new Extracto(
-			$factura->cliente->id_nit,
+			$cliente->id_nit,
 			[
 				PlanCuentasTipo::TIPO_CUENTA_CXC,//3
 				PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC//7
@@ -136,7 +136,7 @@ trait BegDocumentHelpersTrait
 		}
 
 		$emailData = [
-			'cliente' => $factura->cliente,
+			'cliente' => $cliente,
 			'factura' => $factura,
 			'empresa' => $empresa,
 			'estado'   => $estado,
