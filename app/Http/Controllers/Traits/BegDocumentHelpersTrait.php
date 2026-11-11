@@ -45,6 +45,7 @@ trait BegDocumentHelpersTrait
 			$empresaSuscripcion = config('services.suscripcion_venta.email_token_dbtoken');
 			if ($has_empresa == $empresaSuscripcion) {
 				$ecoToken = config('services.eco.email_token');
+				\Log::info(config('services.eco.email_token'));
 			}
 			if (!$ecoToken) {
 				\Log::warning("sendGenericEmail: no hay token configurado {$has_empresa}");

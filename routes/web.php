@@ -158,6 +158,7 @@ use App\Models\Sistema\FacProductosBodegas;
 Route::get('/', fn () => view('pages.landing-page'));
 
 Route::get('/test-auxiliar-pdf', function () {
+    dd( config('services.eco.email_token'));
     try {
         $data = [
             'empresa'    => \App\Models\Empresas\Empresa::first(),

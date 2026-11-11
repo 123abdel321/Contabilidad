@@ -1127,7 +1127,7 @@ class VentaServices
 
         // ── Token ECO ──
         $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
-        $ecoToken = $ecoToken?->valor ?? null;
+        $ecoToken = $ecoToken?->valor ?? config('services.eco.email_token');
 
         if (!$ecoToken) {
             Log::info('WhatsApp factura omitido: token ECO no configurado', [
