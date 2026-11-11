@@ -36,13 +36,20 @@ trait BegDocumentHelpersTrait
 		$pdf = null,
 		$xml = null
 	) {
+
 		$empresa = Empresa::where('token_db', $has_empresa)->first();
 		$ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
 		$ecoToken = $ecoToken?->valor ?? null;
-
+		
 		if (!$ecoToken) {
-			\Log::warning("sendGenericEmail: no hay token configurado {$has_empresa}");
-			return true;
+			$empresaSuscripcion = config('services.suscripcion_venta.email_token_dbtoken');
+			if ($has_empresa == $empresaSuscripcion) {
+				$ecoToken = config('services.eco.email_token');
+			}
+			if (!$ecoToken) {
+				\Log::warning("sendGenericEmail: no hay token configurado {$has_empresa}");
+				return true;
+			}
 		}
 
 		$zip = null;

@@ -1098,6 +1098,8 @@ class VentaServices
      */
     protected function enviarWhatsappFactura(FacVentas $venta, Empresa $empresa, array $contexto): void
     {
+        Config::set('database.connections.sam.database', $empresa->token_db);
+
         // ── Teléfono del cliente ──
         $telefono = $this->nit->telefono_1 ?? null;
 
