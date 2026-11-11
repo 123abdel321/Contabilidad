@@ -434,7 +434,7 @@ class VentaServices
                         $venta->fe_xml_file  = $ventaElectronica['xml_url'];
                         $venta->save();
 
-                        if ($venta->cliente && $venta->cliente->email) {
+                        if ($this->nit->email) {
                             $enviarFacturaEmail = true;
                         }
                     }
@@ -1131,6 +1131,7 @@ class VentaServices
         if (!$ecoToken) {
             Log::info('WhatsApp factura omitido: token ECO no configurado', [
                 'venta_id' => $venta->id,
+                'empresa_id' => $empresa->id,
             ]);
             return;
         }

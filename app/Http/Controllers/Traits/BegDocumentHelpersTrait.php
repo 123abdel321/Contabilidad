@@ -17,6 +17,7 @@ use App\Helpers\Extracto;
 use App\Helpers\BegEmailSender;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\Nits;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\envioEmail;
 use App\Models\Sistema\FacResoluciones;
@@ -40,6 +41,7 @@ trait BegDocumentHelpersTrait
 		$ecoToken = $ecoToken?->valor ?? null;
 
 		if (!$ecoToken) {
+			\Log::warning("sendGenericEmail: no hay token configurado {$has_empresa}");
 			return true;
 		}
 
