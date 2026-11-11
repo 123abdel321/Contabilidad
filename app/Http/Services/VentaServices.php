@@ -107,8 +107,6 @@ class VentaServices
 
         // ── 1. Cambiar conexión sam (el servicio es autocontenido) ──
         Config::set('database.connections.sam.database', $contexto['token_db']);
-        DB::purge('sam');
-        DB::reconnect('sam');
 
         // ── 2. Resetear estado interno (por si es una instancia reutilizada) ──
         $this->resetEstado();
@@ -464,6 +462,7 @@ class VentaServices
                 } catch (\Throwable $e) {
                     Log::warning('Venta creada, pero falló el envío de email', [
                         'venta_id' => $venta->id,
+                        'nit'      => $this->nit,
                         'error'    => $e->getLine()." - ".$e->getMessage(),
                     ]);
                 }
@@ -480,7 +479,7 @@ class VentaServices
                     }
                 } catch (\Throwable $e) {
                     Log::warning('Venta creada, pero falló el envío de WhatsApp', [
-                        'venta_id' => $venta->id,
+                        'venta' => $venta,
                         'error'    => $e->getLine()." - ".$e->getMessage(),
                     ]);
                 }
