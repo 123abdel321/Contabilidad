@@ -636,25 +636,22 @@ function clearPermisos() {
     });
 }
 
-$('#usuariosFormModal').on('change', '.select-all-permisos', function() {
+$(document).off('change', '#usuariosFormModal .select-all-permisos').on('change', '#usuariosFormModal .select-all-permisos', function() {
     const isChecked = $(this).prop('checked');
-    const menuId = $(this).data('menu');
-    
-    // Buscar todos los permisos hijos que pertenecen a este mismo menú
     $(this).closest('.card').find('.permiso-item').prop('checked', isChecked);
 });
 
-$('#usuariosFormModal').on('change', '.permiso-item', function() {
+$(document).off('change', '#usuariosFormModal .permiso-item').on('change', '#usuariosFormModal .permiso-item', function() {
     const card = $(this).closest('.card');
     const total = card.find('.permiso-item').length;
     const checked = card.find('.permiso-item:checked').length;
     const selectAllCheckbox = card.find('.select-all-permisos');
-    
+
     if (checked === 0) {
         selectAllCheckbox.prop('checked', false).prop('indeterminate', false);
     } else if (checked === total) {
         selectAllCheckbox.prop('checked', true).prop('indeterminate', false);
     } else {
-        selectAllCheckbox.prop('indeterminate', true); // estado intermedio visual
+        selectAllCheckbox.prop('checked', false).prop('indeterminate', true);
     }
 });

@@ -154,7 +154,7 @@ class VentasAcumuladasController extends Controller
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
             Bus::chain([
-                function () use ($id_informe, &$fileName, &$empresa) {
+                function () use ($id_informe, $fileName, $empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
                     (new VentasAcumuladasExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
@@ -174,7 +174,11 @@ class VentasAcumuladasController extends Controller
                     $informeVentasAcumuladas->exporta_excel = 2;
                     $informeVentasAcumuladas->save();
                 }
-            ])->dispatch();
+            ])->catch(function (\Throwable $e) use ($informeVentasAcumuladas) {
+                $informeVentasAcumuladas->exporta_excel = 0;
+                $informeVentasAcumuladas->save();
+                report($e);
+            })->dispatch();
 
             return response()->json([
                 'success'=>	true,

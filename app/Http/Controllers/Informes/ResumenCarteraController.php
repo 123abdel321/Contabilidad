@@ -161,7 +161,7 @@ class ResumenCarteraController extends Controller
             ];
 
             Bus::chain([
-                function () use ($id_informe, &$empresa, &$tipoInforme, &$filtros, &$fileName) {
+                function () use ($id_informe, $empresa, $tipoInforme, $filtros, $fileName) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
                     (new ResumenCarteraExport($id_informe, $empresa, (object)$filtros, $tipoInforme))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
@@ -181,7 +181,11 @@ class ResumenCarteraController extends Controller
                     $informeResumenCartera->exporte = 2;
                     $informeResumenCartera->save();
                 }
-            ])->dispatch();
+            ])->catch(function (\Throwable $e) use ($informeResumenCartera) {
+                $informeResumenCartera->exporta_excel = 0;
+                $informeResumenCartera->save();
+                report($e);
+            })->dispatch();
 
             return response()->json([
                 'success'=>	true,

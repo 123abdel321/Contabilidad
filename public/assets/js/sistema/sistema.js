@@ -770,17 +770,13 @@ function agregarToast(tipo, titulo, descripcion, autoCierre = false, tiempoCierr
    DESCARGAS
    ============================================================ */
 function loadExcel(data) {
-    setTimeout(function () {
-        window.open('https://' + data.url_file, "_blank");
-        agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    }, 1000);
+    window.open('https://' + data.url_file, "_blank");
+    agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
 }
 
 function loadPdf(data) {
-    setTimeout(function () {
-        window.open('https://' + data.url_file_pdf, "_blank");
-        agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    }, 1000);
+    window.open('https://' + data.url_file_pdf, "_blank");
+    agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
 }
 
 /* ============================================================

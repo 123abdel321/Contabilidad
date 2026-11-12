@@ -9,7 +9,6 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Concerns\Exportable;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -21,7 +20,7 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use App\Models\Informes\InfBalance;
 use App\Models\Informes\InfBalanceDetalle;
 
-class BalanceExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting, ShouldQueue
+class BalanceExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting
 {
     use Exportable;
 

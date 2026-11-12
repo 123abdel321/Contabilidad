@@ -7,7 +7,6 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -22,7 +21,7 @@ use App\Models\Empresas\Empresa;
 use App\Models\Informes\InfAuxiliar;
 use App\Models\Informes\InfAuxiliarDetalle;
 
-class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting, ShouldQueue
+class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting
 {
     use Exportable;
 

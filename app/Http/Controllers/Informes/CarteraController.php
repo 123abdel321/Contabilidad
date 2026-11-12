@@ -164,7 +164,7 @@ class CarteraController extends Controller
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
             Bus::chain([
-                function () use ($id_informe, &$fileName, $empresa) {
+                function () use ($id_informe, $fileName, $empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
                     (new CarteraExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
@@ -184,7 +184,11 @@ class CarteraController extends Controller
                     $informeCartera->exporta_excel = 2;
                     $informeCartera->save();
                 }
-            ])->dispatch();
+            ])->catch(function (\Throwable $e) use ($informeCartera) {
+                $informeCartera->exporta_excel = 0;
+                $informeCartera->save();
+                report($e);
+            })->dispatch();
 
             return response()->json([
                 'success'=>	true,

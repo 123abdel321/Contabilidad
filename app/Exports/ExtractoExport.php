@@ -22,7 +22,7 @@ use App\Models\Sistema\Nits;
 use App\Models\Informes\InfExtracto;
 use App\Models\Informes\InfExtractoDetalle;
 
-class ExtractoExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting, ShouldQueue
+class ExtractoExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting
 {
     use Exportable;
 

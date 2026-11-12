@@ -293,7 +293,7 @@ class ExtractoController extends Controller
             $empresa = Empresa::where('token_db', $has_empresa)->first();
 
             Bus::chain([
-                function () use ($id_informe, &$fileName, &$empresa) {
+                function () use ($id_informe, $fileName, $empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
                     (new ExtractoExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
@@ -313,7 +313,11 @@ class ExtractoController extends Controller
                     $informeExtracto->exporta_excel = 2;
                     $informeExtracto->save();
                 }
-            ])->dispatch();
+            ])->catch(function (\Throwable $e) use ($informeExtracto) {
+                $informeExtracto->exporta_excel = 0;
+                $informeExtracto->save();
+                report($e);
+            })->dispatch();
 
             return response()->json([
                 'success'=>	true,

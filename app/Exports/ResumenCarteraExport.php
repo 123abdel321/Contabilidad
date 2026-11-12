@@ -7,7 +7,6 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -21,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use App\Models\Informes\InfResumenCartera;
 use App\Models\Informes\InfResumenCarteraDetalle;
 
-class ResumenCarteraExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting, ShouldQueue
+class ResumenCarteraExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting
 {
     use Exportable;
 

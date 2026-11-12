@@ -248,7 +248,7 @@ class BalanceController extends Controller
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
             Bus::chain([
-                function () use ($id_informe, &$fileName, &$empresa) {
+                function () use ($id_informe, $fileName, $empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
                     (new BalanceExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
@@ -268,7 +268,11 @@ class BalanceController extends Controller
                     $informeBalance->exporta_excel = 2;
                     $informeBalance->save();
                 }
-            ])->dispatch();
+            ])->catch(function (\Throwable $e) use ($informeBalance) {
+                $informeBalance->exporta_excel = 0;
+                $informeBalance->save();
+                report($e);
+            })->dispatch();
 
             return response()->json([
                 'success'=>	true,

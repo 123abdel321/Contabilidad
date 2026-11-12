@@ -125,7 +125,7 @@ class ResumenComprobantesController extends Controller
             $empresa = Empresa::where('token_db', $has_empresa)->first();
 
             Bus::chain([
-                function () use ($id_informe, &$fileName, &$empresa) {
+                function () use ($id_informe, $fileName, $empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
                     (new ResumenComprobanteExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
@@ -145,7 +145,11 @@ class ResumenComprobantesController extends Controller
                     $infResumenComprobante->exporta_excel = 2;
                     $infResumenComprobante->save();
                 }
-            ])->dispatch();
+            ])->catch(function (\Throwable $e) use ($infResumenComprobante) {
+                $infResumenComprobante->exporta_excel = 0;
+                $infResumenComprobante->save();
+                report($e);
+            })->dispatch();
 
             return response()->json([
                 'success'=>	true,

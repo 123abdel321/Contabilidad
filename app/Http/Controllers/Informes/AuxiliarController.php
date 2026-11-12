@@ -256,7 +256,7 @@ class AuxiliarController extends Controller
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
             Bus::chain([
-                function () use ($id_informe, &$fileName, &$empresa) {
+                function () use ($id_informe, $fileName, $empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
                     (new AuxiliarExport($id_informe, $empresa->id))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
@@ -276,7 +276,11 @@ class AuxiliarController extends Controller
                     $informeAuxiliar->exporta_excel = 2;
                     $informeAuxiliar->save();
                 }
-            ])->dispatch();
+            ])->catch(function (\Throwable $e) use ($informeAuxiliar) {
+                $informeAuxiliar->exporta_excel = 0;
+                $informeAuxiliar->save();
+                report($e);
+            })->dispatch();
 
             return response()->json([
                 'success'=>	true,
