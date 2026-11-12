@@ -94,8 +94,11 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
-            
-            Log::info("Informe resumen cartera ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria.");
+
+            Log::info("Informe resumen cartera", [
+                'empresa' => $this->empresa->token_db,
+                'usuario' => $this->id_usuario
+            ]);
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();

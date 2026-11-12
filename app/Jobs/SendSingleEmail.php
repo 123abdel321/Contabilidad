@@ -38,12 +38,6 @@ class SendSingleEmail implements ShouldQueue
     public function handle()
     {
         try {
-            Log::info('SendSingleEmail: iniciando', [
-                'email'     => $this->email,
-                'view'      => $this->view,
-                'filePath'  => $this->filePath,
-                'empresa'   => $this->empresa?->id,
-            ]);
 
             if ($this->empresa) {
                 copyDBConnection('sam', 'sam');

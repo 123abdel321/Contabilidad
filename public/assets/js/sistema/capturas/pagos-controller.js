@@ -38,7 +38,7 @@ function initCombosPagos() {
 
 function initTablesPagos() {
     pagar_nomina_table = $('#pagosNominaTable').DataTable({
-        pageLength: 100,
+        pageLength: 200,
         dom: 'Brtip',
         paging: true,
         responsive: false,

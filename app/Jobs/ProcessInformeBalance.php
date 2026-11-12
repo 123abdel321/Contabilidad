@@ -95,7 +95,10 @@ class ProcessInformeBalance implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Informe balance ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria.");
+            Log::info("Informe balance", [
+                'empresa' => $this->empresa->token_db,
+                'usuario' => $this->id_usuario
+            ]);
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
