@@ -113,7 +113,7 @@ class PagosController extends Controller
                 ], Response::HTTP_OK);
             }
 
-            $fechaManual = Carbon::parse($fechaManual)->format('Y-m-d');
+            $fechaManual = Carbon::parse($fechaManual)->endOfDay()->format('Y-m-d H:i:s');
 
             $extractos = (new Extracto(
                 $idNit,
