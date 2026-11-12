@@ -113,6 +113,8 @@ class RecibosController extends Controller
                 ], Response::HTTP_OK);
             }
             
+            $fechaManual = Carbon::parse($fechaManual)->format('Y-m-d'); 
+            
             $extractos = (new Extracto(
                     $idNit,
                     [
@@ -134,7 +136,7 @@ class RecibosController extends Controller
             $hasError = false;
             $dataRecibos = [];
             $dataRecibosAnticipos = [];
-
+            $totalSaldo = 0;
             if ($reciboEdit) {
                 $detalles = $reciboEdit['detalles'];
 
@@ -175,6 +177,7 @@ class RecibosController extends Controller
                     if ($extracto->saldo < 0) $hasError = true;
                     if (intval($extracto->saldo) > 0) {
                         $dataRecibos[] = $this->formatExtracto($extracto);
+                        $totalSaldo = $extracto->saldo;
                     }
                 }
             }
