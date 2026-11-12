@@ -690,7 +690,7 @@ class DocumentosGeneralesController extends Controller
             $empresa = Empresa::where('token_db', $has_empresa)->first();
 
             Bus::chain([
-                function () use ($id_informe, &$fileName, &$empresa) {
+                function () use ($id_informe, $fileName, $empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
                     (new DocumentoGeneralExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
@@ -710,7 +710,11 @@ class DocumentosGeneralesController extends Controller
                     $infDocumentosGenerales->exporta_excel = 2;
                     $infDocumentosGenerales->save();
                 }
-            ])->dispatch();
+            ])->catch(function (\Throwable $e) use ($infDocumentosGenerales) {
+                $infDocumentosGenerales->exporta_excel = 0;
+                $infDocumentosGenerales->save();
+                report($e);
+            })->dispatch();
 
             return response()->json([
                 'success'=>	true,
