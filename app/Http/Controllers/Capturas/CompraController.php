@@ -744,8 +744,9 @@ class CompraController extends Controller
 
     private function createFacturaCompra ($request)
     {
-        $this->calcularTotales($request->get('productos'));
+        $this->calcularTotales($request->get('productos'), $request->get('calcula_retencion') ?? false);
         $this->calcularFormasPago($request->get('pagos'));
+        
 
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
 
@@ -773,7 +774,7 @@ class CompraController extends Controller
         return $compra;
     }
 
-    private function calcularTotales($productos)
+    private function calcularTotales($productos, $calcula_retencion = true)
     {
         // Una sola carga para todos los productos (antes: 1 query por línea)
         $productosDb = $this->cargarProductosDb($productos);
@@ -785,9 +786,11 @@ class CompraController extends Controller
         foreach ($productos as $producto) {
             $this->acumularTotalesProducto($this->calcularProducto((object)$producto));
         }
-
+        
         // PASO 3: aplicar retención final
-        $this->aplicarRetencionProductos();
+        if ($calcula_retencion) {
+            $this->aplicarRetencionProductos();
+        }
     }
 
     private function cargarProductosDb($productos)
