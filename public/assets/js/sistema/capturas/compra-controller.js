@@ -1098,6 +1098,7 @@
             fecha_manual: $('#fecha_manual_compra').val(),
             documento_referencia: $('#documento_referencia_compra').val(),
             observacion: $('#observacion_compra').val(),
+            calcula_retencion: state.calculaRetencion ? 1 : 0,
             modo: state.modoCaptura
         };
 
