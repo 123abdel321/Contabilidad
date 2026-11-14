@@ -535,8 +535,7 @@
             const aviso = document.getElementById('pp-deuda');
             if (deuda > 0) {
                 aviso.innerHTML = '⚠️ Tienes <strong>' + deuda + ' mes(es) vencido(s)</strong>: ' +
-                    res.data.nombres_meses_adeudados.join(', ') +
-                    '. Es el mínimo para reactivar tu cuenta.';
+                    res.data.nombres_meses_adeudados.join(', ');
                 aviso.style.display = 'block';
             } else {
                 aviso.style.display = 'none';
