@@ -1,455 +1,127 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
-use App\DTOs\RespuestaDTO;
-use App\Models\Empresa;
-use App\Models\EmpresaComponenteSuscripcion;
-use App\Models\SuscripcionComponente;
-use App\Traits\DataTableTrait;
+use DB;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Jobs\ProcessProvisionedDatabase;
+// MODELS
+use App\Models\User;
+use App\Models\Empresas\Empresa;
+use App\Models\Empresas\PagosSuscripcion;
+use App\Models\Empresas\EmpresaSuscripcion;
+use App\Models\Empresas\EmpresaComponentesSuscripcion;
 
 class SuscripcionService
 {
-    use DataTableTrait;
-
-    private const COLUMNS = ['id', 'componente_id', 'empresa_id', 'cantidad', 'precio', 'created_at'];
-
-    // ============================================================
-    // COMBO DE EMPRESAS (para el select del filtro)
-    // ============================================================
-    public function getComboEmpresas(int $sesion_user_id): RespuestaDTO
+    /**
+     * Aplica un pago aprobado a la suscripción: avanza fechas, crea módulos nuevos
+     * y recalcula el precio. NO abre ni cierra transacción (lo hace quien la llama).
+     */
+    public function aplicarPagoASuscripcion(PagosSuscripcion $pago, array $detalle): EmpresaSuscripcion
     {
-        try {
-            $permisoService = new PermisoService;
-            $permisoService->validarPermisoGeneral(sesion_user_id: $sesion_user_id, rol_requerido: 'admin');
+        $idEmpresa = $pago->id_empresa;
+        $empresa   = Empresa::find($idEmpresa);
 
-            $empresas = Empresa::query()
-                ->select('id', 'numero_documento', 'razon_social')
-                ->orderBy('razon_social')
-                ->get()
-                ->map(fn($e) => [
-                    'id'               => $e->id,
-                    'numero_documento' => $e->numero_documento,
-                    'razon_social'     => $e->razon_social,
-                    'texto'            => "{$e->numero_documento} - {$e->razon_social}",
-                ]);
-
-            return RespuestaDTO::exito()
-                ->datos(['empresas' => $empresas])
-                ->mensaje('Combo de empresas recuperado.')
-                ->codigoSlug('suscripciones_combo_empresas_exito')
-                ->get();
-
-        } catch (\Exception $e) {
-            Log::error($e);
-            return RespuestaDTO::error($e)
-                ->mensaje("Error al obtener combo de empresas: " . $e->getMessage())
-                ->codigoSlug('suscripciones_combo_empresas_error')
-                ->get();
+        if (!$empresa) {
+            throw new Exception('Empresa no encontrada para el pago ' . $pago->id);
         }
-    }
 
-    // ============================================================
-    // COMBO DE COMPONENTES (para el modal de asignar múltiple)
-    // Devuelve todos los componentes + los IDs ya asignados a la empresa
-    // ============================================================
-    public function getComboComponentes(int $sesion_user_id, ?int $empresaId = null): RespuestaDTO
-    {
-        try {
-            $permisoService = new PermisoService;
-            $permisoService->validarPermisoGeneral(sesion_user_id: $sesion_user_id, rol_requerido: 'admin');
+        $suscripcion = EmpresaSuscripcion::where('id_empresa', $idEmpresa)
+            ->where('estado', '1')
+            ->first();
 
-            $componentes = SuscripcionComponente::query()
-                ->activos()
-                ->orderBy('tipo')
-                ->orderBy('nombre')
-                ->get()
-                ->map(fn($c) => [
-                    'id'               => $c->id,
-                    'nombre'           => $c->nombre,
-                    'tipo'             => $c->tipo,
-                    'padre_id'         => $c->padre_id,
-                    'precio'           => $c->precio,
-                    'rango_desde'      => $c->rango_desde,
-                    'rango_hasta'      => $c->rango_hasta,
-                    'cantidad_default' => $c->cantidad_default ?? 1,
-                    'texto'            => "{$c->nombre} ({$c->tipo})",
-                ]);
-
-            $asignados = $empresaId
-                ? EmpresaComponenteSuscripcion::where('empresa_id', $empresaId)
-                    ->where('activo', true)
-                    ->pluck('componente_id')
-                    ->values()
-                : [];
-
-            return RespuestaDTO::exito()
-                ->datos(['componentes' => $componentes, 'asignados' => $asignados])
-                ->mensaje('Combo de componentes recuperado.')
-                ->codigoSlug('suscripciones_combo_componentes_exito')
-                ->get();
-
-        } catch (\Exception $e) {
-            Log::error($e);
-            return RespuestaDTO::error($e)
-                ->mensaje("Error al obtener combo de componentes: " . $e->getMessage())
-                ->codigoSlug('suscripciones_combo_componentes_error')
-                ->get();
+        if (!$suscripcion) {
+            throw new Exception('No hay suscripción activa para extender (empresa ' . $idEmpresa . ')');
         }
-    }
 
-    // ============================================================
-    // LISTADO POR EMPRESA (DataTable)
-    // ============================================================
-    public function getLista(Request $request, int $sesion_user_id): RespuestaDTO
-    {
-        try {
-            $empresaId = $request->input('empresa_id');
+        $meses = max(1, (int) ($detalle['meses'] ?? 1));
+        $hoy   = Carbon::now()->startOfDay();
 
-            $permisoService = new PermisoService;
-            $permisoService->validarPermisoGeneral(sesion_user_id: $sesion_user_id, rol_requerido: 'admin');
+        $actuales = EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
+            ->where('id_empresa_suscripcion', $suscripcion->id)
+            ->has('componente')
+            ->get();
 
-            if (!$empresaId) {
-                return RespuestaDTO::exito()
-                    ->datos(['data' => [
-                        'draw'            => (int) $request->input('draw'),
-                        'recordsTotal'    => 0,
-                        'recordsFiltered' => 0,
-                        'data'            => [],
-                    ]])
-                    ->mensaje('Seleccione una empresa.')
-                    ->codigoSlug('suscripciones_lista_sin_empresa')
-                    ->get();
-            }
-
-            $query = EmpresaComponenteSuscripcion::query()
-                ->with(['componente', 'componente.padre'])
-                ->where('empresa_id', $empresaId)
-                ->where('activo', true)
-                ->orderByDesc('id');
-
-            return $this->getDataTableListNoOrder(
-                $request,
-                $query,
-                function ($item) {
-                    return [
-                        'id'                => $item->id,
-                        'componente_id'     => $item->componente_id,
-                        'componente_nombre' => $item->componente->nombre ?? '-',
-                        'componente_tipo'   => $item->componente->tipo ?? '-',
-                        'componente_padre'  => $item->componente->padre->nombre ?? null,
-                        'cantidad'          => $item->cantidad,
-                        'precio'            => $item->precio,
-                        'descuento'         => $item->descuento,
-                        'fecha_inicio'      => optional($item->fecha_inicio)->format('Y-m-d'),
-                        'fecha_fin'         => optional($item->fecha_fin)->format('Y-m-d'),
-                        'activo'            => $item->activo,
-                    ];
-                }
-            );
-
-        } catch (\Exception $e) {
-            Log::error($e);
-            return RespuestaDTO::error($e)
-                ->mensaje("Error al obtener la lista de suscripciones: " . $e->getMessage())
-                ->codigoSlug('suscripciones_lista_error')
-                ->get();
+        // Estado global (mismo criterio que calcularDesglosePago)
+        $fechaProximoCobro = $actuales->min('fecha_siguiente_cobro');
+        $estado = 'nuevo';
+        if ($fechaProximoCobro) {
+            $estado = Carbon::parse($fechaProximoCobro)->startOfDay()->lt($hoy) ? 'vencido' : 'al_dia';
         }
-    }
 
-    // ============================================================
-    // GUARDAR (asignar un componente a empresa - legacy)
-    // ============================================================
-    public function guardar(array $datos, int $sesion_user_id): RespuestaDTO
-    {
-        try {
-            DB::beginTransaction();
+        // ── Componentes existentes ──
+        foreach ($actuales as $c) {
+            if ($estado === 'vencido') {
+                // Avanza desde la fecha vencida: cada mes pagado cubre un mes de deuda
+                $base = $c->fecha_siguiente_cobro
+                    ? Carbon::parse($c->fecha_siguiente_cobro)->startOfDay()
+                    : $hoy->copy()->startOfMonth()->subDay();
 
-            $permisoService = new PermisoService;
-            $permisoService->validarPermisoGeneral(sesion_user_id: $sesion_user_id, rol_requerido: 'admin');
+                $c->fecha_inicio_suscripcion = $base->copy()->addDay()->format('Y-m-d');
+                $c->fecha_siguiente_cobro    = $base->copy()->addMonthsNoOverflow($meses)->format('Y-m-d');
 
-            if (empty($datos['empresa_id'])) {
-                throw new \Exception('Debe seleccionar una empresa.');
+            } elseif ($estado === 'al_dia') {
+                $fechaActual = $c->fecha_siguiente_cobro
+                    ? Carbon::parse($c->fecha_siguiente_cobro)->startOfDay()
+                    : $hoy->copy();
+                $c->fecha_siguiente_cobro = $fechaActual->copy()->addMonthsNoOverflow($meses)->format('Y-m-d');
+
+            } else { // nuevo (proporcional hasta fin de mes + meses-1)
+                $c->fecha_inicio_suscripcion = $hoy->format('Y-m-d');
+                $c->fecha_siguiente_cobro    = $hoy->copy()->startOfMonth()
+                    ->addMonthsNoOverflow($meses)->subDay()->format('Y-m-d');
             }
-            if (empty($datos['componente_id'])) {
-                throw new \Exception('Debe seleccionar un componente.');
-            }
+            $c->save();
+        }
 
-            $componente = SuscripcionComponente::findOrFail($datos['componente_id']);
+        // ── Fecha de fin para módulos nuevos ──
+        // Vencido / al día: misma cobertura que la base (ya actualizada arriba).
+        // Nuevo: hasta fin de mes + (meses-1).
+        $fechaNuevos = $hoy->copy()->startOfMonth()->addMonthsNoOverflow($meses)->subDay()->format('Y-m-d');
+        if ($estado !== 'nuevo' && $actuales->isNotEmpty()) {
+            $fechaNuevos = $actuales->min('fecha_siguiente_cobro');
+        }
 
-            $cantidad = (int) ($datos['cantidad'] ?? 1);
-            $precio   = (float) ($datos['precio'] ?? $componente->precio);
-            $descuento = (float) ($datos['descuento'] ?? 0);
+        // ── Componentes nuevos ──
+        foreach (($detalle['componentes'] ?? []) as $c) {
+            if (empty($c['es_nuevo'])) continue;
 
-            if ($componente->tipo === 'valor') {
-                $cantidad = 1;
-                $precio   = (float) $componente->precio;
-            }
-
-            $existe = EmpresaComponenteSuscripcion::query()
-                ->where('empresa_id', $datos['empresa_id'])
-                ->where('componente_id', $datos['componente_id'])
-                ->where('activo', true)
+            $existe = EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
+                ->where('id_empresa_suscripcion', $suscripcion->id)
+                ->where('id_componente', $c['id_componente'])
                 ->exists();
+            if ($existe) continue;
 
-            if ($existe) {
-                throw new \Exception('Esta empresa ya tiene asignado ese componente.');
-            }
-
-            $registro = EmpresaComponenteSuscripcion::create([
-                'empresa_id'    => $datos['empresa_id'],
-                'componente_id' => $datos['componente_id'],
-                'cantidad'      => $cantidad,
-                'precio'        => $precio,
-                'descuento'     => $descuento,
-                'fecha_inicio'  => $datos['fecha_inicio'] ?? now()->toDateString(),
-                'fecha_fin'     => $datos['fecha_fin'] ?? null,
-                'activo'        => true,
+            EmpresaComponentesSuscripcion::create([
+                'id_empresa'               => $idEmpresa,
+                'id_empresa_suscripcion'   => $suscripcion->id,
+                'id_componente'            => $c['id_componente'],
+                'cantidad'                 => 1,
+                'precio'                   => (float) $c['precio'],
+                'descuento'                => 0,
+                'fecha_inicio_suscripcion' => $hoy->format('Y-m-d'),
+                'fecha_siguiente_cobro'    => $fechaNuevos,
+                'created_by'               => $empresa->id_usuario_owner ?: 0,
+                'updated_by'               => $empresa->id_usuario_owner ?: 0,
             ]);
-
-            DB::commit();
-
-            return RespuestaDTO::exito()
-                ->datos(['registro' => $registro])
-                ->mensaje('Componente asignado a la empresa con éxito.')
-                ->codigoSlug('suscripcion_guardar_exito')
-                ->get();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error($e);
-
-            return RespuestaDTO::error($e)
-                ->mensaje("Error al guardar: " . $e->getMessage())
-                ->codigoSlug('suscripcion_guardar_error')
-                ->get();
         }
-    }
 
-    // ============================================================
-    // GUARDAR MÚLTIPLE (asignar varios componentes a una empresa)
-    // ============================================================
-    public function guardarMultiple(array $datos, int $sesion_user_id): RespuestaDTO
-    {
-        try {
-            DB::beginTransaction();
-
-            $permisoService = new PermisoService;
-            $permisoService->validarPermisoGeneral(sesion_user_id: $sesion_user_id, rol_requerido: 'admin');
-
-            $empresaId = $datos['empresa_id'] ?? null;
-            $items     = collect($datos['items'] ?? []);
-
-            if (!$empresaId) throw new \Exception('Debe seleccionar una empresa.');
-            if ($items->isEmpty()) throw new \Exception('Debe seleccionar al menos un componente.');
-
-            Empresa::findOrFail($empresaId);
-
-            $ids = $items->pluck('componente_id');
-            if ($ids->count() !== $ids->unique()->count()) {
-                throw new \Exception('Hay componentes repetidos en la solicitud.');
-            }
-
-            $componentes = SuscripcionComponente::whereIn('id', $ids)->get()->keyBy('id');
-
-            $existentes = EmpresaComponenteSuscripcion::with('componente')
-                ->where('empresa_id', $empresaId)
-                ->where('activo', true)
-                ->get();
-
-            $yaAsignados  = $existentes->pluck('componente_id')->all();
-            $padresUsados = $existentes->pluck('componente.padre_id')->filter()->all();
-
-            $creados = [];
-
-            foreach ($items as $item) {
-                $c = $componentes->get($item['componente_id'] ?? null);
-                if (!$c) throw new \Exception('Componente no encontrado.');
-
-                if ($c->tipo === 'selector') {
-                    throw new \Exception("«{$c->nombre}» es un selector; debe elegir uno de sus rangos.");
-                }
-                if (in_array($c->id, $yaAsignados)) {
-                    throw new \Exception("La empresa ya tiene asignado «{$c->nombre}».");
-                }
-                if ($c->padre_id) {
-                    if (in_array($c->padre_id, $padresUsados)) {
-                        throw new \Exception("Solo se permite un rango por selector («{$c->nombre}»).");
-                    }
-                    $padresUsados[] = $c->padre_id;
-                }
-
-                $cantidad  = (int) ($item['cantidad'] ?? 1);
-                $precio    = (float) ($item['precio'] ?? $c->precio);
-                $descuento = (float) ($item['descuento'] ?? 0);
-
-                if ($c->tipo === 'valor' || $c->padre_id) {
-                    $cantidad = 1;
-                }
-
-                if ($cantidad < 1) throw new \Exception("Cantidad inválida en «{$c->nombre}».");
-                if ($precio < 0)   throw new \Exception("Precio inválido en «{$c->nombre}».");
-                if ($descuento < 0 || $descuento > $cantidad * $precio) {
-                    throw new \Exception("Descuento inválido en «{$c->nombre}».");
-                }
-
-                $inicio = !empty($item['fecha_inicio']) ? $item['fecha_inicio'] : now()->toDateString();
-                $fin    = !empty($item['fecha_fin'])    ? $item['fecha_fin']    : null;
-
-                if ($fin && $fin < $inicio) {
-                    throw new \Exception("«{$c->nombre}»: la fecha fin no puede ser menor a la fecha inicio.");
-                }
-
-                $creados[] = EmpresaComponenteSuscripcion::create([
-                    'empresa_id'    => $empresaId,
-                    'componente_id' => $c->id,
-                    'cantidad'      => $cantidad,
-                    'precio'        => $precio,
-                    'descuento'     => $descuento,
-                    'fecha_inicio'  => $inicio,
-                    'fecha_fin'     => $fin,
-                    'activo'        => true,
-                ]);
-            }
-
-            DB::commit();
-
-            return RespuestaDTO::exito()
-                ->datos(['registros' => $creados])
-                ->mensaje(count($creados) . ' componente(s) asignado(s) con éxito.')
-                ->codigoSlug('suscripcion_guardar_multiple_exito')
-                ->get();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error($e);
-
-            return RespuestaDTO::error($e)
-                ->mensaje("Error al guardar: " . $e->getMessage())
-                ->codigoSlug('suscripcion_guardar_multiple_error')
-                ->get();
+        // ── Recalcular precio de la suscripción ──
+        $total = 0;
+        foreach (EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
+                    ->where('id_empresa_suscripcion', $suscripcion->id)
+                    ->has('componente')->get() as $c) {
+            $cant = max(1, (int) ($c->cantidad ?? 1));
+            $desc = (float) ($c->descuento ?? 0);
+            $total += ((float) $c->precio - $desc) * $cant;
         }
-    }
+        $suscripcion->precio = $total;
+        $suscripcion->save();
 
-    // ============================================================
-    // ACTUALIZAR (cantidad, precio, descuento, fechas)
-    // ============================================================
-    public function actualizar(array $datos, int $sesion_user_id): RespuestaDTO
-    {
-        try {
-            DB::beginTransaction();
-
-            $permisoService = new PermisoService;
-            $permisoService->validarPermisoGeneral(sesion_user_id: $sesion_user_id, rol_requerido: 'admin');
-
-            $registro = EmpresaComponenteSuscripcion::with('componente')->findOrFail($datos['id']);
-
-            if ($registro->componente->tipo === 'valor') {
-                $registro->cantidad = 1;
-                $registro->precio   = (float) $registro->componente->precio;
-            } else {
-                if (array_key_exists('cantidad', $datos))  $registro->cantidad  = (int) $datos['cantidad'];
-                if (array_key_exists('precio', $datos))    $registro->precio    = (float) $datos['precio'];
-            }
-
-            if (array_key_exists('descuento', $datos))    $registro->descuento    = (float) $datos['descuento'];
-            if (array_key_exists('fecha_inicio', $datos)) $registro->fecha_inicio = $datos['fecha_inicio'] ?: null;
-            if (array_key_exists('fecha_fin', $datos))    $registro->fecha_fin    = $datos['fecha_fin'] ?: null;
-            if (array_key_exists('activo', $datos))       $registro->activo       = (bool) $datos['activo'];
-
-            $registro->save();
-
-            DB::commit();
-
-            return RespuestaDTO::exito()
-                ->datos(['registro' => $registro])
-                ->mensaje('Suscripción actualizada con éxito.')
-                ->codigoSlug('suscripcion_actualizar_exito')
-                ->get();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error($e);
-
-            return RespuestaDTO::error($e)
-                ->mensaje("Error al actualizar: " . $e->getMessage())
-                ->codigoSlug('suscripcion_actualizar_error')
-                ->get();
-        }
-    }
-
-    // ============================================================
-    // ELIMINAR
-    // ============================================================
-    public function eliminar(int $id, int $sesion_user_id): RespuestaDTO
-    {
-        try {
-            DB::beginTransaction();
-
-            $permisoService = new PermisoService;
-            $permisoService->validarPermisoGeneral(sesion_user_id: $sesion_user_id, rol_requerido: 'admin');
-
-            $registro = EmpresaComponenteSuscripcion::findOrFail($id);
-            $registro->delete();
-
-            DB::commit();
-
-            return RespuestaDTO::exito()
-                ->mensaje('Suscripción eliminada con éxito.')
-                ->codigoSlug('suscripcion_eliminar_exito')
-                ->get();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error($e);
-
-            return RespuestaDTO::error($e)
-                ->mensaje("Error al eliminar: " . $e->getMessage())
-                ->codigoSlug('suscripcion_eliminar_error')
-                ->get();
-        }
-    }
-
-    // ============================================================
-    // DATA (para editar)
-    // ============================================================
-    public function getData(int $id, int $sesion_user_id): RespuestaDTO
-    {
-        try {
-            $permisoService = new PermisoService;
-            $permisoService->validarPermisoGeneral(sesion_user_id: $sesion_user_id, rol_requerido: 'admin');
-
-            $registro = EmpresaComponenteSuscripcion::with(['componente', 'componente.padre'])->findOrFail($id);
-
-            return RespuestaDTO::exito()
-                ->datos([
-                    'registro' => [
-                        'id'                => $registro->id,
-                        'empresa_id'        => $registro->empresa_id,
-                        'componente_id'     => $registro->componente_id,
-                        'componente_nombre' => $registro->componente->nombre ?? null,
-                        'componente_tipo'   => $registro->componente->tipo ?? null,
-                        'cantidad'          => $registro->cantidad,
-                        'precio'            => $registro->precio,
-                        'descuento'         => $registro->descuento,
-                        'fecha_inicio'      => optional($registro->fecha_inicio)->format('Y-m-d'),
-                        'fecha_fin'         => optional($registro->fecha_fin)->format('Y-m-d'),
-                        'activo'            => $registro->activo,
-                    ],
-                ])
-                ->mensaje('Registro recuperado.')
-                ->codigoSlug('suscripcion_data_exito')
-                ->get();
-
-        } catch (\Exception $e) {
-            Log::error($e);
-            return RespuestaDTO::error($e)
-                ->mensaje("Error al obtener el registro: " . $e->getMessage())
-                ->codigoSlug('suscripcion_data_error')
-                ->get();
-        }
+        return $suscripcion;
     }
 }
