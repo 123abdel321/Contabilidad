@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 use App\Http\Controllers\Traits\BegReCaptchaValidate2Trait;
 // SERVICES
+use App\Http\Services\SuscripcionService;
 use App\Http\Services\VentaSuscripcionService;
 use App\Http\Services\SuscripcionPagoLinkService;
 // HELPERS
@@ -2721,7 +2722,7 @@ class SuscripcionController extends Controller
             'reference'         => 'nullable|string',
             'payment_source_id' => 'nullable',
         ];
-        
+
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
         if ($validator->fails()) {
@@ -2734,14 +2735,16 @@ class SuscripcionController extends Controller
         try {
             DB::connection('clientes')->beginTransaction();
 
-            $pago = PagosSuscripcion::where('id', $request->get('pago_id'))->first();
+            // lockForUpdate: evita que webhook y reconciliar apliquen el mismo pago a la vez
+            $pago = PagosSuscripcion::where('id', $request->get('pago_id'))
+                ->lockForUpdate()
+                ->first();
 
             if (!$pago) {
                 throw new Exception('Pago no encontrado.');
             }
 
-            $idEmpresa = $pago->id_empresa;
-            $empresa   = Empresa::find($idEmpresa);
+            $empresa = Empresa::find($pago->id_empresa);
 
             if (!$empresa) {
                 throw new Exception('Empresa no encontrada.');
@@ -2781,95 +2784,9 @@ class SuscripcionController extends Controller
             $pago->save();
 
             if ($estadoPago === 1 && $estadoAnterior !== 1) {
-                $suscripcion = EmpresaSuscripcion::where('id_empresa', $idEmpresa)
-                    ->where('estado', '1')
-                    ->first();
 
-                if (!$suscripcion) {
-                    throw new Exception('No hay suscripción activa para extender.');
-                }
-
-                $meses = (int) ($detalle['meses'] ?? 1);
-                if ($meses < 1) $meses = 1;
-
-                $hoy = Carbon::now()->startOfDay();
-
-                // Componentes actuales → avanzar fecha_siguiente_cobro
-                $actuales = EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
-                    ->where('id_empresa_suscripcion', $suscripcion->id)
-                    ->has('componente')
-                    ->get();
-
-                foreach ($actuales as $c) {
-                    $fechaVencimiento = $c->fecha_siguiente_cobro
-                        ? Carbon::parse($c->fecha_siguiente_cobro)->startOfDay()
-                        : null;
-
-                    // ---- CASO 0: sin fecha → nuevo ciclo desde hoy ----
-                    if (!$fechaVencimiento) {
-                        $c->fecha_inicio_suscripcion = $hoy->copy()->startOfMonth()->format('Y-m-d');
-                        $c->fecha_siguiente_cobro    = $hoy->copy()
-                            ->startOfMonth()
-                            ->addMonthsNoOverflow($meses)
-                            ->subDay()
-                            ->format('Y-m-d');
-                    }
-                    // ---- CASO 1: vencido (< hoy) → reiniciar ciclo al mes actual ----
-                    elseif ($fechaVencimiento->lt($hoy)) {
-                        $inicioCiclo = $hoy->copy()->startOfMonth();
-                        $c->fecha_inicio_suscripcion = $inicioCiclo->format('Y-m-d');
-                        $c->fecha_siguiente_cobro    = $inicioCiclo
-                            ->copy()
-                            ->addMonthsNoOverflow($meses)
-                            ->subDay()
-                            ->format('Y-m-d');
-                    }
-                    // ---- CASO 2: aún vigente (>= hoy) → solo avanzar ----
-                    else {
-                        $c->fecha_siguiente_cobro = $fechaVencimiento
-                            ->copy()
-                            ->addMonthsNoOverflow($meses)
-                            ->format('Y-m-d');
-                    }
-
-                    $c->save();
-                }
-
-                // Componentes NUEVOS → crearlos
-                foreach (($detalle['componentes'] ?? []) as $c) {
-                    if (empty($c['es_nuevo'])) continue;
-
-                    $inicioCiclo = $hoy->copy()->startOfMonth();
-
-                    EmpresaComponentesSuscripcion::create([
-                        'id_empresa'               => $idEmpresa,
-                        'id_empresa_suscripcion'   => $suscripcion->id,
-                        'id_componente'            => $c['id_componente'],
-                        'cantidad'                 => 1,
-                        'precio'                   => (float) $c['precio'],
-                        'descuento'                => 0,
-                        'fecha_inicio_suscripcion' => $inicioCiclo->format('Y-m-d'),
-                        'fecha_siguiente_cobro'    => $inicioCiclo
-                            ->copy()
-                            ->addMonthsNoOverflow($meses)
-                            ->subDay()
-                            ->format('Y-m-d'),
-                        'created_by'               => $empresa->id_usuario_owner ?: 0,
-                        'updated_by'               => $empresa->id_usuario_owner ?: 0,
-                    ]);
-                }
-
-                // Recalcular precio total de la suscripción
-                $totalComponentes = 0;
-                foreach (EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
-                            ->where('id_empresa_suscripcion', $suscripcion->id)
-                            ->has('componente')->get() as $c) {
-                    $cant = max(1, (int) ($c->cantidad ?? 1));
-                    $desc = (float) ($c->descuento ?? 0);
-                    $totalComponentes += ((float) $c->precio - $desc) * $cant;
-                }
-                $suscripcion->precio = $totalComponentes;
-                $suscripcion->save();
+                // Fechas, módulos nuevos y precio: misma lógica que el webhook
+                app(SuscripcionService::class)->aplicarPagoASuscripcion($pago, $detalle);
 
                 // Marcar el link como usado
                 $tokenLink = $detalle['token_link'] ?? null;
@@ -2880,9 +2797,7 @@ class SuscripcionController extends Controller
                     }
                 }
 
-                // ═══════════════════════════════════════════════════════
-                // 🔑 GENERAR VENTA EN LA BD DEL EMISOR
-                // ═══════════════════════════════════════════════════════
+                // Venta en la BD del emisor
                 try {
                     app(VentaSuscripcionService::class)->generarVentaDesdePago($pago);
                 } catch (\Throwable $e) {

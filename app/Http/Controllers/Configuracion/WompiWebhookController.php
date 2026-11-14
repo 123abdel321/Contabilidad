@@ -8,11 +8,15 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessProvisionedDatabase;
+//SERVICES
+use App\Http\Services\SuscripcionService;
+use App\Http\Services\VentaSuscripcionService;
 // MODELS
 use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\PagosSuscripcion;
 use App\Models\Empresas\EmpresaSuscripcion;
+use App\Models\Empresas\SuscripcionPagoLink;
 use App\Models\Empresas\EmpresaComponentesSuscripcion;
 
 class WompiWebhookController extends Controller
@@ -163,101 +167,16 @@ class WompiWebhookController extends Controller
         DB::connection('clientes')->beginTransaction();
 
         try {
-            $idEmpresa = $pago->id_empresa;
-            $empresa   = Empresa::find($idEmpresa);
+            $empresa = Empresa::find($pago->id_empresa);
 
             if (!$empresa) {
                 throw new Exception('Empresa no encontrada para el pago ' . $pago->id);
             }
 
-            $suscripcion = EmpresaSuscripcion::where('id_empresa', $idEmpresa)
-                ->where('estado', '1')
-                ->first();
+            // Fechas, módulos nuevos y precio: una sola lógica compartida
+            app(SuscripcionService::class)->aplicarPagoASuscripcion($pago, $detalle);
 
-            if (!$suscripcion) {
-                throw new Exception('No hay suscripción activa para extender (empresa ' . $idEmpresa . ')');
-            }
-
-            $meses = (int) ($detalle['meses'] ?? 1);
-            if ($meses < 1) $meses = 1;
-
-            $hoy = Carbon::now()->startOfDay();
-
-            // 🔑 Aplicar fechas a componentes existentes
-            $actuales = EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
-                ->where('id_empresa_suscripcion', $suscripcion->id)
-                ->has('componente')
-                ->get();
-
-            // Determinar estado global
-            $fechaProximoCobro = $actuales->min('fecha_siguiente_cobro');
-
-            $estado = 'nuevo';
-            if ($fechaProximoCobro) {
-                $estado = Carbon::parse($fechaProximoCobro)->startOfDay()->lt($hoy)
-                    ? 'vencido'
-                    : 'al_dia';
-            }
-
-            foreach ($actuales as $c) {
-                if ($estado === 'vencido') {
-                    $c->fecha_inicio_suscripcion = $hoy->copy()->startOfMonth()->format('Y-m-d');
-                    $c->fecha_siguiente_cobro    = $hoy->copy()
-                        ->startOfMonth()->addMonthsNoOverflow($meses)->subDay()->format('Y-m-d');
-                } elseif ($estado === 'al_dia') {
-                    $fechaActual = $c->fecha_siguiente_cobro
-                        ? Carbon::parse($c->fecha_siguiente_cobro)->startOfDay()
-                        : $hoy->copy();
-                    $c->fecha_siguiente_cobro = $fechaActual->copy()
-                        ->addMonthsNoOverflow($meses)->format('Y-m-d');
-                } else {
-                    $c->fecha_inicio_suscripcion = $hoy->format('Y-m-d');
-                    $c->fecha_siguiente_cobro    = $hoy->copy()
-                        ->endOfMonth()->addMonthsNoOverflow($meses - 1)->format('Y-m-d');
-                }
-                $c->save();
-            }
-
-            // 🔑 Crear componentes NUEVOS (si el pago los trae)
-            foreach (($detalle['componentes'] ?? []) as $c) {
-                if (empty($c['es_nuevo'])) continue;
-
-                // Evitar duplicados
-                $existe = EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
-                    ->where('id_empresa_suscripcion', $suscripcion->id)
-                    ->where('id_componente', $c['id_componente'])
-                    ->exists();
-
-                if ($existe) continue;
-
-                EmpresaComponentesSuscripcion::create([
-                    'id_empresa'               => $idEmpresa,
-                    'id_empresa_suscripcion'   => $suscripcion->id,
-                    'id_componente'            => $c['id_componente'],
-                    'cantidad'                 => 1,
-                    'precio'                   => (float) $c['precio'],
-                    'descuento'                => 0,
-                    'fecha_inicio_suscripcion' => $hoy->format('Y-m-d'),
-                    'fecha_siguiente_cobro'    => $hoy->copy()
-                        ->endOfMonth()->addMonthsNoOverflow($meses - 1)->format('Y-m-d'),
-                    'created_by'               => $empresa->id_usuario_owner ?: 0,
-                    'updated_by'               => $empresa->id_usuario_owner ?: 0,
-                ]);
-            }
-
-            // 🔑 Recalcular precio de la suscripción
-            $total = 0;
-            foreach (EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
-                        ->where('id_empresa_suscripcion', $suscripcion->id)
-                        ->has('componente')->get() as $c) {
-                $cant = max(1, (int) ($c->cantidad ?? 1));
-                $desc = (float) ($c->descuento ?? 0);
-                $total += ((float) $c->precio - $desc) * $cant;
-            }
-            $suscripcion->precio = $total;
-            $suscripcion->save();
-
-            // 🔑 Activar empresa si está en instalación (estado 5)
+            // Activar empresa si está en instalación (estado 5)
             if ($empresa->estado == 5) {
                 $owner = User::find($empresa->id_usuario_owner);
                 if ($owner) {
@@ -268,7 +187,6 @@ class WompiWebhookController extends Controller
 
                 DB::connection('clientes')->commit();
 
-                // Disparar la provisión de la BD de la empresa
                 ProcessProvisionedDatabase::dispatch(
                     $empresa->id,
                     'empresas_generales',
@@ -280,31 +198,25 @@ class WompiWebhookController extends Controller
                 DB::connection('clientes')->commit();
             }
 
-            // Marcar link público como usado (si venía de un token público)
+            // Marcar link público como usado
             $tokenLink = $detalle['token_link'] ?? null;
             if ($tokenLink) {
-                $link = \App\Models\Empresas\SuscripcionPagoLink::where('token', $tokenLink)->first();
+                $link = SuscripcionPagoLink::where('token', $tokenLink)->first();
                 if ($link) {
                     $link->marcarComoUsado();
                 }
             }
 
-            // ═══════════════════════════════════════════════════════
-            // 🔑 GENERAR VENTA EN LA BD DEL EMISOR
-            // ═══════════════════════════════════════════════════════
+            // Venta en la BD del emisor (secundaria: si falla no se revierte el pago)
             try {
-                app(\App\Http\Services\VentaSuscripcionService::class)->generarVentaDesdePago($pago);
+                app(VentaSuscripcionService::class)->generarVentaDesdePago($pago);
 
-                \Log::info('[Wompi Webhook] Venta suscripción generada', [
-                    'pago_id' => $pago->id,
-                ]);
+                \Log::info('[Wompi Webhook] Venta suscripción generada', ['pago_id' => $pago->id]);
             } catch (\Throwable $e) {
                 \Log::error('[Wompi Webhook] Error generando venta suscripción', [
                     'pago_id' => $pago->id,
                     'error'   => $e->getMessage(),
                 ]);
-                // No hacemos rollback: la venta es secundaria.
-                // Si falla, el pago queda aprobado y la suscripción activa.
             }
 
         } catch (Exception $e) {
