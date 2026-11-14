@@ -122,6 +122,8 @@
                                     <strong>$ 0</strong>
                                 </div>
 
+                                <div id="pp-deuda" class="pp-deuda" style="display: none;"></div>
+
                                 <div id="pp-desglose-pago" class="pp-desglose" style="display: none;"></div>
 
                                 <div id="pp-ahorro" class="pp-ahorro" style="display: none;"></div>

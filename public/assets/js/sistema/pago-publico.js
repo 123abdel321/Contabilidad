@@ -522,6 +522,25 @@
                 return;
             }
             ppDesglose = res.data;
+            // Sincronizar con los meses reales que cobra el backend (mínimo = deuda)
+            const deuda = res.data.meses_adeudados || 0;
+            if (res.data.meses && res.data.meses !== ppMeses) {
+                ppMeses = res.data.meses;
+                document.getElementById('pp-meses').value = ppMeses;
+            }
+            document.getElementById('pp-meses').min = Math.max(1, deuda);
+            $qa('#pp-chips .pp-chip').forEach(b => { b.disabled = parseInt(b.dataset.m) < deuda; });
+            marcarChip();
+
+            const aviso = document.getElementById('pp-deuda');
+            if (deuda > 0) {
+                aviso.innerHTML = '⚠️ Tienes <strong>' + deuda + ' mes(es) vencido(s)</strong>: ' +
+                    res.data.nombres_meses_adeudados.join(', ') +
+                    '. Es el mínimo para reactivar tu cuenta.';
+                aviso.style.display = 'block';
+            } else {
+                aviso.style.display = 'none';
+            }
             countTo(parseFloat(res.data.total) || 0);
 
             let html = '';

@@ -1951,9 +1951,9 @@ class SuscripcionController extends Controller
         $hoy   = Carbon::now()->startOfDay();
         $meses = max(1, (int) $meses);
 
-        // ── 1) Precio mensual base + próxima fecha de cobro ──
-        $precioMensualTotal = 0;
-        $fechaProximoCobro  = null;
+        // ── 1) Precio base mensual + próxima fecha de cobro ──
+        $precioBase        = 0;
+        $fechaProximoCobro = null;
 
         if ($idEmpresa && $idEmpresaSuscripcion) {
             $componentes = EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
@@ -1964,65 +1964,98 @@ class SuscripcionController extends Controller
             foreach ($componentes as $c) {
                 $cant = max(1, (int) ($c->cantidad ?? 1));
                 $desc = (float) ($c->descuento ?? 0);
-                $precioMensualTotal += ((float) $c->precio - $desc) * $cant;
+                $precioBase += ((float) $c->precio - $desc) * $cant;
             }
 
             $fechaProximoCobro = $componentes->min('fecha_siguiente_cobro');
         }
 
-        // Sumar extras (módulos nuevos que se están comprando en este pago)
-        $precioMensualTotal += (float) $precioExtraMensual;
+        $precioExtra        = (float) $precioExtraMensual;
+        $precioMensualTotal = $precioBase + $precioExtra;
 
         if ($precioMensualTotal <= 0) {
             return [
-                'estado'             => 'vacio',
-                'monto_mes_actual'   => 0,
-                'monto_meses_extra'  => 0,
-                'subtotal'           => 0,
-                'descuento'          => 0,
-                'porcentaje'         => 0,
-                'total'              => 0,
-                'meses'              => $meses,
-                'precio_mensual'     => 0,
-                'dias_del_mes'       => 0,
-                'dias_restantes'     => 0,
-                'detalle_meses'      => [],
+                'estado' => 'vacio', 'monto_mes_actual' => 0, 'monto_meses_extra' => 0,
+                'subtotal' => 0, 'descuento' => 0, 'porcentaje' => 0, 'total' => 0,
+                'meses' => $meses, 'meses_adeudados' => 0, 'nombres_meses_adeudados' => [],
+                'fecha_hasta' => null, 'precio_mensual' => 0, 'dias_del_mes' => 0,
+                'dias_restantes' => 0, 'detalle_meses' => [],
             ];
         }
 
-        // ── 2) Determinar estado ──
-        $estado = 'nuevo';
+        // ── 2) Estado y meses adeudados ──
+        $estado          = 'nuevo';
+        $mesesAdeudados  = 0;
+        $nombresAdeudados = [];
+        $fechaBase       = null;
+
         if ($fechaProximoCobro) {
-            $estado = Carbon::parse($fechaProximoCobro)->startOfDay()->lt($hoy)
-                ? 'vencido'
-                : 'al_dia';
+            $fechaBase = Carbon::parse($fechaProximoCobro)->startOfDay();
+
+            if ($fechaBase->lt($hoy)) {
+                $estado = 'vencido';
+                // Cada mes cobrado empuja la fecha un mes; contamos hasta quedar >= hoy
+                while ($fechaBase->copy()->addMonthsNoOverflow($mesesAdeudados)->lt($hoy) && $mesesAdeudados < 36) {
+                    $mesesAdeudados++;
+                    $nombresAdeudados[] = ucfirst(
+                        $fechaBase->copy()->addMonthsNoOverflow($mesesAdeudados)->locale('es')->translatedFormat('F')
+                    );
+                }
+            } else {
+                $estado = 'al_dia';
+            }
         }
 
-        // ── 3) Calcular montos según estado ──
-        $diasDelMes    = 30;
+        // En mora, el mínimo a pagar es la deuda
+        $mesesEfectivos = $estado === 'vencido' ? max($meses, $mesesAdeudados) : $meses;
+
+        // ── 3) Montos ──
+        $diasDelMes = 30;
         $diasRestantes = 30;
+        $detalle = [];
 
         if ($estado === 'nuevo') {
             $diasDelMes    = $hoy->copy()->startOfMonth()->diffInDays($hoy->copy()->endOfMonth()) + 1;
-            $diasRestantes = $hoy->diffInDays($hoy->copy()->endOfMonth()) + 1;
-            if ($diasRestantes < 1) $diasRestantes = 1;
-            if ($diasRestantes > $diasDelMes) $diasRestantes = $diasDelMes;
+            $diasRestantes = min($diasDelMes, max(1, $hoy->diffInDays($hoy->copy()->endOfMonth()) + 1));
 
-            $factor          = $diasRestantes / $diasDelMes;
-            $montoMesActual  = round($precioMensualTotal * $factor, 2);
-            $montoMesesExtra = round($precioMensualTotal * ($meses - 1), 2);
-            $labelMesActual  = 'Mes actual (' . $diasRestantes . '/' . $diasDelMes . ' días)';
-        } else {
-            // VENCIDO y AL DÍA → N meses completos
+            $montoMesActual  = round($precioMensualTotal * ($diasRestantes / $diasDelMes), 2);
+            $montoMesesExtra = round($precioMensualTotal * ($mesesEfectivos - 1), 2);
+            $detalle = [
+                ['label' => 'Mes actual (' . $diasRestantes . '/' . $diasDelMes . ' días)', 'monto' => $montoMesActual],
+                ['label' => ($mesesEfectivos - 1) . ' mes(es) completo(s)', 'monto' => $montoMesesExtra],
+            ];
+
+        } elseif ($estado === 'al_dia') {
             $montoMesActual  = round($precioMensualTotal, 2);
-            $montoMesesExtra = round($precioMensualTotal * ($meses - 1), 2);
-            $labelMesActual  = $estado === 'vencido' ? 'Mes actual (completo)' : 'Mes completo';
+            $montoMesesExtra = round($precioMensualTotal * ($mesesEfectivos - 1), 2);
+            $detalle = [
+                ['label' => 'Mes completo', 'monto' => $montoMesActual],
+                ['label' => ($mesesEfectivos - 1) . ' mes(es) completo(s)', 'monto' => $montoMesesExtra],
+            ];
+
+        } else { // vencido
+            $adelantados   = $mesesEfectivos - $mesesAdeudados;
+            // Los módulos nuevos solo se cobran desde el mes actual (no por meses pasados)
+            $mesesExtra    = $mesesEfectivos - $mesesAdeudados + 1;
+
+            $montoDeuda      = round($precioBase * $mesesAdeudados, 2);
+            $montoAdelantado = round($precioBase * $adelantados, 2);
+            $montoExtras     = round($precioExtra * $mesesExtra, 2);
+
+            $montoMesActual  = $montoDeuda;
+            $montoMesesExtra = round($montoAdelantado + $montoExtras, 2);
+
+            $detalle = [
+                ['label' => 'Deuda: ' . $mesesAdeudados . ' mes(es) vencido(s) (' . implode(', ', $nombresAdeudados) . ')', 'monto' => $montoDeuda],
+                ['label' => $adelantados . ' mes(es) por adelantado', 'monto' => $montoAdelantado],
+                ['label' => 'Módulos nuevos (' . $mesesExtra . ' mes(es))', 'monto' => $montoExtras],
+            ];
         }
 
         $subtotal = round($montoMesActual + $montoMesesExtra, 2);
 
-        // ── 4) Descuento ──
-        $descuentoRow = \App\Models\Empresas\DescuentoSuscripcion::where('meses', $meses)
+        // ── 4) Descuento (según meses efectivamente pagados) ──
+        $descuentoRow = \App\Models\Empresas\DescuentoSuscripcion::where('meses', $mesesEfectivos)
             ->where('activo', 1)
             ->first();
 
@@ -2031,21 +2064,21 @@ class SuscripcionController extends Controller
         $total      = round($subtotal - $descuento, 2);
 
         return [
-            'estado'             => $estado,
-            'monto_mes_actual'   => $montoMesActual,
-            'monto_meses_extra'  => $montoMesesExtra,
-            'subtotal'           => $subtotal,
-            'descuento'          => $descuento,
-            'porcentaje'         => $porcentaje,
-            'total'              => $total,
-            'meses'              => $meses,
-            'precio_mensual'     => round($precioMensualTotal, 2),
-            'dias_del_mes'       => $diasDelMes,
-            'dias_restantes'     => $diasRestantes,
-            'detalle_meses'      => [
-                ['label' => $labelMesActual, 'monto' => $montoMesActual],
-                ['label' => ($meses - 1) . ' mes(es) completo(s)', 'monto' => $montoMesesExtra],
-            ],
+            'estado'                  => $estado,
+            'monto_mes_actual'        => $montoMesActual,
+            'monto_meses_extra'       => $montoMesesExtra,
+            'subtotal'                => $subtotal,
+            'descuento'               => $descuento,
+            'porcentaje'              => $porcentaje,
+            'total'                   => $total,
+            'meses'                   => $mesesEfectivos,          // ← meses reales a cobrar
+            'meses_adeudados'         => $mesesAdeudados,
+            'nombres_meses_adeudados' => $nombresAdeudados,
+            'fecha_hasta'             => $fechaBase ? $fechaBase->copy()->addMonthsNoOverflow($mesesEfectivos)->toDateString() : null,
+            'precio_mensual'          => round($precioMensualTotal, 2),
+            'dias_del_mes'            => $diasDelMes,
+            'dias_restantes'          => $diasRestantes,
+            'detalle_meses'           => $detalle,
         ];
     }
 

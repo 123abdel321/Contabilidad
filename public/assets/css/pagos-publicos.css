@@ -202,3 +202,10 @@
 @media (prefers-reduced-motion: reduce) {
     .pp-pay, .pp-estado-badge.vencida .pp-estado-icon { animation: none; }
 }
+.pp-deuda {
+    margin: .6rem 0; padding: .65rem .8rem; border-radius: 10px;
+    font-size: .78rem; font-weight: 600; line-height: 1.45; color: #fca5a5;
+    background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+}
+.pp-deuda strong { color: #fff; }
+.pp-chip:disabled { opacity: .3; cursor: not-allowed; }
