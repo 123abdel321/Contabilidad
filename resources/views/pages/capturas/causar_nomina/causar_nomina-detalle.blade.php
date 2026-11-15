@@ -1,21 +1,86 @@
-<div class="modal fade" id="periodoPagoDetalleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="textPeriodoPagoDetalle">Detalle periodo pago</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
+<div class="modal fade" id="periodoPagoDetalleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-lg-down modal-dialog-scrollable">
+        <div class="modal-content pp-modal">
+
+            {{-- HEADER --}}
+            <div class="pp-header">
+                <button type="button" class="btn-close btn-close-white pp-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+                <div class="pp-header-top">
+                    <div class="pp-avatar" id="pp_avatar">
+                        <span class="pp-avatar-initials" id="pp_avatar_initials">--</span>
+                        <img id="pp_avatar_img" class="pp-avatar-img" alt="" style="display:none">
+                    </div>
+                    <div class="pp-emp">
+                        <span class="pp-eyebrow">Desprendible de nómina</span>
+                        <h4 class="pp-emp-name" id="pp_nombre">—</h4>
+                        <div class="pp-emp-meta">
+                            <span><i class="fas fa-id-card"></i> <span id="pp_documento">—</span></span>
+                            <span><i class="fas fa-envelope"></i> <span id="pp_email">—</span></span>
+                            <span><i class="fas fa-phone"></i> <span id="pp_telefono">—</span></span>
+                        </div>
+                    </div>
+                    <div class="pp-header-right">
+                        <span class="pp-badge" id="pp_estado">—</span>
+                        <small class="pp-periodo" id="pp_periodo"></small>
+                    </div>
+                </div>
+
+                {{-- KPIs --}}
+                <div class="pp-kpis row g-3">
+                    <div class="col-12 col-md-4">
+                        <div class="pp-kpi pp-kpi-in">
+                            <div class="pp-kpi-icon"><i class="fas fa-arrow-trend-up"></i></div>
+                            <div>
+                                <span class="pp-kpi-label">Devengado</span>
+                                <strong class="pp-kpi-value" id="devengado_detalle_total">$ 0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <div class="pp-kpi pp-kpi-out">
+                            <div class="pp-kpi-icon"><i class="fas fa-arrow-trend-down"></i></div>
+                            <div>
+                                <span class="pp-kpi-label">Deducciones</span>
+                                <strong class="pp-kpi-value" id="deduccion_detalle_total">$ 0</strong>
+                                <small class="pp-kpi-sub" id="pp_pct_deduccion">0% del devengado</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <div class="pp-kpi pp-kpi-net">
+                            <div class="pp-kpi-icon"><i class="fas fa-wallet"></i></div>
+                            <div>
+                                <span class="pp-kpi-label">Neto a pagar</span>
+                                <strong class="pp-kpi-value" id="neto_detalle_total">$ 0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pp-bar" title="Distribución del devengado">
+                    <div class="pp-bar-net" id="pp_bar_net" style="width:100%"></div>
+                    <div class="pp-bar-ded" id="pp_bar_ded" style="width:0%"></div>
+                </div>
             </div>
 
-            <div class="modal-body">
+            {{-- BODY --}}
+            <div class="modal-body pp-body">
+                <div class="pp-table-head">
+                    <h6 class="mb-0"><i class="fas fa-list-check me-2"></i>Detalle de conceptos
+                        <span class="pp-count" id="pp_count">0</span>
+                    </h6>
+                </div>
 
-                <table id="periodoPagoDetalleTable" class="table table-bordered display responsive" width="100%">
-                    <thead style="background-color: #7ea1ff2b;">
+                <table id="periodoPagoDetalleTable" class="table pp-table display responsive" width="100%">
+                    <thead>
                         <tr>
-                            <th style="border-radius: 15px 0px 0px 0px !important;">Código</th>
+                            <th>Código</th>
                             <th>Concepto</th>
-                            <th>Devengado</th>
-                            <th>Deducción</th>
+                            <th class="text-end">Devengado</th>
+                            <th class="text-end">Deducción</th>
                             <th>Horas</th>
                             <th>Días</th>
                             <th>Observación</th>
@@ -24,27 +89,20 @@
                             <th>Fecha inicio</th>
                             <th>Fecha fin</th>
                             <th>Hora inicio</th>
-                            <th style="border-radius: 0px 15px 0px 0px !important;">Hora fin</th>
+                            <th>Hora fin</th>
                         </tr>
                     </thead>
                 </table>
-
             </div>
 
-            <div class="modal-footer" style="padding: 0px;">
-                <div class="row" style="width: 100%;">
-                    <div class="col-12 col-sm-4 col-md-4 value-div" style="text-align: -webkit-center;">
-                        <b style="color: #4d4d4d; font-size: 15px;">Devengado</b><br>
-                        <b style="color: #08cc08; font-size: 18px;" id="devengado_detalle_total">0</b>
-                    </div>
-                    <div class="col-12 col-sm-4 col-md-4 value-div" style="text-align: -webkit-center;">
-                        <b style="color: #4d4d4d; font-size: 15px;">Deducción</b><br>
-                        <b style="color: #ff0000; font-size: 18px;" id="deduccion_detalle_total">0</b>
-                    </div>
-                    <div class="col-12 col-sm-4 col-md-4 value-div" style="text-align: -webkit-center;">
-                        <b style="color: #4d4d4d; font-size: 15px;">Neto</b><br>
-                        <b style="color: #08cc08; font-size: 18px;" id="neto_detalle_total">0</b>
-                    </div>
+            {{-- FOOTER --}}
+            <div class="modal-footer pp-footer">
+                <div class="pp-footer-net">
+                    <span>Total neto a pagar</span>
+                    <strong id="pp_footer_neto">$ 0</strong>
+                </div>
+                <div class="pp-footer-actions">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
 

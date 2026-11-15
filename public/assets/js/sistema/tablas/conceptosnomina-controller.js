@@ -42,6 +42,16 @@ function cargarTablasConceptosNomina() {
             type: "GET",
             headers: headers,
             url: base_url + 'conceptos-nomina',
+            data: function (d) {
+                return {
+                    draw: d.draw,
+                    start: d.start,
+                    length: d.length,
+                    search: d.search.value,
+                    order_column: d.order[0]?.column ?? 0,
+                    order_dir: d.order[0]?.dir ?? 'asc'
+                };
+            }
         },
         columns: [
             {"data": function (row, type, set){  

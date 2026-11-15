@@ -1,4 +1,5 @@
 var id_periodo_pago = null
+var id_empleado_causar = null
 var parafiscales_table = null;
 var causar_nomina_table = null;
 var activar_prestaciones = false;
@@ -177,7 +178,7 @@ function initTablesCausar() {
                         `;
                     }
                     var botonDetalle = `
-                        <span id="detallenomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-success detalle-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Ver detalle</span>
+                        <span id="detallenomina_${row.id}_${row.id_empleado}" href="javascript:void(0)" class="btn badge bg-gradient-success detalle-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Ver detalle</span>
                         <span id="detallandonomina_${row.id}" class="badge bg-gradient-success" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
                             <b style="opacity: 0.3; text-transform: math-auto;">Ver detalle</b>
                             <i style="position: absolute; color: white; font-size: 15px; margin-left: -35px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
@@ -346,65 +347,89 @@ function initTablesCausar() {
             url: base_url + 'detalle-periodo',
             data: function ( d ) {
                 d.id_periodo_pago = id_periodo_pago;
+                d.id_empleado = id_empleado_causar
             }
         },
         columns: [
-            {"data": function (row, type, set){  
-                if (row.concepto) {
-                    return row.concepto.codigo
-                }
-                return '';
-            }},
-            {"data": function (row, type, set){  
-                if (row.concepto) {
-                    return row.concepto.nombre
-                }
-                return '';
-            }},
+            { data: 'concepto.codigo', defaultContent: '' },
+            { data: 'concepto.nombre', defaultContent: '' },
+
+            // DEVENGADO
             {
-                "data": function (row, type, set){
-                    if (row.devengados) {
-                        const formatted = new Intl.NumberFormat('ja-JP').format(row.devengados);
-                        const parts = formatted.split('.');
-                        return `<b style="color: #01a401; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
-                    }
-                    return `<b style="color: #01a401; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
-                }, 
-                className: 'dt-body-right'
-            },
-            {
-                "data": function (row, type, set){
-                    const deducciones = parseInt(row.deducciones) ? row.deducciones * -1 : 0;
-                    if (deducciones) {
-                        const formatted = new Intl.NumberFormat('ja-JP').format(deducciones);
-                        const parts = formatted.split('.');
-                        return `<b style="color: red; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
-                    }
-                    return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
-                }, 
-                className: 'dt-body-right'
-            },
-            {
-                "data": "unidades",
-                render: function(data, type, row) {
-                    return row.tipo_unidad == 0 ? data : '';
+                data: 'devengados',
+                className: 'td-dev',
+                render: function (d, type) {
+                    const v = parseFloat(d) || 0;
+                    if (type !== 'display') return v;
+                    return v > 0 ? ppMoney.format(v) : '<span class="td-zero">—</span>';
                 }
             },
+
+            // DEDUCCIÓN (viene negativa del backend, se muestra en positivo)
             {
-                "data": "unidades",
-                render: function(data, type, row) {
-                    return row.tipo_unidad == 1 ? data : '';
+                data: 'deducciones',
+                className: 'td-ded',
+                render: function (d, type) {
+                    const v = Math.abs(parseFloat(d) || 0);
+                    if (type !== 'display') return v;
+                    return v > 0 ? ppMoney.format(v) : '<span class="td-zero">—</span>';
                 }
             },
-            {"data":'observacion'},
-            {"data":'porcentaje', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'dt-body-right'},
-            {"data": function (row, type, set){  
-                return `<b style="color: #01a401;">${new Intl.NumberFormat('ja-JP').format(row.base)}</b>`;
-            }, className: 'dt-body-right'},
-            {"data": "fecha_inicio", defaultContent: ""},
-            {"data": "fecha_fin", defaultContent: ""},
-            {"data": "hora_inicio", defaultContent: ""},
-            {"data": "hora_fin", defaultContent: ""}
+
+            // HORAS (tipo_unidad 0)
+            {
+                data: 'unidades',
+                className: 'text-center',
+                render: function (d, type, row) {
+                    return (type === 'display' && row.tipo_unidad == 0 && d) ? d : '';
+                }
+            },
+
+            // DÍAS (tipo_unidad 1)
+            {
+                data: 'unidades',
+                className: 'text-center',
+                render: function (d, type, row) {
+                    return (type === 'display' && row.tipo_unidad == 1 && d) ? d : '';
+                }
+            },
+
+            { data: 'observacion', defaultContent: '' },
+
+            // PORCENTAJE
+            {
+                data: 'porcentaje',
+                className: 'dt-body-right',
+                render: function (d, type) {
+                    const v = parseFloat(d);
+                    if (type !== 'display') return v || 0;
+                    return v ? v + '%' : '';
+                }
+            },
+
+            // BASE
+            {
+                data: 'base',
+                className: 'dt-body-right',
+                render: function (d, type) {
+                    const v = parseFloat(d);
+                    if (type !== 'display') return v || 0;
+                    return v ? ppMoney.format(v) : '';
+                }
+            },
+
+            { data: 'fecha_inicio', defaultContent: '' },
+            { data: 'fecha_fin',    defaultContent: '' },
+            { data: 'hora_inicio',  defaultContent: '' },
+            { data: 'hora_fin',     defaultContent: '' }
+        ],
+        columnDefs: [
+            { targets: 2, className: 'td-dev',
+            render: (d, type) => type === 'display'
+                ? (parseFloat(d) ? ppMoney.format(d) : '<span class="td-zero">—</span>') : d },
+            { targets: 3, className: 'td-ded',
+            render: (d, type) => type === 'display'
+                ? (parseFloat(d) ? ppMoney.format(Math.abs(d)) : '<span class="td-zero">—</span>') : d },
         ]
     });
 
@@ -434,56 +459,73 @@ function initTablesCausar() {
             });
         });
 
-        causar_nomina_table.on('click', '.detalle-nomina', function() {
+        causar_nomina_table.on('click', '.detalle-nomina', function () {
 
             const id = this.id.split('_')[1];
+            const id_empleado = this.id.split('_')[2];
 
-            $(`#detallenomina_${id}`).hide();
+            $(`#detallenomina_${id}_${id_empleado}`).hide();
             $(`#detallandonomina_${id}`).show();
 
             id_periodo_pago = id;
-            periodo_pago_detalle_table.ajax.reload(function(res) {
+            id_empleado_causar = id_empleado;
+
+            periodo_pago_detalle_table.ajax.reload(function (res) {
                 $(`#detallenomina_${id}`).show();
                 $(`#detallandonomina_${id}`).hide();
 
-                if (res.success) {
-
-                    const dataPeriodo = res.data.length ? res.data[0].periodo_pago : null;
-                    if (!dataPeriodo) {
-                        agregarToast('info', 'Periodo sin detalles', 'El periodo no tiene detalles');
-                        return;
-                    }
-
-                    if (dataPeriodo.empleado) {
-                        $("#textPeriodoPagoDetalle").html(`${dataPeriodo.empleado.numero_documento} - ${dataPeriodo.empleado.nombre_completo}`);
-                    }
-
-                    const totalesDetalle = res.totales;
-
-                    const formattedDevengados = new Intl.NumberFormat('ja-JP').format(totalesDetalle.devengados);
-                    const partsDevengados = formattedDevengados.split('.');
-                    console.log('formattedDevengados: ',formattedDevengados);
-                    $("#devengado_detalle_total").html(partsDevengados[0]);
-                    $("#devengado_detalle_total").attr("data-decimal", partsDevengados[1] ? '.'+partsDevengados[1] : '');
-
-                    const formattedDeducciones = new Intl.NumberFormat('ja-JP').format(totalesDetalle.deducciones);
-                    const partsDeducciones = formattedDeducciones.split('.');
-                    $("#deduccion_detalle_total").html(partsDeducciones[0]);
-                    $("#deduccion_detalle_total").attr("data-decimal", partsDeducciones[1] ? '.'+partsDeducciones[1] : '');
-
-                    const formattedNeto = new Intl.NumberFormat('ja-JP').format(totalesDetalle.neto);
-                    const partsNeto = formattedNeto.split('.');
-                    $("#neto_detalle_total").html(partsNeto[0]);
-                    $("#neto_detalle_total").attr("data-decimal", partsNeto[1] ? '.'+partsNeto[1] : '');
-
-                    $("#periodoPagoDetalleModal").modal('show');
-                    setTimeout(function(){
-                        $('#periodoPagoDetalleTable').DataTable().columns.adjust();
-                    },200);
-
-                } else {
+                if (!res.success) {
                     agregarToast('error', 'Consulta errada', 'Error al consultar detalle');
+                    return;
                 }
+
+                if (!res.data.length) {
+                    agregarToast('info', 'Periodo sin detalles', 'El periodo no tiene detalles');
+                    return;
+                }
+
+                const periodo  = res.data[0].periodo_pago || {};
+                const emp      = res.empleado || periodo.empleado || {};
+                const t        = res.totales;
+                const nombre   = emp.nombre_completo || '—';
+                const dv       = emp.digito_verificacion ? `-${emp.digito_verificacion}` : '';
+
+                // Empleado
+                const $img = $('#pp_avatar_img');
+                $('#pp_avatar_initials').text(ppIniciales(nombre));
+                $img.hide().off('load error');
+
+                if (emp.logo_nit) {
+                    $img.on('load', function () { $(this).show(); })
+                        .on('error', function () { $(this).hide(); })
+                        .attr('src', bucketUrl + emp.logo_nit);
+                } else {
+                    $img.removeAttr('src');
+                }
+                $('#pp_nombre').text(nombre);
+                $('#pp_documento').text(`${emp.numero_documento || '—'}${dv}`);
+                $('#pp_email').text(emp.email || 'Sin correo');
+                $('#pp_telefono').text(emp.telefono_1 || 'Sin teléfono');
+
+                // Estado (ajusta el mapeo a los valores reales de tu campo "estado")
+                const estados = { 0: ['Pendiente', 'pend'], 1: ['Causado', 'ok'] };
+                const [txt, cls] = estados[periodo.estado] || ['—', ''];
+                $('#pp_estado').text(txt).removeClass('ok pend').addClass(cls);
+
+                // Totales
+                ppCountUp('#devengado_detalle_total', t.devengados);
+                ppCountUp('#deduccion_detalle_total', t.deducciones);
+                ppCountUp('#neto_detalle_total', t.neto);
+                $('#pp_footer_neto').text(ppMoney.format(t.neto));
+                $('#pp_count').text(res.data.length);
+
+                const pctDed = t.devengados > 0 ? (t.deducciones / t.devengados) * 100 : 0;
+                $('#pp_pct_deduccion').text(`${pctDed.toFixed(1)}% del devengado`);
+                $('#pp_bar_ded').css('width', pctDed + '%');
+                $('#pp_bar_net').css('width', (100 - pctDed) + '%');
+
+                $('#periodoPagoDetalleModal').modal('show');
+                setTimeout(() => $('#periodoPagoDetalleTable').DataTable().columns.adjust(), 250);
             });
         });
 
@@ -555,8 +597,7 @@ function initTablesCausar() {
                 $(`#descausarnomina_${id}`).show();
                 $(`#descausandonomina_${id}`).hide();
             });
-        });
-        
+        });       
     }
 }
 
@@ -1154,6 +1195,27 @@ function initParafiscales() {
     activar_parafiscales = true;
 }
 
+const ppMoney = new Intl.NumberFormat('es-CO', {
+    style: 'currency', currency: 'COP',
+    minimumFractionDigits: 0, maximumFractionDigits: 2
+});
+
+function ppCountUp(selector, target, duration = 700) {
+    const el = document.querySelector(selector);
+    const start = performance.now();
+    function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = ppMoney.format(target * eased);
+        if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
+function ppIniciales(nombre = '') {
+    return nombre.split(' ').filter(Boolean).slice(0, 2).map(n => n[0]).join('').toUpperCase() || '--';
+}
+
 $(document).on('click', '#recalcularPeriodos', function () {
 
     $("#recalcularPeriodos").hide();
@@ -1216,21 +1278,24 @@ $(document).on('change', '#meses_parafiscales_filter', function () {
 
 $(document).on('click', '#prestaciones-sociales-tab', function () {
     if (activar_prestaciones) {
-        return
+        activar_prestaciones.ajax.reload();
+        return;
     }
     initPrestacionesSociales();
 });
 
 $(document).on('click', '#seguridad_social-tab', function () {
     if (seguridad_social_table) {
-        return
+        seguridad_social_table.ajax.reload();
+        return;
     }
     initSeguridadSocial();
 });
 
 $(document).on('click', '#parafiscales-tab', function () {
     if (parafiscales_table) {
-        return
+        parafiscales_table.ajax.reload();
+        return;
     }
     initParafiscales();
 });

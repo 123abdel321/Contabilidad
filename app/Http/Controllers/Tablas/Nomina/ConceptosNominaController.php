@@ -99,50 +99,83 @@ class ConceptosNominaController extends Controller
 
         return view('pages.tablas.conceptos_nomina.conceptos_nomina-view', $data);
     }
-
-    public function generate (Request $request)
+    
+    public function generate(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        $draw = (int) $request->input('draw', 1);
+        $start = max(0, (int) $request->input('start', 0));
+        $rowperpage = (int) $request->input('length', 25);
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $searchValue = $request->get('search');
-        $searchValue = isset($searchValue) ? $searchValue["value"] : null;
+        // Evitar solicitudes excesivas
+        $rowperpage = min(max($rowperpage, 1), 100);
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $request->input('search', '');
 
-        $nomConceptos = NomConceptos::with('cuenta_administrativos', 'cuenta_operativos', 'cuenta_ventas', 'cuenta_otros')
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(nom_conceptos.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(nom_conceptos.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'nom_conceptos.created_by',
-                'nom_conceptos.updated_by'
-            )
-            ->orderBy('id', 'desc');
-
-        if($searchValue) {
-            $nomConceptos->where('nombre', 'like', '%' .$searchValue . '%')
-                ->orWhere('codigo', 'like', '%' .$searchValue . '%');
+        // Compatibilidad con búsqueda enviada como string o array
+        if (is_array($searchValue)) {
+            $searchValue = $searchValue['value'] ?? '';
         }
 
-        $totalNomConceptos = $nomConceptos->count();
-        $nomConceptos = $nomConceptos->skip($start)
-            ->take($rowperpage);
+        $orderColumn = (int) $request->input('order_column', 0);
+        $orderDir = strtolower($request->input('order_dir', 'asc'));
+
+        // Columnas permitidas para ordenar
+        $columnasOrdenables = [
+            0 => 'tipo_concepto',
+            1 => 'codigo',
+            2 => 'nombre',
+            8 => 'id_concepto_porcentaje',
+            10 => 'valor_mensual',
+        ];
+
+        $columna = $columnasOrdenables[$orderColumn] ?? 'id';
+        $direccion = in_array($orderDir, ['asc', 'desc'], true)
+            ? $orderDir
+            : 'asc';
+
+        $query = NomConceptos::with([
+            'cuenta_administrativos',
+            'cuenta_operativos',
+            'cuenta_ventas',
+            'cuenta_otros'
+        ])
+        ->select(
+            'nom_conceptos.*',
+            DB::raw("DATE_FORMAT(nom_conceptos.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+            DB::raw("DATE_FORMAT(nom_conceptos.updated_at, '%Y-%m-%d %T') AS fecha_edicion")
+        );
+
+        // Total sin filtros
+        $totalNomConceptos = (clone $query)->count();
+
+        // Búsqueda
+        if (!empty($searchValue)) {
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('nombre', 'like', '%' . $searchValue . '%')
+                ->orWhere('codigo', 'like', '%' . $searchValue . '%');
+            });
+        }
+
+        // Total después de aplicar filtros
+        $totalFiltrados = (clone $query)->count();
+
+        // Ordenamiento y paginación
+        $nomConceptos = $query
+            ->orderBy($columna, $direccion)
+            ->skip($start)
+            ->take($rowperpage)
+            ->get();
 
         return response()->json([
-            'success'=>	true,
+            'success' => true,
             'draw' => $draw,
+            'recordsTotal' => $totalNomConceptos,
+            'recordsFiltered' => $totalFiltrados,
             'iTotalRecords' => $totalNomConceptos,
-            'iTotalDisplayRecords' => $totalNomConceptos,
-            'data' => $nomConceptos->get(),
+            'iTotalDisplayRecords' => $totalFiltrados,
+            'data' => $nomConceptos,
             'perPage' => $rowperpage,
-            'message'=> 'Administradores cargados con exito!'
+            'message' => 'Conceptos cargados con éxito!'
         ]);
     }
 

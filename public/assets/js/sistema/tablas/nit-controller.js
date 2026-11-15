@@ -184,6 +184,12 @@ function nitInit() {
                 $('#proveedor_nit').prop('checked', false);
             }
 
+            if (data.empleado) {
+                $('#empleado_nit').prop('checked', true);
+            } else {
+                $('#empleado_nit').prop('checked', false);
+            }
+
             if (data.retencion) {
                 $('#retencion_nit').prop('checked', true);
             } else {
@@ -533,6 +539,7 @@ $(document).on('click', '#updateNit', function () {
             id_actividad_economica: $("#id_actividad_economica_nit").val(),
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             proveedor: $("input[type='checkbox']#proveedor_nit").is(':checked') ? '1' : '',
+            empleado: $("input[type='checkbox']#empleado_nit").is(':checked') ? '1' : '',
             retencion: $("input[type='checkbox']#retencion_nit").is(':checked') ? '1' : '',
             notificacion_email:    $("input[type='checkbox']#notificacion_email_nit").is(':checked')    ? '1' : '',
             notificacion_whatsapp: $("input[type='checkbox']#notificacion_whatsapp_nit").is(':checked') ? '1' : '',
@@ -611,6 +618,7 @@ $(document).on('click', '#saveNit', function () {
             id_actividad_economica: $("#id_actividad_economica_nit").val(),
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             proveedor: $("input[type='checkbox']#proveedor_nit").is(':checked') ? '1' : '',
+            empleado: $("input[type='checkbox']#empleado_nit").is(':checked') ? '1' : '',
             retencion: $("input[type='checkbox']#retencion_nit").is(':checked') ? '1' : '',
             notificacion_email: $("input[type='checkbox']#notificacion_email_nit").is(':checked')    ? '1' : '',
             notificacion_whatsapp: $("input[type='checkbox']#notificacion_whatsapp_nit").is(':checked') ? '1' : '',

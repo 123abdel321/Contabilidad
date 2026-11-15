@@ -629,10 +629,11 @@ class CausarProvicionadaController extends Controller
                 if ($detalle->concepto->base_arl) {
                     $bases['base_arl']+= $detalle->valor;
                 }
+                
                 if ($detalle->concepto->base_salud && $detalle->valor) {
                     if (($contrato->tipo_salario == NomContratos::TIPO_SALARIO_INTEGRAL ||
-                        $contrato->salario > intval($salarioMinimo) * 10)
-                        && $noExoneradoDeParafiscales) {//CALCULAR SI NO ESTA EXONERADO
+                        $contrato->salario < intval($salarioMinimo) * 10)
+                        || $noExoneradoDeParafiscales != "false") {//CALCULAR SI NO ESTA EXONERADO
                         $bases['base_salud']+= $detalle->valor;
                     }
                 }
@@ -687,6 +688,7 @@ class CausarProvicionadaController extends Controller
     ) {
         $salarioIntegral = $contrato->tipo_salario == NomContratos::TIPO_SALARIO_INTEGRAL;
         $porcentaje = $config?->porcentaje;
+        
         if ($concepto == 'ARL') {
             $porcentaje = $contrato->porcentaje_arl;
         }

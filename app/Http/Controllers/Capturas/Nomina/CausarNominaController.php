@@ -18,6 +18,7 @@ use App\Helpers\Documento;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
+use App\Models\Sistema\Nits;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\VariablesEntorno;
@@ -170,6 +171,7 @@ class CausarNominaController extends Controller
     public function detallePeriodo(Request $request)
     {
         try {
+            $empleado = Nits::with('contrato_actual')->find($request->get('id_empleado'));
 
             $detallePeriodoPago = NomPeriodoPagoDetalles::select([
                     '*',
@@ -193,6 +195,7 @@ class CausarNominaController extends Controller
 
             return response()->json([
                 'success'=>	true,
+                'empleado' => $empleado,
                 'data' => $detallePeriodoPago,
                 'totales' => (object)[
                     'devengados' => $sumDevengados,
