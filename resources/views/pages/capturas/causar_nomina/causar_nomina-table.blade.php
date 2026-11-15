@@ -35,7 +35,7 @@
 </div>
 
 <table id="causarNominaTable" class="table table-bordered display responsive" width="100%">
-    <thead style="background-color: #7ea1ff2b;">
+    <thead>
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Hide</th>
             <th style="border-radius: 15px 0px 0px 0px !important;">N° documento</th>

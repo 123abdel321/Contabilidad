@@ -26,6 +26,26 @@
                     </div>
                 </div>
 
+                {{-- CONTRATO --}}
+                <div class="pp-contract">
+                    <div class="pp-chip">
+                        <i class="fas fa-file-signature"></i>
+                        <div><span>Contrato</span><b id="pp_tipo_contrato">—</b></div>
+                    </div>
+                    <div class="pp-chip">
+                        <i class="fas fa-layer-group"></i>
+                        <div><span>Tipo de salario</span><b id="pp_tipo_salario">—</b></div>
+                    </div>
+                    <div class="pp-chip">
+                        <i class="fas fa-coins"></i>
+                        <div><span>Salario base</span><b id="pp_salario_base">—</b></div>
+                    </div>
+                    <div class="pp-chip">
+                        <i class="fas fa-calendar-day"></i>
+                        <div><span>Inicio contrato</span><b id="pp_inicio_contrato">—</b></div>
+                    </div>
+                </div>
+
                 {{-- KPIs --}}
                 <div class="pp-kpis row g-3">
                     <div class="col-12 col-md-4">

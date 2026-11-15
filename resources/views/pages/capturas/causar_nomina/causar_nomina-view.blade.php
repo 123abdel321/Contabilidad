@@ -19,8 +19,6 @@
     border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px);flex-shrink:0}
     .pp-avatar-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
     .pp-avatar-initials{position:relative;z-index:0}
-    font-size:24px;font-weight:700;background:rgba(255,255,255,.18);
-    border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px)}
     .pp-emp{flex:1;min-width:220px}
     .pp-eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
     .pp-emp-name{margin:2px 0 6px;font-weight:700;color:#fff}
@@ -33,40 +31,38 @@
     .pp-badge.ok{background:#12b76a;border-color:#12b76a}
     .pp-badge.pend{background:#f79009;border-color:#f79009}
 
-    /* KPIs */
-    .pp-kpis{margin-top:10px}
-    .pp-kpi{height:100%;
-        display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:14px;
-        background:#fff;color:#1d2939;box-shadow:0 6px 18px rgba(0,0,0,.12)}
-    .pp-kpi-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:18px}
-    .pp-kpi-label{display:block;font-size:12px;color:#667085;text-transform:uppercase;letter-spacing:.06em}
-    .pp-kpi-value{display:block;font-size:22px;line-height:1.2;font-variant-numeric:tabular-nums}
-    .pp-kpi-sub{color:#98a2b3}
+    /* KPIs compactos */
+    .pp-kpis{margin-top:4px}
+    .pp-kpi{height:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;
+    background:#fff;color:#1d2939;box-shadow:0 4px 12px rgba(0,0,0,.10)}
+    .pp-kpi-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:14px;flex-shrink:0}
+    .pp-kpi-label{display:block;font-size:10.5px;color:#667085;text-transform:uppercase;letter-spacing:.05em}
+    .pp-kpi-value{display:block;font-size:17px;line-height:1.15;font-variant-numeric:tabular-nums}
+    .pp-kpi-sub{font-size:10.5px;color:#98a2b3}
+
+    /* Colores de KPIs */
     .pp-kpi-in .pp-kpi-icon{background:#ecfdf3;color:#12b76a}
     .pp-kpi-in .pp-kpi-value{color:#067647}
+
     .pp-kpi-out .pp-kpi-icon{background:#fef3f2;color:#f04438}
     .pp-kpi-out .pp-kpi-value{color:#b42318}
+
     .pp-kpi-net{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff}
     .pp-kpi-net .pp-kpi-label{color:#94a3b8}
     .pp-kpi-net .pp-kpi-icon{background:rgba(255,255,255,.1);color:#fbbf24}
-    .pp-kpi-net .pp-kpi-value{color:#fff;font-size:26px}
+    .pp-kpi-net .pp-kpi-value{color:#fff;font-size:18px}
 
-    .pp-bar{display:flex;height:8px;margin-top:18px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.2)}
-    .pp-bar-net{background:#32d583;transition:width .8s ease}
-    .pp-bar-ded{background:#fda29b;transition:width .8s ease}
+    /* Franja de contrato */
+    .pp-contract{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+    .pp-chip{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)}
+    .pp-chip i{font-size:14px;opacity:.8;width:16px;text-align:center}
+    .pp-chip span{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+    .pp-chip b{display:block;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
 
-    /* Body */
-    .pp-body{background:#f8fafc;padding:20px 24px}
-    .pp-table-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:#344054}
-    .pp-count{margin-left:8px;padding:2px 10px;border-radius:99px;background:#e0e7ff;color:#3730a3;font-size:12px}
-    .pp-table{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eaecf0 !important}
-    .pp-table thead th{background:#f2f4f7;color:#475467;font-size:12px;text-transform:uppercase;
-    letter-spacing:.04em;border-bottom:1px solid #eaecf0 !important;white-space:nowrap}
-    .pp-table tbody td{vertical-align:middle;font-size:13.5px;border-color:#f2f4f7}
-    .pp-table tbody tr:hover{background:#f5f8ff}
-    .pp-table .td-dev{color:#067647;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
-    .pp-table .td-ded{color:#b42318;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
-    .pp-table .td-zero{color:#cbd5e1;font-weight:400}
+    @media (max-width:768px){
+    .pp-contract{grid-template-columns:repeat(2,1fr)}
+    }
 
     /* Footer */
     .pp-footer{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:#fff;border-top:1px solid #eaecf0}

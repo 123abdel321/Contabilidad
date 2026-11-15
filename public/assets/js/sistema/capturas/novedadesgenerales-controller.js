@@ -213,10 +213,11 @@ function cargarSelect2Novedades() {
             url: 'api/nit/empleado-activo',
             headers: headers,
             dataType: 'json',
+            data: function (params) {
+                return { search: params.term };
+            },
             processResults: function (data) {
-                return {
-                    results: data.data
-                };
+                return { results: data.data };
             }
         }
     });
@@ -272,10 +273,11 @@ function cargarSelect2Novedades() {
             url: 'api/nit/empleado-activo',
             headers: headers,
             dataType: 'json',
+            data: function (params) {
+                return { search: params.term };
+            },
             processResults: function (data) {
-                return {
-                    results: data.data
-                };
+                return { results: data.data };
             }
         }
     });

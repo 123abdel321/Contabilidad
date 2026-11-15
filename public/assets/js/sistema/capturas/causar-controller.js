@@ -471,7 +471,7 @@ function initTablesCausar() {
             id_empleado_causar = id_empleado;
 
             periodo_pago_detalle_table.ajax.reload(function (res) {
-                $(`#detallenomina_${id}`).show();
+                $(`#detallenomina_${id}_${id_empleado}`).show();
                 $(`#detallandonomina_${id}`).hide();
 
                 if (!res.success) {
@@ -506,6 +506,13 @@ function initTablesCausar() {
                 $('#pp_documento').text(`${emp.numero_documento || '—'}${dv}`);
                 $('#pp_email').text(emp.email || 'Sin correo');
                 $('#pp_telefono').text(emp.telefono_1 || 'Sin teléfono');
+
+                // Contrato
+                const c = emp.contrato_actual || {};
+                $('#pp_tipo_contrato').text(ppTermino[c.termino] || '—');
+                $('#pp_tipo_salario').text(ppTipoSalario[c.tipo_salario] ?? '—');
+                $('#pp_salario_base').text(c.salario ? ppMoney.format(c.salario) : '—');
+                $('#pp_inicio_contrato').text(ppFecha(c.fecha_inicio_contrato));
 
                 // Estado (ajusta el mapeo a los valores reales de tu campo "estado")
                 const estados = { 0: ['Pendiente', 'pend'], 1: ['Causado', 'ok'] };
@@ -1199,6 +1206,16 @@ const ppMoney = new Intl.NumberFormat('es-CO', {
     style: 'currency', currency: 'COP',
     minimumFractionDigits: 0, maximumFractionDigits: 2
 });
+
+const ppTipoSalario = { 0: 'Normal', 1: 'Honorarios', 2: 'Integral', 3: 'Servicios', 4: 'Practicante' };
+const ppTermino = { 1: 'Término fijo', 2: 'Indefinido', 3: 'Obra o labor', 4: 'Aprendizaje', 5: 'Ocasional' };
+
+function ppFecha(f) {
+    if (!f) return '—';
+    const [y, m, d] = f.substring(0, 10).split('-');
+    const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    return `${d}-${meses[+m - 1]}-${y}`;
+}
 
 function ppCountUp(selector, target, duration = 700) {
     const el = document.querySelector(selector);

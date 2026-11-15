@@ -121,7 +121,8 @@ class Nits extends Model
 
 	public function contrato_actual()
 	{
-		return $this->belongsTo(NomContratos::class, "id", "id_empleado")->where("estado", 1);
+		return $this->hasOne(NomContratos::class, 'id_empleado', 'id')
+			->latest('fecha_inicio_contrato');
 	}
 
 	public function electronica()
