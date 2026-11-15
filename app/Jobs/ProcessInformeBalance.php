@@ -95,7 +95,8 @@ class ProcessInformeBalance implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Informe balance", [
+            Log::info([
+                'informe' => 'Balance',
                 'empresa' => $this->empresa->token_db,
                 'usuario' => $this->id_usuario
             ]);

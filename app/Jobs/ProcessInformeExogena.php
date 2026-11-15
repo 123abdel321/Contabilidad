@@ -85,7 +85,8 @@ class ProcessInformeExogena implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Informe exogena", [
+            Log::info([
+                'informe' => 'Exogena',
                 'empresa' => $this->empresa->token_db,
                 'usuario' => $this->id_usuario
             ]);

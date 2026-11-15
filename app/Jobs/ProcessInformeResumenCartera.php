@@ -95,7 +95,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Informe resumen cartera", [
+            Log::info([
+                'informe' => 'Resumen cartera',
                 'empresa' => $this->empresa->token_db,
                 'usuario' => $this->id_usuario
             ]);

@@ -86,7 +86,8 @@ class ProcessInformeVentasAcumuladas
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Informe ventas acumuladas", [
+            Log::info([
+                'informe' => 'Ventas acumuladas',
                 'empresa' => $this->empresa->token_db,
                 'usuario' => $this->id_usuario
             ]);

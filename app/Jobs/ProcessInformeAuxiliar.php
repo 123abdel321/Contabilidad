@@ -99,7 +99,8 @@ class ProcessInformeAuxiliar implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Informe auxiliar", [
+            Log::info([
+                'informe' => 'Auxiliar',
                 'empresa' => $this->empresa->token_db,
                 'usuario' => $this->id_usuario
             ]);

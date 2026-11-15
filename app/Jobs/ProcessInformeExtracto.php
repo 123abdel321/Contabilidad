@@ -97,7 +97,8 @@ class ProcessInformeExtracto
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
             
-            Log::info("Informe resultados", [
+            Log::info([
+                'informe' => 'Extracto',
                 'empresa' => $this->empresa->token_db,
                 'usuario' => $this->id_usuario
             ]);
