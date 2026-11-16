@@ -351,8 +351,17 @@ function initTablesCausar() {
             }
         },
         columns: [
-            { data: 'concepto.codigo', defaultContent: '' },
-            { data: 'concepto.nombre', defaultContent: '' },
+            {
+                data: 'concepto',
+                defaultContent: '',
+                render: function (data, type, row) {
+                    if (!data) return '';
+                    const codigo = data.codigo || '';
+                    const nombre = data.nombre || '';
+                    if (!codigo && !nombre) return '';
+                    return codigo ? `${codigo} - ${nombre}` : nombre;
+                }
+            },
 
             // DEVENGADO
             {
@@ -524,7 +533,6 @@ function initTablesCausar() {
                 ppCountUp('#deduccion_detalle_total', t.deducciones);
                 ppCountUp('#neto_detalle_total', t.neto);
                 $('#pp_footer_neto').text(ppMoney.format(t.neto));
-                $('#pp_count').text(res.data.length);
 
                 const pctDed = t.devengados > 0 ? (t.deducciones / t.devengados) * 100 : 0;
                 $('#pp_pct_deduccion').text(`${pctDed.toFixed(1)}% del devengado`);
@@ -604,7 +612,9 @@ function initTablesCausar() {
                 $(`#descausarnomina_${id}`).show();
                 $(`#descausandonomina_${id}`).hide();
             });
-        });       
+        });
+
+        $('#pp_btn_print').on('click', () => window.print()); 
     }
 }
 

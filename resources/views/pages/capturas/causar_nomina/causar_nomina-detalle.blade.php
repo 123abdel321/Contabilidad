@@ -88,16 +88,10 @@
 
             {{-- BODY --}}
             <div class="modal-body pp-body">
-                <div class="pp-table-head">
-                    <h6 class="mb-0"><i class="fas fa-list-check me-2"></i>Detalle de conceptos
-                        <span class="pp-count" id="pp_count">0</span>
-                    </h6>
-                </div>
 
                 <table id="periodoPagoDetalleTable" class="table pp-table display responsive" width="100%">
                     <thead>
                         <tr>
-                            <th>Código</th>
                             <th>Concepto</th>
                             <th class="text-end">Devengado</th>
                             <th class="text-end">Deducción</th>
@@ -122,6 +116,7 @@
                     <strong id="pp_footer_neto">$ 0</strong>
                 </div>
                 <div class="pp-footer-actions">
+                    <button type="button" class="btn btn-light" id="pp_btn_print"><i class="fas fa-print me-1"></i> Imprimir</button>
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
