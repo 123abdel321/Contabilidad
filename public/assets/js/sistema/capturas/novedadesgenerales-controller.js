@@ -145,11 +145,11 @@ function cargarTablasNovedades() {
                     let html = '';
                     if (editarNovedadesGenerales) {
                         html += `<span id="editnovedadesgenerales_${row.id}" class="btn badge bg-gradient-success edit-novedadesgenerales"
-                                       style="min-width:50px; cursor:pointer;">Editar</span>&nbsp;`;
+                                       style="min-width:50px; cursor:pointer;margin-bottom: 0px !important;">Editar</span>&nbsp;`;
                     }
                     if (eliminarNovedadesGenerales) {
                         html += `<span id="deletenovedadesgenerales_${row.id}" class="btn badge bg-gradient-danger drop-novedadesgenerales"
-                                       style="min-width:50px; cursor:pointer;">Eliminar</span>`;
+                                       style="min-width:50px; cursor:pointer;margin-bottom: 0px !important;">Eliminar</span>`;
                     }
                     return html;
                 }
