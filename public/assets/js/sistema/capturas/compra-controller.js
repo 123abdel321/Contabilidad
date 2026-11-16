@@ -1062,7 +1062,7 @@
                 descuento_porcentaje: l.descPct || 0,
                 descuento_valor: l.descVal || 0,
                 iva_porcentaje: l.ivaPct || 0,
-                iva_valor: l.ivaVal || 0,
+                iva_valor: Number((l.ivaVal).toFixed(2)) || 0,
                 total: l.total || 0,
                 concepto: l.concepto || null
             });
