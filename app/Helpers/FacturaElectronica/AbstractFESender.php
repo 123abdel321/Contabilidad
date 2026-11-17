@@ -3,6 +3,7 @@
 namespace App\Helpers\FacturaElectronica;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 //MODELS
 use App\Models\Sistema\VariablesEntorno;
