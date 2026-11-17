@@ -73,7 +73,6 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		// dd(json_encode($params));
 		$url    = $this->getUrl() . $setTestId;
 		$response = Http::withHeaders([
 			'Content-Type'     => 'application/json',
@@ -82,7 +81,10 @@ abstract class AbstractFESender
 		])->post($url, $params);
 
 		$data = (object) $response->json();
-
+		Log::info([
+			'dian' => 'AbstractFESender',
+			'data' => $data,
+		]);
 		// ============================================================
 		// 0) (NUEVO) Errores de validación Laravel: {message, errors}
 		//    Normalmente llegan con HTTP 422 y sin 'status' en el body.
