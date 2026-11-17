@@ -20,7 +20,50 @@ function causarInit() {
 
     initSelect2Causar();
     initTablesCausar();
+    initClickCausar();
     initComboMes('meses_causar_nomina_filter');
+}
+
+function initClickCausar() {
+    $('#causarNominaBtn').on('click', function() {
+        console.log('causarNominaBtn');
+        const selectedPeriods = getSelectedPeriodIds();
+        
+        if (selectedPeriods.length === 0) {
+            agregarToast('warning', 'Selección requerida', 'Por favor seleccione al menos un período para causar');
+            return;
+        }
+        
+        // Mostrar loading
+        $('#causarNominaBtn').hide();
+        $('#causarNominaLoading').show();
+
+        // Llamada AJAX para causar nómina
+        $.ajax({
+            url: base_url + 'causar-nomina',
+            method: 'POST',
+            data: JSON.stringify({
+                ids_periodos_pago: selectedPeriods,
+                mes: $('#meses_causar_nomina_filter').val()
+            }),
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if(res.success){
+                agregarToast('exito', 'Causación exitosa', 'Nómina causada con éxito!', true);
+                causar_nomina_table.ajax.reload();
+            } else {
+                agregarToast('error', 'Causación errada', res.message);
+            }
+        }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Causación errada', errorsMsg);
+        }).always(() => {
+            $('#causarNominaBtn').show();
+            $('#causarNominaLoading').hide();
+        });
+    });
 }
 
 function initSelect2Causar() {
@@ -158,39 +201,46 @@ function initTablesCausar() {
             },
             {
                 "data": function (row, type, set){
-                    var botonCausar = ``;
-                    var botonDescausar = ``;
+                    let botonesEstado = '';
+
                     if (row.estado == 0) {
-                        botonCausar=`
-                        <span id="causarnomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-primary causar-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Causar</span>
-                        <span id="causandonomina_${row.id}" class="badge bg-gradient-danger" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
-                            <b style="opacity: 0.3; text-transform: math-auto;">Causar</b>
-                            <i style="position: absolute; color: white; font-size: 15px; margin-left: -32px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
-                        </span>
+                        botonesEstado = `
+                            <span id="causarnomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-primary causar-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Causar</span>
+                            <span id="causandonomina_${row.id}" class="badge bg-gradient-danger" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
+                                <b style="opacity: 0.3; text-transform: math-auto;">Causar</b>
+                                <i style="position: absolute; color: white; font-size: 15px; margin-left: -32px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
+                            </span>
                         `;
                     } else if (row.estado == 1) {
-                        botonDescausar=`
-                        <span id="descausarnomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger descausar-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Descausar</span>
-                        <span id="descausandonomina_${row.id}" class="badge bg-gradient-danger" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
-                            <b style="opacity: 0.3; text-transform: math-auto;">Descausar</b>
-                            <i style="position: absolute; color: white; font-size: 15px; margin-left: -35px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
-                        </span>
+                        botonesEstado = `
+                            <span id="descausarnomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger descausar-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Descausar</span>
+                            <span id="descausandonomina_${row.id}" class="badge bg-gradient-danger" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
+                                <b style="opacity: 0.3; text-transform: math-auto;">Descausar</b>
+                                <i style="position: absolute; color: white; font-size: 15px; margin-left: -35px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
+                            </span>
                         `;
                     }
-                    var botonDetalle = `
+
+                    const botonDetalle = `
                         <span id="detallenomina_${row.id}_${row.id_empleado}" href="javascript:void(0)" class="btn badge bg-gradient-success detalle-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Ver detalle</span>
                         <span id="detallandonomina_${row.id}" class="badge bg-gradient-success" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
                             <b style="opacity: 0.3; text-transform: math-auto;">Ver detalle</b>
                             <i style="position: absolute; color: white; font-size: 15px; margin-left: -35px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
                         </span>
                     `;
+
+                    const puedeEnviar = (row.estado == 1 || row.estado == 2);
+                    const botonEnviar = puedeEnviar ? `
+                        <span id="enviarnomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-info enviar-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Enviar</span>
+                    ` : '';
+
                     return `
-                        ${botonCausar}
-                        ${botonDescausar}
+                        ${botonesEstado}
                         ${botonDetalle}
+                        ${botonEnviar}
                     `;
                 }
-            },
+            }
         ],
         rowGroup: {
             dataSrc: 'fecha_periodo',
@@ -246,16 +296,19 @@ function initTablesCausar() {
                         <tr class="group-header-causar" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
                             <td colspan="9">
                                 <div style="display: flex; align-items: center;">
-                                    
-                                    <div style="display: flex; align-items: center; white-space: nowrap;">
-                                        <i class="fas fa-minus-square toggle-icon" style="margin-right: 5px; color: #003883;"></i>
+
+                                    <div class="group-toggle" title="Clic para expandir o contraer" style="display: flex; align-items: center; white-space: nowrap;">
+                                        <span class="toggle-btn">
+                                            <i class="fas fa-minus-square toggle-icon"></i>
+                                        </span>
                                         <b style="font-weight: 500; font-size: 14px;">Periodo desde <b>${row.fecha_inicio_periodo_formatted}</b> hasta <b>${row.fecha_fin_periodo_formatted}</b></b>
+                                        <span class="group-hint">(clic para expandir/contraer)</span>
                                     </div>
 
                                     <div style="margin-left: 25px; white-space: nowrap;">
-                                        <label class="form-check-label" style="font-size: 14px; font-weight: 500; color: #003883; cursor: pointer; display: flex; align-items: center;">
-                                            <input class="form-check-input check-causar-periodo" type="checkbox" data-periodo-ids="${uniquePeriodIds.join(',')}" style="margin-right: 5px; margin-top: 0;">
-                                            Causar Periodo (${uniquePeriodIds.length} empleados)
+                                        <label class="causar-chip" onclick="event.stopPropagation()" title="Marcar para causar el periodo">
+                                            <input class="check-causar-periodo" type="checkbox" data-periodo-ids="${uniquePeriodIds.join(',')}">
+                                            <span>Seleccionar Periodo (${uniquePeriodIds.length} empleados)</span>
                                         </label>
                                     </div>
 
@@ -617,6 +670,8 @@ function initTablesCausar() {
         $('#pp_btn_print').on('click', () => window.print()); 
     }
 }
+
+
 
 function initComboMes(inputId) {
     // Obtener fecha actual
@@ -1343,15 +1398,207 @@ function actualizarProviciones(provicionada_tabla) {
     agregarToast('exito', 'Cambios guardados', 'Cambios guardados localmente!', true );
 }
 
-// Función para actualizar el estado del botón de Causar Nómina
+// ============================================================
+// ENVIAR COMPROBANTES (individual y por periodo)
+// Reemplaza TODO el bloque anterior de estilosEnviarNomina + $(document).on('click', '.enviar-nomina' ...)
+// ============================================================
+
+// Estilos del modal (se inyectan una sola vez)
+function estilosEnviarNomina() {
+    if (document.getElementById('pf-enviar-nomina-css')) return;
+    const css = `
+        .pf-envio-popup { border-radius: 14px !important; padding: 8px 8px 16px !important; }
+        .pf-envio-popup .swal2-title { font-size: 18px; font-weight: 600; padding: 16px 16px 0; }
+        .pf-envio-popup .swal2-html-container { margin: 8px 16px 0; }
+        .pf-envio-popup .swal2-actions { margin-top: 18px; gap: 8px; }
+        .pf-envio-popup .swal2-styled { font-size: 13px; padding: 8px 20px; border-radius: 8px; box-shadow: none !important; }
+
+        .pf-envio-emp {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 12px; margin-bottom: 14px;
+            background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 10px; text-align: left;
+        }
+        .pf-envio-emp .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #eef3ff; color: #1c4587;
+            display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;
+        }
+        .pf-envio-emp small { display: block; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; }
+        .pf-envio-emp strong { font-size: 14px; color: #1f2937; }
+        .pf-envio-aviso { font-size: 12px; color: #b45309; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 6px 10px; margin-bottom: 14px; text-align: left; }
+
+        .pf-envio-canales { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .pf-canal { position: relative; margin: 0; cursor: pointer; }
+        .pf-canal input { position: absolute; opacity: 0; pointer-events: none; }
+        .pf-canal .box {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            padding: 14px 8px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+            color: #6b7280; transition: all .15s ease;
+        }
+        .pf-canal .box i { font-size: 22px; }
+        .pf-canal .box span { font-size: 13px; font-weight: 600; }
+        .pf-canal .box .check {
+            position: absolute; top: 8px; right: 8px; font-size: 14px; opacity: 0; transition: opacity .15s;
+        }
+        .pf-canal:hover .box { border-color: #cbd5e1; }
+        .pf-canal input:checked + .box .check { opacity: 1; }
+        .pf-canal.wa input:checked + .box { border-color: #25D366; background: #f0fdf4; color: #15803d; }
+        .pf-canal.em input:checked + .box { border-color: #0d6efd; background: #eff6ff; color: #1d4ed8; }
+        .pf-canal input:focus-visible + .box { box-shadow: 0 0 0 .2rem rgba(13,110,253,.25); }
+    `;
+    const style = document.createElement('style');
+    style.id = 'pf-enviar-nomina-css';
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
+// Modal reutilizable. Devuelve una promesa con el arreglo de canales elegidos, o null si cancela.
+function modalEnvioComprobante({ titulo = 'Enviar comprobante', etiqueta, detalle, icono = 'fa-user', aviso = '' }) {
+    estilosEnviarNomina();
+
+    return Swal.fire({
+        title: titulo,
+        html: `
+            <div class="pf-envio-emp">
+                <div class="avatar"><i class="fas ${icono}"></i></div>
+                <div>
+                    <small>${etiqueta}</small>
+                    <strong>${detalle}</strong>
+                </div>
+            </div>
+            ${aviso ? `<div class="pf-envio-aviso"><i class="fas fa-exclamation-triangle"></i> ${aviso}</div>` : ''}
+
+            <div class="pf-envio-canales">
+                <label class="pf-canal wa">
+                    <input type="checkbox" id="canal-whatsapp" checked>
+                    <div class="box">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                        <i class="fas fa-check-circle check"></i>
+                    </div>
+                </label>
+                <label class="pf-canal em">
+                    <input type="checkbox" id="canal-email" checked>
+                    <div class="box">
+                        <i class="fas fa-envelope"></i>
+                        <span>Correo</span>
+                        <i class="fas fa-check-circle check"></i>
+                    </div>
+                </label>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Enviar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#1c4587',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true,
+        focusConfirm: false,
+        customClass: { popup: 'pf-envio-popup' },
+        preConfirm: () => {
+            const canales = [];
+            if (document.getElementById('canal-whatsapp').checked) canales.push('whatsapp');
+            if (document.getElementById('canal-email').checked) canales.push('email');
+
+            if (!canales.length) {
+                Swal.showValidationMessage('Selecciona al menos un medio de envío');
+                return false;
+            }
+            return canales;
+        },
+    }).then((result) => (result.isConfirmed ? result.value : null));
+}
+
+// ---------- Enviar a UN empleado (boton "Enviar" de la fila) ----------
+$(document).on('click', '.enviar-nomina', function () {
+    const id = this.id.split('_')[1];
+    const data = getDataById(id, causar_nomina_table);
+
+    modalEnvioComprobante({
+        etiqueta: 'Empleado',
+        detalle: data.empleado?.nombre_completo ?? 'Sin nombre',
+        icono: 'fa-user',
+    }).then((canales) => {
+        if (!canales) return;
+        enviarComprobanteNomina([id], data.id_empleado, canales);
+    });
+});
+
+// ---------- Enviar a TODOS los periodos seleccionados (check del encabezado del periodo) ----------
+$(document).on('click', '#enviarNominaBtn', function () {
+    const seleccionados = getSelectedPeriodIds();
+
+    if (!seleccionados.length) {
+        agregarToast('warning', 'Selección requerida', 'Selecciona al menos un periodo para enviar');
+        return;
+    }
+
+    // Solo se pueden enviar comprobantes de periodos causados (1) o pagados (2)
+    const filas = causar_nomina_table.rows().data().toArray();
+    const porId = {};
+    filas.forEach((r) => { porId[String(r.id)] = r; });
+
+    const enviables = seleccionados.filter((id) => {
+        const r = porId[String(id)];
+        return r && (r.estado == 1 || r.estado == 2);
+    });
+    const omitidos = seleccionados.length - enviables.length;
+
+    if (!enviables.length) {
+        agregarToast('warning', 'Sin comprobantes', 'Los periodos seleccionados aún no están causados');
+        return;
+    }
+
+    modalEnvioComprobante({
+        titulo: 'Enviar comprobantes',
+        etiqueta: 'Destinatarios',
+        detalle: `${enviables.length} empleado${enviables.length === 1 ? '' : 's'}`,
+        icono: 'fa-users',
+        aviso: omitidos > 0
+            ? `${omitidos} sin causar ${omitidos === 1 ? 'se omite' : 'se omiten'}.`
+            : '',
+    }).then((canales) => {
+        if (!canales) return;
+        enviarComprobanteNomina(enviables, null, canales);
+    });
+});
+
 function updateCausarNominaButton() {
-    const selectedCheckboxes = $('.check-causar-periodo:checked');
-    
-    if (selectedCheckboxes.length > 0) {
+    const seleccionados = $('.check-causar-periodo:checked');
+
+    if (seleccionados.length > 0) {
         $('#causarNominaBtn').show();
+        $('#enviarNominaBtn').show();
+        $('#enviarNominaCount').text(getSelectedPeriodIds().length);
     } else {
         $('#causarNominaBtn').hide();
+        $('#enviarNominaBtn').hide();
     }
+}
+
+function enviarComprobanteNomina(idsPeriodos, idEmpleado, canales) {
+    const canalesArr = Array.isArray(canales) ? canales : [canales];
+
+    $.ajax({
+        url: base_url + 'notificar-nomina',
+        method: 'POST',
+        headers: headers,
+        dataType: 'json',
+        data: JSON.stringify({
+            ids_periodos_pago: Array.isArray(idsPeriodos) ? idsPeriodos : [idsPeriodos],
+            id_empleado: idEmpleado || null,
+            canales: canalesArr
+        }),
+    }).done((res) => {
+        if (res.success) {
+            agregarToast('exito', 'Envío exitoso', res.message || 'Comprobante enviado!', true);
+        } else {
+            agregarToast('error', 'Envío errado', res.message || 'No se pudo enviar');
+        }
+    }).fail((err) => {
+        const msg = err.responseJSON?.message || 'Error de red';
+        agregarToast('error', 'Envío errado', arreglarMensajeError(msg));
+    });
 }
 
 // Función para obtener los IDs seleccionados de TODOS los grupos
@@ -1538,43 +1785,4 @@ $("input[data-type='currency']").on({
     blur: function() {
         formatCurrency($(this), "blur");
     }
-});
-
-$('#causarNominaBtn').on('click', function() {
-    const selectedPeriods = getSelectedPeriodIds();
-    
-    if (selectedPeriods.length === 0) {
-        agregarToast('warning', 'Selección requerida', 'Por favor seleccione al menos un período para causar');
-        return;
-    }
-    
-    // Mostrar loading
-    $('#causarNominaBtn').hide();
-    $('#causarNominaLoading').show();
-
-    // Llamada AJAX para causar nómina
-    $.ajax({
-        url: base_url + 'causar-nomina',
-        method: 'POST',
-        data: JSON.stringify({
-            ids_periodos_pago: selectedPeriods,
-            mes: $('#meses_causar_nomina_filter').val()
-        }),
-        headers: headers,
-        dataType: 'json',
-    }).done((res) => {
-        if(res.success){
-            agregarToast('exito', 'Causación exitosa', 'Nómina causada con éxito!', true);
-            causar_nomina_table.ajax.reload();
-        } else {
-            agregarToast('error', 'Causación errada', res.message);
-        }
-    }).fail((err) => {
-        var mensaje = err.responseJSON.message;
-        var errorsMsg = arreglarMensajeError(mensaje);
-        agregarToast('error', 'Causación errada', errorsMsg);
-    }).always(() => {
-        $('#causarNominaBtn').show();
-        $('#causarNominaLoading').hide();
-    });
 });

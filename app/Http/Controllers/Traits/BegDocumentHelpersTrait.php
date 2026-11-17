@@ -154,6 +154,83 @@ trait BegDocumentHelpersTrait
 		return true;
 	}
 
+	public function sendEmailNomina(
+		Empresa $empresa,
+		$periodo,               // NomPeriodoPagos
+		$documentoNomina,       // DocumentosGeneral (padre del asiento)
+		string $pdfPath,        // ruta devuelta por NominaPdf::saveStorage()
+		?string $ecoToken = null
+	): bool {
+		// ── Token ECO ──
+		if (!$ecoToken) {
+			$ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first()?->valor;
+		}
+
+		if (!$ecoToken) {
+			\Log::warning('sendEmailNomina: no hay token ECO configurado', [
+				'id_periodo' => $periodo->id ?? null,
+				'id_empresa' => $empresa->id ?? null,
+			]);
+			return false;
+		}
+
+		// ── Destinatario ──
+		$empleado = $periodo->empleado;
+		// $email    = $empleado->email ?? null;
+		$email = "abdel_123@hotmail.es";
+
+		if (!$email) {
+			\Log::warning('sendEmailNomina: empleado sin email', [
+				'id_periodo' => $periodo->id,
+				'id_empleado'=> $empleado->id ?? null,
+			]);
+			return false;
+		}
+
+		// ── Clave para la URL del PDF ──
+		$claveUrl = $this->generarClavePDF(
+			$empresa->id,
+			$documentoNomina->id_comprobante,
+			$documentoNomina->consecutivo,
+			$documentoNomina->fecha_manual
+		);
+
+		$urlGeneral = "https://app.portafolioerp.com";
+		$urlPdf     = "{$urlGeneral}/documentos-generales-pdf?code={$claveUrl}";
+
+		// ── Datos para la vista ──
+		$emailData = [
+			'empleado'    => $empleado,
+			'periodo'     => $periodo,
+			'documento'   => $documentoNomina,
+			'empresa'     => $empresa,
+			'urlPdf'      => $urlPdf,
+			'valorNeto'   => (float) $documentoNomina->credito,
+			'fechaNomina' => $documentoNomina->fecha_manual,
+		];
+
+		// ── Metadata para ECO ──
+		$filterData = [
+			'id_nit'           => $empleado->id,
+			'nombre_completo'  => $empleado->nombre_completo,
+			'numero_documento' => $empleado->numero_documento,
+			'email'            => $email,
+		];
+
+		// ── Envío asíncrono ──
+		SendSingleEmail::dispatch(
+			$empresa,
+			$email,
+			$emailData,
+			$filterData,
+			$pdfPath,
+			$ecoToken,
+			'emails.capturas.nomina',
+		);
+
+		return true;
+	}
+
     public function getXml(FacVentas $venta)
 	{
 

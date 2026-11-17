@@ -8,6 +8,8 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use App\Helpers\Printers\NominaPdf;
+use App\Helpers\Eco\SendEcoWhatsApp;
 use App\Http\Controllers\Controller;
 use App\Helpers\Nomina\CalcularPeriodo;
 use Illuminate\Support\Facades\Validator;
@@ -19,6 +21,7 @@ use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
 use App\Models\Sistema\Nits;
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\VariablesEntorno;
@@ -357,7 +360,7 @@ class CausarNominaController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message" => $e->getMessage()
+                "message" => "{$e->getLine()} - {$e->getMessage()}"
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -433,6 +436,203 @@ class CausarNominaController extends Controller
                 'data' => [],
                 "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function notificarEmpleado(Request $request)
+    {
+        $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+
+        if (!$empresa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa no encontrada.',
+            ], 422);
+        }
+
+        $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first()?->valor;
+
+        if (!$ecoToken) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se ha configurado el token de ECO en las variables de entorno.',
+            ], 422);
+        }
+
+        $idsPeriodos = $request->input('ids_periodos_pago', []);
+        $canales     = $request->input('canales', []);
+
+        $errores  = [];
+        $enviados = 0;
+
+        foreach ($idsPeriodos as $idPeriodo) {
+            $periodo = NomPeriodoPagos::with([
+                'empleado', 'detalles.concepto', 'contrato', 'documentos'
+            ])->find($idPeriodo);
+
+            if (!$periodo) {
+                $errores[] = "Período ID {$idPeriodo} no encontrado.";
+                continue;
+            }
+
+            // Documento padre del asiento de nómina
+            $documentoNomina = $periodo->documentos
+                ->firstWhere('concepto', 'NÓMINA GENERADA POR EL SISTEMA');
+
+            if (!$documentoNomina) {
+                $errores[] = "Empleado {$periodo->empleado->nombre_completo}: no se encontró el documento de nómina (¿está causado?).";
+                continue;
+            }
+
+            // 1) Generar PDF usando el consecutivo/fecha del documento real
+            $claveUrl = $this->generarClavePDF(
+                $empresa->id,
+                $documentoNomina->id_comprobante,
+                $documentoNomina->consecutivo,
+                $documentoNomina->fecha_manual
+            );
+
+            $pdfPath = (new NominaPdf($empresa, $periodo, $claveUrl))
+                ->buildPdf()
+                ->saveStorage();
+
+            // 2) Enviar por cada canal
+            foreach ($canales as $canal) {
+                // if ($canal === 'whatsapp') {
+                //     $resultado = $this->enviarWhatsappNomina(
+                //         $periodo,
+                //         $documentoNomina,
+                //         $empresa,
+                //         $claveUrl,
+                //         $ecoToken
+                //     );
+
+                //     $resultado['success'] ? $enviados++ : $errores[] = "Empleado {$periodo->empleado->nombre_completo}: {$resultado['message']}";
+                // }
+                if ($canal === 'email') {
+                    $resultado = $this->sendEmailNomina(
+                        $empresa,
+                        $periodo,
+                        $documentoNomina,
+                        $pdfPath,
+                        $ecoToken
+                    );
+
+                    $resultado ? $enviados++ : $errores[] = "Empleado {$periodo->empleado->nombre_completo}: no se pudo enviar el email.";
+                }
+            }
+        }
+
+        if (!empty($errores)) {
+            return response()->json([
+                'success'  => false,
+                'message'  => $errores,
+                'enviados' => $enviados,
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Comprobantes procesados correctamente ({$enviados} enviados).",
+        ]);
+    }
+
+    private function enviarWhatsappNomina($periodo, $documentoNomina, $empresa, $claveUrl, $ecoToken)
+    {
+        try {
+            $empleado = $periodo->empleado;
+
+            // ─── Datos de la plantilla (desde el documento real) ───
+            $nombreEmpleado  = $empleado->nombre_completo ?? 'Empleado';
+            $tipoDocumento   = 'Nómina';
+            $numeroDocumento = $documentoNomina->consecutivo;
+
+            $valorDocumento = number_format((float) $documentoNomina->credito, 2, ',', '.');
+
+            $fechaDocumento = $documentoNomina->fecha_manual
+                ? Carbon::parse($documentoNomina->fecha_manual)->format('Y-m-d')
+                : Carbon::now()->format('Y-m-d');
+
+            $estadoDocumento = 'APROBADO';
+            $nombreEmpresa   = $empresa->razon_social ?: 'PORTAFOLIO ERP SAS';
+
+            $linkNomina = 'documentos-generales-pdf?code=' . $claveUrl;
+
+            $whatsappData = [
+                "1" => $nombreEmpleado,
+                "2" => $tipoDocumento,
+                "3" => (string) $numeroDocumento,
+                "4" => $valorDocumento,
+                "5" => $fechaDocumento,
+                "6" => $estadoDocumento,
+                "7" => $nombreEmpresa,
+                "8" => $linkNomina,
+            ];
+
+            // ─── Teléfono (ajusta el campo real del empleado) ───
+            $telefonoRaw = $empleado->telefono_1 ?? null;
+
+            if (!$telefonoRaw) {
+                return ['success' => false, 'message' => 'El empleado no tiene teléfono registrado.'];
+            }
+
+            $telefono = preg_replace('/\D/', '', (string) $telefonoRaw);
+
+            if (strlen($telefono) < 10) {
+                return ['success' => false, 'message' => 'El número debe tener al menos 10 dígitos.'];
+            }
+
+            if (strlen($telefono) === 10) {
+                $telefono = '57' . $telefono;
+            }
+
+            // ─── Enviar por ECO ───
+            $sender = new SendEcoWhatsApp(
+                $telefono,
+                $whatsappData,
+                [
+                    'id_nit'           => $empleado->id,
+                    'nombre_completo'  => $nombreEmpleado,
+                    'numero_documento' => $empleado->numero_documento,
+                ],
+                'general_documento_portafolioerp',
+                'nomina_documento_portafolioerp'
+            );
+
+            $sender->setToken($ecoToken);
+            $response = $sender->send();
+
+            \Log::info('WhatsApp nómina enviada', [
+                'id_periodo'          => $periodo->id,
+                'id_documento_nomina' => $documentoNomina->id,
+                'consecutivo'         => $documentoNomina->consecutivo,
+                'telefono'            => $telefono,
+                'link'                => $linkNomina,
+                'response'            => $response,
+            ]);
+
+            if (!$response || !isset($response->status)) {
+                return ['success' => false, 'message' => 'Sin respuesta de ECO.'];
+            }
+
+            if ($response->status >= 400) {
+                return [
+                    'success' => false,
+                    'message' => $response->response->message ?? 'Error al enviar WhatsApp por ECO',
+                ];
+            }
+
+            return ['success' => true, 'message' => 'Enviado'];
+
+        } catch (\Throwable $e) {
+            \Log::error('Error enviando WhatsApp nómina', [
+                'id_periodo' => $periodo->id ?? null,
+                'error'      => $e->getMessage(),
+                'line'       => $e->getLine(),
+                'file'       => $e->getFile(),
+            ]);
+
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -540,7 +740,20 @@ class CausarNominaController extends Controller
         if (isset($codigosConceptos[$concepto->codigo])) {
             $relacionAdministradoras = $codigosConceptos[$concepto->codigo];
             $administradora = $contrato->{$relacionAdministradoras};
-            
+            if (!$administradora) {
+                $nombreFondo = 'Fondo salud';
+                if ($relacionAdministradoras == 'fondo_pension') {
+                    $nombreFondo = 'Fondo pension';
+                }
+                return [
+                    'error' => [
+                        "Tablas <b style='color: #000'>→</b> Contratos <b style='color: #000'>→</b> {$nombreFondo}" => [
+                            'id_nit' => "No esta configurado en el contrato."
+                        ]
+                    ]
+                ];
+            }
+
             if (!$administradora->nit) {
                 return [
                     'error' => [

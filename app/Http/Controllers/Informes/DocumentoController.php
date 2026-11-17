@@ -17,13 +17,14 @@ use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
+use App\Models\Sistema\Nomina\NomPeriodoPagos;
 // PDFS
 use App\Helpers\Printers\PagosPdf;
+use App\Helpers\Printers\NominaPdf;
 use App\Helpers\Printers\GastosPdf;
 use App\Helpers\Printers\VentasPdf;
 use App\Helpers\Printers\RecibosPdf;
 use App\Helpers\Printers\ComprasPdf;
-use App\Helpers\Printers\DocumentosPdf;
 
 class DocumentoController extends Controller
 {
@@ -218,16 +219,41 @@ class DocumentoController extends Controller
                         ->showPdf();
                 }
             }
-            
-            
 
-            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_OTROS && count($facDocumento->documentos)) {
+            $facDocumento = FacDocumentos::where('id', $documento->relation_id)->first();
+
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_OTROS && $facDocumento && count($facDocumento->documentos)) {
                 return (new DocumentosPdf($empresa, $facDocumento, 'pdf.facturacion.documentos_otros'))
                     ->buildPdf()
                     ->showPdf();
             }
+            if ($documento->relation_type == 9) {
+                $periodo = NomPeriodoPagos::with([
+                    'empleado', 'detalles.concepto', 'contrato', 'documentos'
+                ])->find($documento->relation_id);
 
-            $facDocumento = FacDocumentos::where('id', $documento->relation_id)->first();
+                if (!$periodo) {
+                    return response()->json([
+                        'success'=>	false,
+                        'data' => [],
+                        'message'=> 'La factura nomina no existe'
+                    ]);
+                }
+
+                $documentoNomina = $periodo->documentos->firstWhere('concepto', 'NÓMINA GENERADA POR EL SISTEMA');
+
+                if (!$periodo) {
+                    return response()->json([
+                        'success'=>	false,
+                        'data' => [],
+                        'message'=> 'La factura no nomina no tiene documentos'
+                    ]);
+                }
+
+                return (new NominaPdf($empresa, $periodo, $claveUrl))
+                    ->buildPdf()
+                    ->showPdf();
+            }
 
             if (!$facDocumento) {
                 return response()->json([

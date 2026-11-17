@@ -28,6 +28,11 @@
                     <b style="opacity: 0.3; text-transform: capitalize;">Causando Nómina</b>
                     <i style="position: absolute; color: white; font-size: 15px; margin-left: -60px; margin-top: 1px;" class="fas fa-spinner fa-spin"></i>
                 </button>
+
+                <button type="button" class="btn btn-info btn-sm btn-bg-info" id="enviarNominaBtn" style="float: inline-end; margin-right: 10px; display: none;">
+                    <i class="fa-solid fa-paper-plane" style="font-size: 15px;"></i>&nbsp;
+                    Enviar comprobantes (<span id="enviarNominaCount">0</span>)
+                </button>
             @endcan
         </div>
     </div>

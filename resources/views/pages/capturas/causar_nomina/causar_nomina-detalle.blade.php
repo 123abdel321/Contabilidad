@@ -116,7 +116,7 @@
                     <strong id="pp_footer_neto">$ 0</strong>
                 </div>
                 <div class="pp-footer-actions">
-                    <button type="button" class="btn btn-light" id="pp_btn_print"><i class="fas fa-print me-1"></i> Imprimir</button>
+                    <!-- <button type="button" class="btn btn-light" id="pp_btn_print"><i class="fas fa-print me-1"></i> Imprimir</button> -->
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>

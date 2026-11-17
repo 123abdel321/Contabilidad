@@ -802,19 +802,20 @@ class VentaController extends Controller
             $sender->setToken($ecoToken);
             $response = $sender->send();
 
-            \Log::info('WhatsApp factura enviada', [
-                'id_venta' => $venta->id,
-                'telefono' => $telefono,
-                'link'     => $linkFactura,
-                'response' => $response,
-            ]);
-
             if (!$response || !isset($response->status)) {
                 throw new \Exception('Sin respuesta de ECO.');
             }
 
             if ($response->status >= 400) {
                 $msg = $response->response->message ?? 'Error al enviar WhatsApp por ECO';
+
+                \Log::info([
+                    'whatsapp'     => 'Factura enviada',
+                    'id_venta' => $venta->id,
+                    'telefono' => $telefono,
+                    'link'     => $linkFactura,
+                    'response' => $response,
+                ]);
 
                 return response()->json([
                     'success' => false,

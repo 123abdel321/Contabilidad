@@ -82,6 +82,104 @@
     .pp-header,.pp-kpi-net{-webkit-print-color-adjust:exact;print-color-adjust:exact}
     }
 
+    .causar-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 2px 10px;
+    background-color: #ffffff;
+    color: #003883;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    border: 1px solid #003883;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.causar-chip .check-causar-periodo {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #003883;
+}
+
+.causar-chip:hover {
+    background-color: #eef5ff;
+    border-color: #0056c7;
+}
+
+/* Marcado */
+.causar-chip.checked {
+    background-color: #e3f6e8;
+    border-color: #28a745;
+    color: #1e7e34;
+}
+
+.causar-chip.checked .check-causar-periodo {
+    accent-color: #28a745;
+}
+
+.group-toggle {
+    padding: 2px 8px 2px 4px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+}
+
+.group-toggle:hover {
+    background-color: rgba(0, 56, 131, 0.12);
+}
+
+.group-toggle .toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-right: 6px;
+    border-radius: 4px;
+    background-color: #ffffff;
+    border: 1px solid #003883;
+}
+
+.group-toggle .toggle-icon {
+    margin: 0 !important;
+    font-size: 13px;
+    color: #003883;
+}
+
+.group-toggle:hover .toggle-btn {
+    background-color: #003883;
+}
+
+.group-toggle:hover .toggle-icon {
+    color: #ffffff;
+}
+
+.group-toggle .group-hint {
+    margin-left: 10px;
+    font-size: 11px;
+    font-weight: 400;
+    font-style: italic;
+    color: #5a7ba8;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+/* El texto de ayuda aparece solo al pasar el mouse */
+.group-toggle:hover .group-hint {
+    opacity: 1;
+}
+
+.group-header-causar {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE/Edge viejo */
+    user-select: none;
+}
+
 </style>
 
 <div class="container-fluid py-2">

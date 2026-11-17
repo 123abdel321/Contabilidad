@@ -648,6 +648,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('causar-nomina', 'causarNomina');
             Route::post('descausar-nomina', 'descausarNomina');
             Route::post('calcular-nomina', 'calcularNomina');
+
+            Route::post('notificar-nomina', 'notificarEmpleado');
         });
         //CAUSAR NOMINA GENERALES
         Route::controller(PagosNominaController::class)->group(function () {
