@@ -271,6 +271,11 @@ abstract class AbstractFESender
 		// ============================================================
 		// 9) Nada coincidió → error estructurado (nunca explota)
 		// ============================================================
+		\Log::error('[FE sendEvent] 500', [
+			"error_message"  => "No contiene data ni estructura compatible.",
+			'json_response' => json_encode($data),
+		]);
+
 		return [
 			"status"         => 500,
 			"message_object" => "Respuesta de la API con formato desconocido",
