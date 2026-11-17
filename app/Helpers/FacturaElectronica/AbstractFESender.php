@@ -85,6 +85,7 @@ abstract class AbstractFESender
 		Log::info([
 			'dian' => 'AbstractFESender',
 			'data' => $data,
+			'params' => json_encode($params)
 		]);
 		// ============================================================
 		// 0) (NUEVO) Errores de validación Laravel: {message, errors}
