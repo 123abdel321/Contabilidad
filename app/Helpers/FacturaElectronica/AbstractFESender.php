@@ -83,11 +83,11 @@ abstract class AbstractFESender
 		])->post($url, $params);
 
 		$data = (object) $response->json();
-		Log::info([
-			'dian' => 'AbstractFESender',
-			'data' => $data,
-		]);
-		
+		// Log::info([
+		// 	'dian' => 'AbstractFESender',
+		// 	'data' => $data,
+		// ]);
+
 		// ============================================================
 		// 0) (NUEVO) Errores de validación Laravel: {message, errors}
 		//    Normalmente llegan con HTTP 422 y sin 'status' en el body.
