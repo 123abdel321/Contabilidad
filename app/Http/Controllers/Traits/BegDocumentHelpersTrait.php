@@ -176,8 +176,7 @@ trait BegDocumentHelpersTrait
 
 		// ── Destinatario ──
 		$empleado = $periodo->empleado;
-		// $email    = $empleado->email ?? null;
-		$email = "abdel_123@hotmail.es";
+		$email    = $empleado->email ?? null;
 
 		if (!$email) {
 			\Log::warning('sendEmailNomina: empleado sin email', [
