@@ -9,7 +9,7 @@
  *      #totales_descuento   -> #totales_descuento-compra
  *    (Debes actualizar esos 2 IDs en el HTML de compras).
  *  - El resto de IDs se mantienen igual que antes.
- */
+//  */
 (function (window, $) {
     'use strict';
 
@@ -186,13 +186,18 @@
 
         const base = bruto - l.descVal;
         let iva = 0;
+
         if (l.ivaPct > 0) {
             iva = ivaIncluidoCompras
                 ? base * (l.ivaPct / (l.ivaPct + 100))
                 : base * l.ivaPct / 100;
         }
-        l.ivaVal = iva;
-        l.total = round2(ivaIncluidoCompras ? base : base + iva);
+
+        l.ivaVal = round2(iva);
+        l.total = round2(
+            ivaIncluidoCompras ? base : base + iva
+        );
+
         return l;
     }
 
