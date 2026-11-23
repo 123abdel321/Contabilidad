@@ -498,17 +498,17 @@ class CausarNominaController extends Controller
 
             // 2) Enviar por cada canal
             foreach ($canales as $canal) {
-                // if ($canal === 'whatsapp') {
-                //     $resultado = $this->enviarWhatsappNomina(
-                //         $periodo,
-                //         $documentoNomina,
-                //         $empresa,
-                //         $claveUrl,
-                //         $ecoToken
-                //     );
+                if ($canal === 'whatsapp') {
+                    $resultado = $this->enviarWhatsappNomina(
+                        $periodo,
+                        $documentoNomina,
+                        $empresa,
+                        $claveUrl,
+                        $ecoToken
+                    );
 
-                //     $resultado['success'] ? $enviados++ : $errores[] = "Empleado {$periodo->empleado->nombre_completo}: {$resultado['message']}";
-                // }
+                    $resultado['success'] ? $enviados++ : $errores[] = "Empleado {$periodo->empleado->nombre_completo}: {$resultado['message']}";
+                }
                 if ($canal === 'email') {
                     $resultado = $this->sendEmailNomina(
                         $empresa,
