@@ -25,6 +25,7 @@ use App\Helpers\Printers\GastosPdf;
 use App\Helpers\Printers\VentasPdf;
 use App\Helpers\Printers\RecibosPdf;
 use App\Helpers\Printers\ComprasPdf;
+use App\Helpers\Printers\DocumentosPdf;
 
 class DocumentoController extends Controller
 {
