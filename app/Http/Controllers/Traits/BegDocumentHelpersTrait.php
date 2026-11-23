@@ -159,7 +159,8 @@ trait BegDocumentHelpersTrait
 		$periodo,               // NomPeriodoPagos
 		$documentoNomina,       // DocumentosGeneral (padre del asiento)
 		string $pdfPath,        // ruta devuelta por NominaPdf::saveStorage()
-		?string $ecoToken = null
+		?string $ecoToken = null,
+		?string $emailCustom = null
 	): bool {
 		// ── Token ECO ──
 		if (!$ecoToken) {
@@ -176,7 +177,7 @@ trait BegDocumentHelpersTrait
 
 		// ── Destinatario ──
 		$empleado = $periodo->empleado;
-		$email    = $empleado->email ?? null;
+		$email    = $emailCustom ?: ($empleado->email ?? null);
 
 		if (!$email) {
 			\Log::warning('sendEmailNomina: empleado sin email', [

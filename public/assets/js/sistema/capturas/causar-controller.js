@@ -1425,9 +1425,26 @@ function estilosEnviarNomina() {
         }
         .pf-envio-emp small { display: block; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; }
         .pf-envio-emp strong { font-size: 14px; color: #1f2937; }
-        .pf-envio-aviso { font-size: 12px; color: #b45309; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 6px 10px; margin-bottom: 14px; text-align: left; }
+        .pf-envio-aviso {
+            display: flex; align-items: flex-start; gap: 8px;
+            font-size: 12px; color: #b45309; background: #fffbeb;
+            border: 1px solid #fde68a; border-left: 4px solid #f59e0b;
+            border-radius: 8px; padding: 8px 12px; margin-bottom: 14px; text-align: left;
+        }
+        .pf-envio-aviso i { margin-top: 1px; font-size: 13px; color: #d97706; }
 
         .pf-envio-canales { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .pf-envio-datos { display: flex; flex-direction: column; gap: 10px; margin: 14px 0 4px; text-align: left; }
+        .pf-envio-datos .pf-campo { display: flex; flex-direction: column; gap: 4px; }
+        .pf-envio-datos label { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; }
+        .pf-envio-datos .pf-input-wrap { display: flex; align-items: center; gap: 8px; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 8px 12px; background: #fff; transition: border-color .15s; }
+        .pf-envio-datos .pf-input-wrap:focus-within { border-color: #1c4587; box-shadow: 0 0 0 3px rgba(28,69,135,.12); }
+        .pf-envio-datos .pf-input-wrap i { color: #9ca3af; font-size: 14px; width: 16px; text-align: center; }
+        .pf-envio-datos .pf-input-wrap input { border: 0; outline: 0; flex: 1; font-size: 14px; color: #1f2937; background: transparent; }
+        .pf-envio-datos .pf-input-wrap input::placeholder { color: #cbd5e1; }
+        .pf-envio-datos .pf-hint { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+        .pf-envio-datos .pf-hint.warn { color: #b45309; }
         .pf-canal { position: relative; margin: 0; cursor: pointer; }
         .pf-canal input { position: absolute; opacity: 0; pointer-events: none; }
         .pf-canal .box {
@@ -1445,6 +1462,43 @@ function estilosEnviarNomina() {
         .pf-canal.wa input:checked + .box { border-color: #25D366; background: #f0fdf4; color: #15803d; }
         .pf-canal.em input:checked + .box { border-color: #0d6efd; background: #eff6ff; color: #1d4ed8; }
         .pf-canal input:focus-visible + .box { box-shadow: 0 0 0 .2rem rgba(13,110,253,.25); }
+        /* ===== Variante masiva ===== */
+        .pf-envio-masivo .pf-envio-emp.grupo {
+            background: linear-gradient(135deg, #eef3ff 0%, #f5f7fd 100%);
+            border-color: #c7d2fe;
+        }
+        .pf-envio-masivo .pf-envio-emp.grupo .avatar {
+            background: #1c4587; color: #fff; font-size: 16px;
+            width: 42px; height: 42px;
+        }
+        .pf-envio-masivo .pf-envio-emp.grupo strong { font-size: 15px; }
+
+        .pf-envio-lista {
+            margin: 0 0 14px; padding: 10px 12px; text-align: left;
+            background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 10px;
+            max-height: 132px; overflow-y: auto;
+        }
+        .pf-envio-lista .pf-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 0; font-size: 13px; color: #374151;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+        .pf-envio-lista .pf-item:last-child { border-bottom: 0; }
+        .pf-envio-lista .pf-item i { color: #9ca3af; font-size: 12px; }
+        .pf-envio-lista .pf-item .doc {
+            font-family: 'Courier New', monospace; font-size: 12px; color: #6b7280; margin-left: auto;
+        }
+        .pf-envio-lista .pf-more {
+            padding-top: 6px; font-size: 12px; color: #6b7280; font-style: italic;
+        }
+
+        .pf-envio-canales.masivo { grid-template-columns: 1fr 1fr; gap: 12px; }
+        .pf-envio-canales.masivo .pf-canal .box { padding: 18px 10px; }
+        .pf-envio-canales.masivo .pf-canal .box i { font-size: 26px; }
+        .pf-envio-canales.masivo .pf-canal .box span { font-size: 14px; }
+        .pf-envio-canales.masivo .pf-canal .box .count {
+            display: block; font-size: 11px; font-weight: 500; color: #94a3b8; margin-top: 2px;
+        }
     `;
     const style = document.createElement('style');
     style.id = 'pf-enviar-nomina-css';
@@ -1453,12 +1507,38 @@ function estilosEnviarNomina() {
 }
 
 // Modal reutilizable. Devuelve una promesa con el arreglo de canales elegidos, o null si cancela.
-function modalEnvioComprobante({ titulo = 'Enviar comprobante', etiqueta, detalle, icono = 'fa-user', aviso = '' }) {
+function modalEnvioComprobante(opts = {}) {
     estilosEnviarNomina();
 
-    return Swal.fire({
-        title: titulo,
-        html: `
+    const {
+        titulo = 'Enviar comprobante',
+        etiqueta,
+        detalle,
+        icono = 'fa-user',
+        aviso = '',
+        telefono = '',
+        email = '',
+        permitirEditar = true,
+        destinatarios = null, // <-- NUEVO: array de empleados para masivo
+        omitidos = 0,
+    } = opts;
+
+    const esMasivo = Array.isArray(destinatarios);
+
+    // ---------- Cabecera ----------
+    let cabecera;
+    if (esMasivo) {
+        cabecera = `
+            <div class="pf-envio-emp grupo">
+                <div class="avatar"><i class="fas fa-users"></i></div>
+                <div>
+                    <small>Destinatarios</small>
+                    <strong>${destinatarios.length} empleado${destinatarios.length === 1 ? '' : 's'}</strong>
+                </div>
+            </div>
+        `;
+    } else {
+        cabecera = `
             <div class="pf-envio-emp">
                 <div class="avatar"><i class="fas ${icono}"></i></div>
                 <div>
@@ -1466,25 +1546,95 @@ function modalEnvioComprobante({ titulo = 'Enviar comprobante', etiqueta, detall
                     <strong>${detalle}</strong>
                 </div>
             </div>
-            ${aviso ? `<div class="pf-envio-aviso"><i class="fas fa-exclamation-triangle"></i> ${aviso}</div>` : ''}
+        `;
+    }
 
-            <div class="pf-envio-canales">
-                <label class="pf-canal wa">
-                    <input type="checkbox" id="canal-whatsapp" checked>
-                    <div class="box">
-                        <i class="fab fa-whatsapp"></i>
-                        <span>WhatsApp</span>
-                        <i class="fas fa-check-circle check"></i>
+    // ---------- Lista de destinatarios (solo masivo) ----------
+    let lista = '';
+    if (esMasivo && destinatarios.length) {
+        const MAX = 4;
+        const visibles = destinatarios.slice(0, MAX);
+        const restantes = destinatarios.length - visibles.length;
+
+        lista = `
+            <div class="pf-envio-lista">
+                ${visibles.map((d) => `
+                    <div class="pf-item">
+                        <i class="fas fa-user-circle"></i>
+                        <span>${d.nombre ?? 'Sin nombre'}</span>
+                        <span class="doc">${d.documento ?? ''}</span>
                     </div>
-                </label>
-                <label class="pf-canal em">
-                    <input type="checkbox" id="canal-email" checked>
-                    <div class="box">
-                        <i class="fas fa-envelope"></i>
-                        <span>Correo</span>
-                        <i class="fas fa-check-circle check"></i>
-                    </div>
-                </label>
+                `).join('')}
+                ${restantes > 0 ? `<div class="pf-more">y ${restantes} empleado${restantes === 1 ? '' : 's'} más…</div>` : ''}
+            </div>
+        `;
+    }
+
+    // ---------- Aviso de omitidos ----------
+    const bloqueAviso = omitidos > 0
+        ? `<div class="pf-envio-aviso">
+               <i class="fas fa-exclamation-triangle"></i>
+               <span>${omitidos} período${omitidos === 1 ? '' : 's'} sin causar ${omitidos === 1 ? 'se omite' : 'se omiten'} del envío.</span>
+           </div>`
+        : (aviso ? `<div class="pf-envio-aviso"><i class="fas fa-exclamation-triangle"></i><span>${aviso}</span></div>` : '');
+
+    // ---------- Campos editables (solo individual) ----------
+    const bloqueDatos = permitirEditar ? `
+        <div class="pf-envio-datos">
+            <div class="pf-campo">
+                <label>Teléfono WhatsApp</label>
+                <div class="pf-input-wrap">
+                    <i class="fab fa-whatsapp" style="color:#25D366;"></i>
+                    <input type="tel" id="envio-telefono" placeholder="Ej: 3001234567" value="${telefono || ''}">
+                </div>
+                <div class="pf-hint">${telefono ? '' : 'El empleado no tiene teléfono registrado.'}</div>
+            </div>
+            <div class="pf-campo">
+                <label>Correo electrónico</label>
+                <div class="pf-input-wrap">
+                    <i class="fas fa-envelope" style="color:#0d6efd;"></i>
+                    <input type="email" id="envio-email" placeholder="correo@ejemplo.com" value="${email || ''}">
+                </div>
+                <div class="pf-hint">${email ? '' : 'El empleado no tiene correo registrado.'}</div>
+            </div>
+        </div>
+    ` : '';
+
+    // ---------- Canales ----------
+    const claseCanales = esMasivo ? 'pf-envio-canales masivo' : 'pf-envio-canales';
+    const labelWa = esMasivo
+        ? `<span>WhatsApp</span><span class="count">${destinatarios.length} destinatarios</span>`
+        : `<span>WhatsApp</span>`;
+    const labelEm = esMasivo
+        ? `<span>Correo</span><span class="count">${destinatarios.length} destinatarios</span>`
+        : `<span>Correo</span>`;
+
+    return Swal.fire({
+        title: titulo,
+        html: `
+            <div class="${esMasivo ? 'pf-envio-masivo' : ''}">
+                ${cabecera}
+                ${lista}
+                ${bloqueAviso}
+                ${bloqueDatos}
+                <div class="${claseCanales}">
+                    <label class="pf-canal wa">
+                        <input type="checkbox" id="canal-whatsapp" checked>
+                        <div class="box">
+                            <i class="fab fa-whatsapp"></i>
+                            ${labelWa}
+                            <i class="fas fa-check-circle check"></i>
+                        </div>
+                    </label>
+                    <label class="pf-canal em">
+                        <input type="checkbox" id="canal-email" checked>
+                        <div class="box">
+                            <i class="fas fa-envelope"></i>
+                            ${labelEm}
+                            <i class="fas fa-check-circle check"></i>
+                        </div>
+                    </label>
+                </div>
             </div>
         `,
         showCancelButton: true,
@@ -1495,16 +1645,51 @@ function modalEnvioComprobante({ titulo = 'Enviar comprobante', etiqueta, detall
         reverseButtons: true,
         focusConfirm: false,
         customClass: { popup: 'pf-envio-popup' },
+        didOpen: () => {
+            const tel = document.getElementById('envio-telefono');
+            if (tel) {
+                tel.addEventListener('input', () => {
+                    tel.value = tel.value.replace(/[^\d+]/g, '');
+                });
+            }
+        },
         preConfirm: () => {
             const canales = [];
-            if (document.getElementById('canal-whatsapp').checked) canales.push('whatsapp');
-            if (document.getElementById('canal-email').checked) canales.push('email');
+            const tel  = document.getElementById('envio-telefono');
+            const mail = document.getElementById('envio-email');
+            const telVal  = tel ? tel.value.trim() : '';
+            const mailVal = mail ? mail.value.trim() : '';
+
+            if (document.getElementById('canal-whatsapp').checked) {
+                if (permitirEditar && tel && !telVal) {
+                    Swal.showValidationMessage('Ingresa un teléfono para WhatsApp');
+                    return false;
+                }
+                if (telVal && !/^\d{10,15}$/.test(telVal.replace(/\D/g, ''))) {
+                    Swal.showValidationMessage('El teléfono debe tener entre 10 y 15 dígitos');
+                    return false;
+                }
+                canales.push('whatsapp');
+            }
+
+            if (document.getElementById('canal-email').checked) {
+                if (permitirEditar && mail && !mailVal) {
+                    Swal.showValidationMessage('Ingresa un correo electrónico');
+                    return false;
+                }
+                if (mailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mailVal)) {
+                    Swal.showValidationMessage('El correo no es válido');
+                    return false;
+                }
+                canales.push('email');
+            }
 
             if (!canales.length) {
                 Swal.showValidationMessage('Selecciona al menos un medio de envío');
                 return false;
             }
-            return canales;
+
+            return { canales, telefono: telVal, email: mailVal };
         },
     }).then((result) => (result.isConfirmed ? result.value : null));
 }
@@ -1513,11 +1698,13 @@ function modalEnvioComprobante({ titulo = 'Enviar comprobante', etiqueta, detall
 $(document).on('click', '.enviar-nomina', function () {
     const id = this.id.split('_')[1];
     const data = getDataById(id, causar_nomina_table);
-
+    console.log('data: ',data);
     modalEnvioComprobante({
         etiqueta: 'Empleado',
         detalle: data.empleado?.nombre_completo ?? 'Sin nombre',
         icono: 'fa-user',
+        telefono: data.empleado?.telefono_1 ?? null,
+        email: data.empleado?.email ?? null
     }).then((canales) => {
         if (!canales) return;
         enviarComprobanteNomina([id], data.id_empleado, canales);
@@ -1557,9 +1744,10 @@ $(document).on('click', '#enviarNominaBtn', function () {
         aviso: omitidos > 0
             ? `${omitidos} sin causar ${omitidos === 1 ? 'se omite' : 'se omiten'}.`
             : '',
-    }).then((canales) => {
-        if (!canales) return;
-        enviarComprobanteNomina(enviables, null, canales);
+        permitirEditar: false,
+    }).then((payload) => {
+        if (!payload) return;
+        enviarComprobanteNomina(enviables, null, payload.canales);
     });
 });
 
@@ -1576,8 +1764,9 @@ function updateCausarNominaButton() {
     }
 }
 
-function enviarComprobanteNomina(idsPeriodos, idEmpleado, canales) {
+function enviarComprobanteNomina(idsPeriodos, idEmpleado, canales, telefono = null, email = null) {
     const canalesArr = Array.isArray(canales) ? canales : [canales];
+    const idsArr     = Array.isArray(idsPeriodos) ? idsPeriodos : [idsPeriodos];
 
     $.ajax({
         url: base_url + 'notificar-nomina',
@@ -1585,9 +1774,11 @@ function enviarComprobanteNomina(idsPeriodos, idEmpleado, canales) {
         headers: headers,
         dataType: 'json',
         data: JSON.stringify({
-            ids_periodos_pago: Array.isArray(idsPeriodos) ? idsPeriodos : [idsPeriodos],
+            ids_periodos_pago: idsArr,
             id_empleado: idEmpleado || null,
-            canales: canalesArr
+            canales: canalesArr,
+            telefono: telefono || null,
+            email: email || null,
         }),
     }).done((res) => {
         if (res.success) {

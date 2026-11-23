@@ -461,6 +461,8 @@ class CausarNominaController extends Controller
 
         $idsPeriodos = $request->input('ids_periodos_pago', []);
         $canales     = $request->input('canales', []);
+        $telefonoCustom  = $request->input('telefono');
+        $emailCustom     = $request->input('email'); 
 
         $errores  = [];
         $enviados = 0;
@@ -504,7 +506,8 @@ class CausarNominaController extends Controller
                         $documentoNomina,
                         $empresa,
                         $claveUrl,
-                        $ecoToken
+                        $ecoToken,
+                        $telefonoCustom
                     );
 
                     $resultado['success'] ? $enviados++ : $errores[] = "Empleado {$periodo->empleado->nombre_completo}: {$resultado['message']}";
@@ -515,7 +518,8 @@ class CausarNominaController extends Controller
                         $periodo,
                         $documentoNomina,
                         $pdfPath,
-                        $ecoToken
+                        $ecoToken,
+                        $emailCustom
                     );
 
                     $resultado ? $enviados++ : $errores[] = "Empleado {$periodo->empleado->nombre_completo}: no se pudo enviar el email.";
@@ -537,8 +541,14 @@ class CausarNominaController extends Controller
         ]);
     }
 
-    private function enviarWhatsappNomina($periodo, $documentoNomina, $empresa, $claveUrl, $ecoToken)
-    {
+    private function enviarWhatsappNomina(
+        $periodo,
+        $documentoNomina,
+        $empresa,
+        $claveUrl,
+        $ecoToken,
+        ?string $telefonoCustom = null
+    ) {
         try {
             $empleado = $periodo->empleado;
 
