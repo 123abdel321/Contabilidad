@@ -545,7 +545,7 @@ class NitController extends Controller
                     ELSE NULL
                 END AS nombre_nit")
             )
-            ->with('ciudad');
+            ->with('ciudad', 'tipo_documento');
 
         // $nit = Nits::whereNumeroDocumento($request->get("numero_documento"));
 

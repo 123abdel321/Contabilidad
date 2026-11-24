@@ -41,7 +41,7 @@ function abrirNitGeneral(opts = {}) {
 // Carga datos y abre el modal en modo edit/view
 function cargarNitGeneral(idNit, modo, captura) {
     $.ajax({
-        url: base_url + 'nit/' + idNit,
+        url: base_url + 'nit/informacion?id_nit=' + idNit,
         method: 'GET',
         headers: headers,
         dataType: 'json',

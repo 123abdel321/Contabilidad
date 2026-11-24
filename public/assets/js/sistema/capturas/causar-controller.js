@@ -1695,19 +1695,28 @@ function modalEnvioComprobante(opts = {}) {
 }
 
 // ---------- Enviar a UN empleado (boton "Enviar" de la fila) ----------
+// Handler individual
 $(document).on('click', '.enviar-nomina', function () {
     const id = this.id.split('_')[1];
     const data = getDataById(id, causar_nomina_table);
-    console.log('data: ',data);
+    const emp = data.empleado || {};
+
     modalEnvioComprobante({
         etiqueta: 'Empleado',
-        detalle: data.empleado?.nombre_completo ?? 'Sin nombre',
+        detalle: emp.nombre_completo ?? 'Sin nombre',
         icono: 'fa-user',
-        telefono: data.empleado?.telefono_1 ?? null,
-        email: data.empleado?.email ?? null
-    }).then((canales) => {
-        if (!canales) return;
-        enviarComprobanteNomina([id], data.id_empleado, canales);
+        telefono: emp.telefono_1 ?? '',
+        email: emp.email ?? '',
+        permitirEditar: true,
+    }).then((payload) => {
+        if (!payload) return;
+        enviarComprobanteNomina(
+            [id],
+            data.id_empleado,
+            payload.canales,
+            payload.telefono,
+            payload.email
+        );
     });
 });
 

@@ -497,7 +497,6 @@ class CausarNominaController extends Controller
             $pdfPath = (new NominaPdf($empresa, $periodo, $claveUrl))
                 ->buildPdf()
                 ->saveStorage();
-
             // 2) Enviar por cada canal
             foreach ($canales as $canal) {
                 if ($canal === 'whatsapp') {
@@ -509,7 +508,6 @@ class CausarNominaController extends Controller
                         $ecoToken,
                         $telefonoCustom
                     );
-
                     $resultado['success'] ? $enviados++ : $errores[] = "Empleado {$periodo->empleado->nombre_completo}: {$resultado['message']}";
                 }
                 if ($canal === 'email') {
@@ -521,7 +519,6 @@ class CausarNominaController extends Controller
                         $ecoToken,
                         $emailCustom
                     );
-
                     $resultado ? $enviados++ : $errores[] = "Empleado {$periodo->empleado->nombre_completo}: no se pudo enviar el email.";
                 }
             }
@@ -580,8 +577,8 @@ class CausarNominaController extends Controller
             ];
 
             // ─── Teléfono (ajusta el campo real del empleado) ───
-            $telefonoRaw = $empleado->telefono_1 ?? null;
-
+            $telefonoRaw = $telefonoCustom ?: ($empleado->telefono_1 ?? null);
+            
             if (!$telefonoRaw) {
                 return ['success' => false, 'message' => 'El empleado no tiene teléfono registrado.'];
             }
