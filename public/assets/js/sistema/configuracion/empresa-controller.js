@@ -229,7 +229,7 @@ $("#tipo_contribuyente_empresa").on('change', function(e) {
     form.checkValidity();
 });
 
-$("#form-empresa-create").submit(function(e) {
+$(document).on('submit', '#form-empresa-create', function(e) {
     e.preventDefault();
 
     var form = document.querySelector('#form-empresa-create');
@@ -254,9 +254,7 @@ $("#form-empresa-create").submit(function(e) {
         $('#saveEmpresaLoading').hide();
 
         agregarToast('exito', 'Instalacion completada', 'Instalacion completada con exito!');
-        
         $("#empresaFormModal").modal('hide');
-
         empresas_table.ajax.reload();
     };
     xhr.onerror = function (res) {
@@ -265,7 +263,7 @@ $("#form-empresa-create").submit(function(e) {
     };
 });
 
-$("#form-empresa-update").submit(function(e) {
+$(document).on('submit', '#form-empresa-update', function(e) {
     e.preventDefault();
 
     var form = document.querySelector('#form-empresa-update');

@@ -72,7 +72,7 @@
                 <span href="javascript:void(0)" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">
                     Cancelar
                 </span>
-                <button id="updateEmpresa" href="javascript:void(0)" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button type="submit" id="updateEmpresa" class="btn bg-gradient-success btn-sm">Guardar</button>
                 <button id="updateEmpresaLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left;" disabled>
                     Cargando
                     <i class="fas fa-spinner fa-spin"></i>

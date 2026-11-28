@@ -91,7 +91,7 @@
                 <span href="javascript:void(0)" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">
                     Cancelar
                 </span>
-                <button id="saveEmpresa" href="javascript:void(0)" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button type="submit" id="saveEmpresa" class="btn bg-gradient-success btn-sm">Guardar</button>
                 <button id="saveEmpresaLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left;" disabled>
                     Cargando
                     <i class="fas fa-spinner fa-spin"></i>
